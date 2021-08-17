@@ -1,3 +1,44 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer base {
+    .links {
+        @apply
+        text-blue-700
+        underline
+    }
+}
+@layer components {
+    .btn-create-account {
+        @apply
+        relative
+        my-[7%]
+        p-6
+        flex
+        flex-row
+        justify-center
+        items-center
+        font-black
+        text-white
+        text-[1.875rem]
+        bg-gradient-to-r from-[#215BEB] to-[#5936FF]
+        rounded-md
+    }
+    .btn-submit {
+        @apply
+        relative
+        mx-auto
+        mt-[5%]
+        p-6
+        flex
+        flex-row
+        justify-center
+        items-center
+        font-black
+        text-white
+        text-[1.875rem]
+        bg-[#20123A]
+        rounded-md
+    }
+}
