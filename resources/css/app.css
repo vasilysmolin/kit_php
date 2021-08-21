@@ -13,32 +13,44 @@
     .btn-create-account {
         @apply
         relative
-        my-[7%]
-        p-6
+        my-[10%]
+        sm:my-[7%]
+        p-3
+        xs:p-4
+        sm:p-5
+        lg:p-6
         flex
         flex-row
         justify-center
         items-center
         font-black
         text-white
-        text-[1.875rem]
-        bg-gradient-to-r from-[#215BEB] to-[#5936FF]
+        text-[1.15rem]
+        xs:text-[1.5rem]
+        lg:text-[1.875rem]
+        bg-gradient-to-r from-[#0041E4] to-[#381DB8]
         rounded-md
     }
     .btn-submit {
         @apply
         relative
         mx-auto
-        mt-[5%]
-        p-6
+        mt-[8%]
+        sm:mt-[5%]
+        p-3
+        xs:p-4
+        sm:p-5
+        lg:p-6
         flex
         flex-row
         justify-center
         items-center
         font-black
         text-white
-        text-[1.875rem]
-        bg-[#20123A]
+        text-[1.15rem]
+        xs:text-[1.5rem]
+        lg:text-[1.875rem]
+        bg-[#000000]
         rounded-md
     }
 }

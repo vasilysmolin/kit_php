@@ -17,4 +17,5 @@ Route::get('/', function () {
     return view('welcome');
 });
 */
-Route::get('/', 'PromoController@promo');
+Route::match(['get', 'post'], '/', 'PromoController@promo')->name('promo');
+

@@ -14,12 +14,13 @@ module.exports = {
             ...defaultTheme.screens,
         },
         fontFamily: {
+            'mr': "'Montserrat', sans-serif;",
             'rb': "'Roboto', sans-serif",
             'os': "'Open Sans', sans-serif",
         },
         fontSize: {
             '6': 'clamp(1.88rem, 0.72rem + 5.76vw, 6.25rem)',
-            '28': 'clamp(5.63rem, -0.29rem + 29.56vw, 28.13rem)',
+            'hybrid1': 'clamp(4.38rem, -1.78rem + 30.77vw, 6.88rem)',
         },
         extend: {
             container: {
