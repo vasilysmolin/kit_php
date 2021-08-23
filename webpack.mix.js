@@ -1,6 +1,8 @@
 const mix = require('laravel-mix');
 const imagemin = require('imagemin');
 const imageminWebp = require('imagemin-webp');
+const imageminSvgo = require('imagemin-svgo');
+const {extendDefaultPlugins} = require('svgo');
 const rimraf = require('rimraf');
 
 (async () => {
@@ -10,7 +12,19 @@ const rimraf = require('rimraf');
             imageminWebp({quality: 75})
         ]
     });
-    console.log('Images optimized');
+    console.log('Webp converted');
+})();
+
+(async () => {
+    await imagemin(['resources/img/*.svg'], {
+        destination: 'public/img',
+        plugins: [
+            imageminSvgo({
+                plugins: extendDefaultPlugins([])
+            })
+        ]
+    });
+    console.log('SVG optimized');
 })();
 
 mix.js('resources/js/app.js', 'public/js')

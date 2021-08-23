@@ -19,8 +19,10 @@
     },
     "dependencies": {
         "imagemin": "^7.0.1",
+        "imagemin-svgo": "^9.0.0",
         "imagemin-webp": "^6.0.0",
         "rellax": "^1.12.1",
-        "rimraf": "^3.0.2"
+        "rimraf": "^3.0.2",
+        "svgo": "^2.4.0"
     }
 }

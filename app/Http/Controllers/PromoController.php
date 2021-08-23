@@ -10,8 +10,5 @@ class PromoController extends Controller
         if ($request->isMethod('GET')) {
             return view('pages.promo');
         }
-        $validator = $request->validate([
-            'email' => 'required|min:5|max:50'
-        ]);
     }
 }

@@ -24,7 +24,13 @@ class GetEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            //
+            'email' => 'email:rfc,dns',
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'email.email' => 'Напишите вашу почту, чтобы получить уведомление.',
         ];
     }
 }

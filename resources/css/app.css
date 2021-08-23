@@ -3,54 +3,80 @@
 @tailwind utilities;
 
 @layer base {
+    a, button {
+        @apply
+        transition-all
+        duration-500
+    }
+    .message {
+        @apply
+        fixed
+        bottom-[1%]
+        mx-auto
+        p-8
+        flex
+        justify-center
+        items-center
+        h-[80px]
+        text-white
+        font-bold
+        rounded-md
+        ring-4
+        z-20
+    }
+    .error {
+        @apply message
+        bg-red-500
+        ring-red-500
+        ring-opacity-50
+    }
+    .done {
+        @apply message
+        bg-green-500
+        ring-green-500
+        ring-opacity-50
+    }
     .links {
         @apply
         text-blue-700
-        underline
+        hover:text-[#2F1A56]
+        border-b-2
+        border-gray-200
+        hover:border-[#2F1A56]
     }
 }
 @layer components {
-    .btn-create-account {
+    .btn-promo {
         @apply
         relative
-        my-[10%]
-        sm:my-[7%]
         p-3
         xs:p-4
         sm:p-5
         lg:p-6
+        text-[1.15rem]
+        xs:text-[1.5rem]
+        lg:text-[1.875rem]
         flex
         flex-row
         justify-center
         items-center
         font-black
         text-white
-        text-[1.15rem]
-        xs:text-[1.5rem]
-        lg:text-[1.875rem]
-        bg-gradient-to-r from-[#0041E4] to-[#381DB8]
         rounded-md
     }
+    .btn-create-account {
+        @apply btn-promo
+        my-[10%]
+        sm:my-[7%]
+        bg-[#0031A9]
+        hover:bg-[#002172]
+    }
     .btn-submit {
-        @apply
-        relative
+        @apply btn-promo
         mx-auto
         mt-[8%]
         sm:mt-[5%]
-        p-3
-        xs:p-4
-        sm:p-5
-        lg:p-6
-        flex
-        flex-row
-        justify-center
-        items-center
-        font-black
-        text-white
-        text-[1.15rem]
-        xs:text-[1.5rem]
-        lg:text-[1.875rem]
-        bg-[#000000]
-        rounded-md
+        bg-[#2F1A56]
+        hover:bg-[#000000]
     }
 }
