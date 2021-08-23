@@ -1,7 +1,7 @@
 @extends('welcome')
 
 @section('title', 'Еда - заказ и доставка еды из кафе и ресторанов в Перми за один час')
-@section('description', 'Выбирайте блюдо, кафе или ресторан. Добавляйте заказ в корзину — остальное наша забота.)
+@section('description', 'Выбирайте блюдо, кафе или ресторан. Добавляйте заказ в корзину — остальное наша забота.')
 
 @section('content')
     <main class="container mt-[15px] lg:mt-[30px] flex flex-col justify-start items-center 2xl">
