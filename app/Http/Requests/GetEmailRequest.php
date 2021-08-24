@@ -30,9 +30,9 @@ class GetEmailRequest extends FormRequest
     public function messages()
     {
         return [
-            'email.email' => 'Ой, а вы ошиблись — это не адрес почты.',
-            'email.unique' => 'Ой, а этот адрес почты уже кто-то оставил.',
-            'email.required' => 'Ой, а вы ошиблись — это не адрес почты.',
+            'email.email' => 'Ой, видимо, вы ошиблись — такого адреса почты не существует.',
+            'email.unique' => 'Ой, а такой адрес почты уже кто-то оставил.',
+            'email.required' => 'Ой, а вы забыли написать свой адрес почты.',
         ];
     }
 }
