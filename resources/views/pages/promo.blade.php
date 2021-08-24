@@ -5,13 +5,7 @@
 
 @section('content')
     <main class="container mt-[15px] lg:mt-[30px] flex flex-col justify-start items-center 2xl">
-        @if($errors->any())
-            <ul class="error">
-                @foreach($errors->all() as $error)
-                    <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        @endif
+        @include('layouts.modules.messages')
         <h1 class="relative w-full px-5 xl:w-10/12 xl:p-0 font-mr font-black text-6 text-center leading-[1.15]">Доставка еды — как раз, два, три.</h1>
         <a href="https://user.tapigo.ru/user/register" class="btn-create-account">Создать аккаунт</a>
         <section class="relative flex flex-col justify-center items-center w-full box-border">

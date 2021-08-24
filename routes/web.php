@@ -19,4 +19,7 @@ Route::get('/', function () {
 */
 Route::get('/', 'PromoController@promo')->name('promo');
 Route::post('/', 'GetEmailController@email')->name('email');
+Route::get('/bingo', function () {
+    return view('pages.email-success');
+})->name('email-success');
 

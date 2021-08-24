@@ -24,13 +24,15 @@ class GetEmailRequest extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'email:rfc,dns',
+            'email' => 'required|unique:get_emails,email|email:rfc,dns',
         ];
     }
     public function messages()
     {
         return [
-            'email.email' => 'Напишите вашу почту, чтобы получить уведомление.',
+            'email.email' => 'Ой, а вы ошиблись — это не адрес почты.',
+            'email.unique' => 'Ой, а этот адрес почты уже кто-то оставил.',
+            'email.required' => 'Ой, а вы ошиблись — это не адрес почты.',
         ];
     }
 }
