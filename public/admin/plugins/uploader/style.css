@@ -1,0 +1,141 @@
+/*Upload*/
+.bb-upload{}
+.bb-upload__button{
+	width: 110px;
+	height: 100px;
+	margin-bottom: 0;
+	border: 1px dashed rgb(0, 177, 157);
+	border-radius: 5px;
+	position: relative;
+	cursor: pointer;
+}
+.bb-upload__button::before{
+	content: '';
+	display: block;
+	width: 25%;
+	height: 2px;
+	background-color: rgb(0, 177, 157);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.bb-upload__button::after{
+	content: '';
+	display: block;
+	width: 25%;
+	height: 2px;
+	background-color: rgb(0, 177, 157);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%) rotate(90deg);
+}
+.bb-upload__button input{display: none;}
+.bb-upload__button .fa{font-size: 28px;cursor: pointer;}
+.bb-upload__list{
+	margin: 15px 0 0;
+	padding: 0;
+	list-style-type: none;
+}
+.bb-upload__item{
+	display: inline-block;
+	margin-right: 15px;
+	width: 149px;
+	height: 100px;
+	position: relative;
+	cursor: pointer;
+}
+.bb-upload__item:last-child{margin-right: 0;}
+.bb-upload__item:hover .bb-upload__overlay{
+	visibility: visible;
+	opacity: 1;
+	-webkit-filter: none;
+	filter: none;
+	display: block;
+	pointer-events: auto;
+}
+.bb-upload__img{
+    display: block;
+    width: 100%;
+    object-fit: fill;
+    height: 100%;
+}
+.bb-upload__count{
+	display: block;
+	width: 17px;
+	height: 17px;
+	text-align: center;
+	font-size: 11px;
+	font-weight: bold;
+	color: #fff;
+	border-radius: 50%;
+	background-color: rgb(0, 177, 157);
+	position: absolute;
+	top: -8px;
+	left: -8px;
+	z-index: 99;
+}
+.bb-upload__overlay{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: rgba(0,0,0, .7);
+	pointer-events: none;
+	visibility: hidden;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	transition: opacity 100ms linear, top 100ms linear, bottom 100ms linear, visibility 100ms linear;
+}
+.bb-upload__overlay::before{
+	content: '';
+	display: block;
+	width: 90%;
+	height: 1px;
+	background-color: rgba(255,255,255, .5);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translateX(-50%);
+}
+.bb-upload__overlay::after{
+	content: '';
+	display: block;
+	width: 1px;
+	height: 90%;
+	background-color: rgba(255,255,255, .5);
+	position: absolute;
+	top: 5%;
+	left: 50%;
+}
+.bb-upload__overlay .fa{
+	color: #fff;
+	opacity: .6;
+	cursor: pointer;
+	position: absolute;
+	-webkit-transition: opacity .35s ease;
+	-o-transition: opacity .35s ease;
+	transition: opacity .35s ease;
+}
+.bb-upload__overlay .fa:hover{
+	opacity: 1;
+}
+.bb-upload__overlay .fa.fa-repeat{
+	top: 20px;
+	right: 35px;
+}
+.bb-upload__overlay .fa.fa-undo{
+	top: 20px;
+	left: 35px;
+}
+.bb-upload__overlay .fa.fa-crop,  .fa.fa-arrow-down,
+.bb-upload__overlay .fa.fa-cloud-download{
+	bottom: 20px;
+	left: 35px;
+}
+.bb-upload__overlay .fa.fa-trash-o{
+	bottom: 20px;
+	right: 35px;
+}

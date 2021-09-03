@@ -12,14 +12,30 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-/*
+
 Route::get('/', function () {
     return view('welcome');
 });
-*/
+
 Route::get('/', 'PromoController@promo')->name('promo');
 Route::post('/', 'GetEmailController@email')->name('email');
 Route::get('/bingo', function () {
     return view('pages.email-success');
 })->name('email-success');
 
+Route::group([
+    'prefix' => 'admin',
+    'as' => 'admin.',
+//    'middleware' => ['auth', 'role:site_admin']
+], static function () {
+
+    Route::get('/dashboard', function () {
+        return view('dashboard');
+    })->name('dashboard');
+
+    Route::resource('users', 'UserController');
+
+});
+
+
+require __DIR__.'/auth.php';
