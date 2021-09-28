@@ -19,8 +19,8 @@ class CreateCitiesTable extends Migration
             $table->string('name');
             $table->string('prepositionalName');
             $table->string('alias');
-            $table->float('coordX', 10, 0);
-            $table->float('coordY', 10, 0);
+            $table->float('latitude', 10, 0);
+            $table->float('longitude', 10, 0);
             $table->integer('isMetro')->unsigned()->default(0);
             $table->integer('isDistrict')->unsigned()->default(1);
             $table->string('title')->nullable();
