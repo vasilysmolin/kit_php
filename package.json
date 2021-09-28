@@ -25,6 +25,7 @@
         "tailwindcss": "^2.0.2"
     },
     "dependencies": {
+        "cwebp": "^2.0.5",
         "imagemin": "^7.0.1",
         "imagemin-svgo": "^9.0.0",
         "imagemin-webp": "^6.0.0",
