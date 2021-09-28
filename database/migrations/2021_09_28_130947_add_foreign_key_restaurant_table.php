@@ -14,7 +14,7 @@ class AddForeignKeyRestaurantTable extends Migration
     public function up()
     {
         Schema::table('restaurants', function (Blueprint $table) {
-            $table->unsignedBigInteger('city_id');
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->foreign('city_id', 'FK_city_id_cities')
                 ->references('id')
                 ->on('cities')

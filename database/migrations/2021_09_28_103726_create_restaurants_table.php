@@ -27,11 +27,12 @@ class CreateRestaurantsTable extends Migration
             $table->string('coords',255)->nullable();
             $table->string('phone',255)->nullable();
             $table->string('email',255)->nullable();
-//            $table->foreign('user_id','FK_user_restaurant')
-//                ->references('id')
-//                ->on('users')
-//                ->onUpdate('RESTRICT')
-//                ->onDelete('RESTRICT');
+            $table->timestamps();
+            $table->foreign('user_id','FK_user_restaurant')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('RESTRICT')
+                ->onDelete('RESTRICT');
 
         });
     }
