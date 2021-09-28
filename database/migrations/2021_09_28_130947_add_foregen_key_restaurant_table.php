@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyRestaurantFoodTable extends Migration
+class AddForegenKeyRestaurantTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class AddForeignKeyRestaurantFoodTable extends Migration
      */
     public function up()
     {
-        Schema::table('restaurant_foods', function (Blueprint $table) {
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id', 'FK_category_id_food')
+        Schema::table('restaurants', function (Blueprint $table) {
+            $table->unsignedBigInteger('city_id');
+            $table->foreign('city_id', 'FK_city_id_cities')
                 ->references('id')
-                ->on('category_food')
+                ->on('cities')
                 ->onUpdate('RESTRICT')
                 ->onDelete('RESTRICT');
         });
@@ -30,8 +30,8 @@ class AddForeignKeyRestaurantFoodTable extends Migration
      */
     public function down()
     {
-        Schema::table('restaurant_foods', function (Blueprint $table) {
-            $table->dropColumn('category_id');
+        Schema::table('restaurants', function (Blueprint $table) {
+            $table->dropColumn('city_id');
         });
     }
 }
