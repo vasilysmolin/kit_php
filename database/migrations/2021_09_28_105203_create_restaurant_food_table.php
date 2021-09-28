@@ -13,7 +13,7 @@ class CreateRestaurantFoodTable extends Migration
      */
     public function up()
     {
-        Schema::create('restaurant_food', function (Blueprint $table) {
+        Schema::create('restaurant_foods', function (Blueprint $table) {
             $table->id();
             $table->string('name',255)->nullable();
             $table->unsignedBigInteger('restaurant_id');
