@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\CategoryFood;
+use App\Models\City;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CategoryFoodFactory extends Factory
+class CityFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CategoryFood::class;
+    protected $model = City::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +22,12 @@ class CategoryFoodFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
-            'alias' => $this->faker->slug(6),
+            'name' => $this->faker->city,
+            'prepositionalName' => $this->faker->city,
             'active' => 1,
+            'latitude' => $this->faker->latitude,
+            'longitude' => $this->faker->longitude,
+            'alias' => $this->faker->slug,
         ];
     }
 }

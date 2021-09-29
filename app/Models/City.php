@@ -8,4 +8,10 @@ use Illuminate\Database\Eloquent\Model;
 class City extends Model
 {
     use HasFactory;
+
+    public function region()
+    {
+        return $this->hasOne(Region::class,'id','region_id');
+    }
+
 }

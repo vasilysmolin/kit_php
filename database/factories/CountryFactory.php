@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\CategoryFood;
+use App\Models\Country;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CategoryFoodFactory extends Factory
+class CountryFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = CategoryFood::class;
+    protected $model = Country::class;
 
     /**
      * Define the model's default state.
@@ -22,9 +22,9 @@ class CategoryFoodFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->name(),
-            'alias' => $this->faker->slug(6),
+            'name' => $this->faker->country,
             'active' => 1,
+            'alias' => $this->faker->slug,
         ];
     }
 }
