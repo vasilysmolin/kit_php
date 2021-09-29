@@ -45,11 +45,12 @@ class FoodController extends Controller
     }
 
 
-    public function show($id,$alias)
+    public function show($alias)
     {
 
         $foods = RestaurantFood::
             where('active', 1)
+            ->with(['categoryFood','restaurant'])
             ->where('alias',$alias)
             ->first();
 

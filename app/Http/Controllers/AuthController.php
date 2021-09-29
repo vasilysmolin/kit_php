@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
+
 class AuthController extends Controller
 {
     /**
@@ -23,11 +25,40 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
+
         if (! $token = auth('api')->attempt($credentials)) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function register()
+    {
+        $credentials = request(['email', 'password']);
+
+        $model = User::where('email',request('email'))->first();
+
+
+        if(!isset($model)) {
+            $user = new User();
+            $user->email = request('email');
+            $user->password = bcrypt(request('password'));
+            $user->save();
+            if (! $token = auth('api')->attempt($credentials)) {
+                return response()->json(['error' => 'Unauthorized'], 401);
+            }
+
+            return $this->respondWithToken($token);
+        } else {
+            return response()->json(['error' => 'Double'], 422);
+        }
+
     }
 
     /**

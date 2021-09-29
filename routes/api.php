@@ -13,7 +13,8 @@ Route::group([
 ], function ($router) {
 
     Route::post('login', 'AuthController@login');
-    Route::post('logout', 'AuthController@logout');
+    Route::post('register', 'AuthController@register')->withoutMiddleware('auth:api');
+    Route::post('logout', 'AuthController@logout')->withoutMiddleware('auth:api');
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 
@@ -22,4 +23,4 @@ Route::group([
 Route::resource('restaurants', 'RestaurantController');
 Route::resource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
-]);
+])->shallow();
