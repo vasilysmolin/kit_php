@@ -14,13 +14,35 @@ class FoodController extends Controller
         $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
+        $category = $request->category;
         $foods = RestaurantFood::take($take)
             ->skip($skip)
             ->where('active', 1)
+            ->when(isset($category), function ($q) use ($category) {
+                $q->whereHas('categoryFood', function ($q) use ($category){
+                    $q->where('alias',$category);
+                });
+            })
             ->where('restaurant_id',$restaurant->getKey())
             ->get();
 
-        return response()->json(['foods' => $foods ]);
+
+        $count = RestaurantFood::take($take)
+            ->skip($skip)
+            ->where('active', 1)
+            ->where('restaurant_id',$restaurant->getKey())
+            ->count();
+
+        $data = [
+            'meta' => [
+                'skip' => $skip ?? 0,
+                'limit' => 25,
+                'total' => $count ?? 0
+            ],
+            'restaurants' => $foods
+        ];
+
+        return response()->json($data);
     }
 
     /**

@@ -23,7 +23,7 @@ class CategoryFoodFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'alias' => $this->faker->name(),
+            'alias' => $this->faker->md5,
             'active' => 1,
         ];
     }

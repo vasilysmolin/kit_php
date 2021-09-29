@@ -29,4 +29,9 @@ class Restaurant extends Model
     {
         return $this->belongsTo(User::class,'user_id','id');
     }
+
+    public function categoryFood()
+    {
+        return $this->belongsTo(CategoryFood::class,'category_id','id');
+    }
 }

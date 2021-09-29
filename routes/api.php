@@ -24,3 +24,5 @@ Route::resource('restaurants', 'RestaurantController');
 Route::resource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
 ])->shallow();
+
+Route::resource('categories', 'CategoryFoodController');

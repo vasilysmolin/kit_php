@@ -26,7 +26,7 @@ class RestaurantFactory extends Factory
             'name' => $this->faker->name(),
             'description' => $this->faker->text(),
             'active' => 1,
-            'alias' => $this->faker->name(),
+            'alias' => $this->faker->md5,
             'user_id' => User::factory(),
             'street' => $this->faker->streetAddress(),
             'house' => $this->faker->streetAddress(),

@@ -24,7 +24,7 @@ class RestaurantFoodFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
-            'alias' => $this->faker->name(),
+            'alias' => $this->faker->md5,
             'price' => $this->faker->numberBetween(100,1000),
             'salePrice' => $this->faker->numberBetween(1,90),
             'category_id' => CategoryFood::factory(),

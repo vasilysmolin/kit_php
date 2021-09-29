@@ -2,23 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Restaurant;
+use App\Models\CategoryFood;
+use App\Models\RestaurantFood;
 use Illuminate\Http\Request;
 
-class RestaurantController extends Controller
+class CategoryFoodController extends Controller
 {
-
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
-
-        $restaurants = Restaurant::take($take)
+        $restaurants = CategoryFood::take($take)
             ->skip($skip)
             ->where('active', 1)
             ->get();
 
-        $count = Restaurant::take($take)
+        $count = CategoryFood::take($take)
             ->skip($skip)
             ->where('active', 1)
             ->count();
@@ -35,37 +34,46 @@ class RestaurantController extends Controller
         return response()->json($data);
     }
 
-
-    public function create(Request $request): \Illuminate\Http\JsonResponse
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create()
     {
-        return response()->json([],200);
+        //
     }
 
-
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
     {
-        $formData = $request->all();
-        $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
-        $restaurant = new Restaurant();
-        $restaurant->fill($formData);
-        $restaurant->save();
-
-        return response()->json([],201);
+        //
     }
 
 
     public function show($alias): \Illuminate\Http\JsonResponse
     {
-        $restaurant = Restaurant::where('alias', $alias)->first();
+        $foods = CategoryFood::where('active', 1)
+            ->where('alias',$alias)
+            ->first();
 
-        return response()->json($restaurant);
+        return response()->json($foods);
     }
 
-
-    public function edit($id): \Illuminate\Http\JsonResponse
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit($id)
     {
-
-        return response()->json([],200);
+        //
     }
 
     /**
@@ -80,10 +88,14 @@ class RestaurantController extends Controller
         //
     }
 
-
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
     public function destroy($id)
     {
-        Restaurant::destroy($id);
-        return response()->json([],204);
+        //
     }
 }
