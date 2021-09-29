@@ -19,4 +19,9 @@ class RestaurantFood extends Model
     {
         return $this->belongsTo(Restaurant::class,'restaurant_id','id');
     }
+
+    public function image()
+    {
+        return $this->morphOne(UploadFiles::class, 'imageable');
+    }
 }
