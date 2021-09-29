@@ -25,6 +25,11 @@ class Restaurant extends Model
         return $this->hasMany(RestaurantFood::class,'restaurant_id','id');
     }
 
+    public function uploads()
+    {
+        return $this->belongsToMany(UploadFiles::class,'restaurant_uploads','restaurant_id','upload_id');
+    }
+
     public function user()
     {
         return $this->belongsTo(User::class,'user_id','id');

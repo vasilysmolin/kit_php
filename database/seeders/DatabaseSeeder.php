@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\CategoryFood;
 use App\Models\Restaurant;
 use App\Models\RestaurantFood;
 use App\Models\User;
@@ -18,14 +17,11 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
 
-        $user = User::factory(5)
-            ->has(Restaurant::factory(5)
-                ->has(RestaurantFood::factory(5)
-
-
+        User::factory(1)
+            ->has(Restaurant::factory(50)
+                ->has(RestaurantFood::factory(10)
                 )
             )
             ->create();
-        dd($user);
     }
 }

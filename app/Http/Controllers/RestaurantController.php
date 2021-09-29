@@ -20,6 +20,7 @@ class RestaurantController extends Controller
 
         $count = Restaurant::take($take)
             ->skip($skip)
+
             ->where('active', 1)
             ->count();
 
@@ -56,7 +57,9 @@ class RestaurantController extends Controller
 
     public function show($alias): \Illuminate\Http\JsonResponse
     {
-        $restaurant = Restaurant::where('alias', $alias)->first();
+        $restaurant = Restaurant::where('alias', $alias)
+            ->with('uploads')
+            ->first();
 
         return response()->json($restaurant);
     }
