@@ -25,11 +25,6 @@ class Restaurant extends Model
         return $this->hasMany(RestaurantFood::class,'restaurant_id','id');
     }
 
-    public function uploads()
-    {
-        return $this->belongsToMany(UploadFiles::class,'restaurant_uploads','restaurant_id','upload_id');
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class,'user_id','id');
@@ -40,8 +35,22 @@ class Restaurant extends Model
         return $this->belongsTo(CategoryFood::class,'category_id','id');
     }
 
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
     public function image()
     {
-        return $this->morphOne(UploadFiles::class, 'imageable');
+        return $this->morphOne(Image::class, 'imageable');
+    }
+
+    public function latestImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')->latestOfMany();
+    }
+
+    public function oldestImage()
+    {
+        return $this->morphOne(Image::class, 'imageable')->oldestOfMany();
     }
 }

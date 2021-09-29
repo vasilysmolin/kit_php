@@ -17,7 +17,7 @@ class CreateRestaurantFoodTable extends Migration
             $table->id();
             $table->string('name',255)->nullable();
             $table->unsignedBigInteger('restaurant_id');
-            $table->string('alias',255);
+            $table->string('alias',255)->unique();
             $table->string('description',255)->nullable();
             $table->float('price',10,2)->default(0);
             $table->float('salePrice',10,2)->default(0);

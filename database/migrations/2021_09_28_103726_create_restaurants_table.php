@@ -19,7 +19,7 @@ class CreateRestaurantsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->string('description',255)->nullable();
             $table->string('name',255)->nullable();
-            $table->string('alias',255);
+            $table->string('alias',255)->unique();
             $table->boolean('active')->default(0);
             $table->boolean('sort')->nullable();
             $table->string('street',255)->nullable();

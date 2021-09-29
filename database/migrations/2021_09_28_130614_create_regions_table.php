@@ -17,7 +17,7 @@ class CreateRegionsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('country_id');
             $table->string('name');
-            $table->string('alias');
+            $table->string('alias')->unique();
             $table->integer('sort')->unsigned()->nullable();
             $table->integer('active')->unsigned()->default(1);
             $table->timestamps();

@@ -168,16 +168,7 @@ class Handler extends ExceptionHandler
                     Response::HTTP_UNAUTHORIZED
                 );
             }
-            if ($exception instanceof ErrorException) {
 
-                return response()->json([
-                    'errors' => [
-                        'code' => 403,
-                        'message' => __('errors.forbidden')
-                    ]
-                ], 403);
-
-            }
 
             return response()->json(
                 [

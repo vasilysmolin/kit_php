@@ -2,8 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\City;
-use App\Models\Country;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
 
@@ -12,7 +10,6 @@ class RestaurantController extends Controller
 
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-
 
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
@@ -62,7 +59,7 @@ class RestaurantController extends Controller
     public function show($alias): \Illuminate\Http\JsonResponse
     {
         $restaurant = Restaurant::where('alias', $alias)
-            ->with('uploads')
+//            ->with('uploads')
             ->first();
 
         return response()->json($restaurant);

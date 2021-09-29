@@ -13,4 +13,14 @@ class CategoryFood extends Model
     {
         return $this->hasMany(RestaurantFood::class,'category_id','id');
     }
+
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
+    }
+
+    public function image()
+    {
+        return $this->morphOne(Image::class, 'imageable');
+    }
 }

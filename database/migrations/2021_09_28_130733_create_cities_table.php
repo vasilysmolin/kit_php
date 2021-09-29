@@ -18,7 +18,7 @@ class CreateCitiesTable extends Migration
             $table->unsignedBigInteger('region_id');
             $table->string('name');
             $table->string('prepositionalName');
-            $table->string('alias');
+            $table->string('alias')->unique();
             $table->float('latitude', 10, 0);
             $table->float('longitude', 10, 0);
             $table->integer('isMetro')->unsigned()->default(0);
