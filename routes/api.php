@@ -20,3 +20,6 @@ Route::group([
 });
 
 Route::resource('restaurants', 'RestaurantController');
+Route::resource('restaurants.foods', 'FoodController')->scoped([
+    'restaurantFood' => 'alias',
+]);

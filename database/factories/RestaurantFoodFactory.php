@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Restaurant;
-use App\Models\User;
+use App\Models\CategoryFood;
+use App\Models\RestaurantFood;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RestaurantFactory extends Factory
+class RestaurantFoodFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Restaurant::class;
+    protected $model = RestaurantFood::class;
 
     /**
      * Define the model's default state.
@@ -24,14 +24,13 @@ class RestaurantFactory extends Factory
     {
         return [
             'name' => $this->faker->name(),
+            'alias' => $this->faker->name(),
+            'price' => $this->faker->numberBetween(100,1000),
+            'salePrice' => $this->faker->numberBetween(1,90),
+            'category_id' => CategoryFood::factory(),
             'description' => $this->faker->text(),
             'active' => 1,
-            'alias' => $this->faker->name(),
-            'user_id' => User::factory(),
-            'street' => $this->faker->streetAddress(),
-            'house' => $this->faker->streetAddress(),
-            'phone' => $this->faker->phoneNumber(),
-            'email' => $this->faker->companyEmail(),
+            'quantity' => $this->faker->numberBetween(0,1000),
         ];
     }
 }

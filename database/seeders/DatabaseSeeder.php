@@ -2,6 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\CategoryFood;
+use App\Models\Restaurant;
+use App\Models\RestaurantFood;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +17,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // \App\Models\User::factory(10)->create();
+
+        $user = User::factory(5)
+            ->has(Restaurant::factory(5)
+                ->has(RestaurantFood::factory(5)
+
+
+                )
+            )
+            ->create();
+        dd($user);
     }
 }

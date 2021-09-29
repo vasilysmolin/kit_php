@@ -19,7 +19,7 @@ class CreateCategoryFoodTable extends Migration
             $table->string('alias',255);
             $table->string('description',255)->nullable();
             $table->boolean('sort')->nullable();
-            $table->boolean('active')->default(0);
+            $table->boolean('active')->default(1);
             $table->timestamps();
         });
     }
