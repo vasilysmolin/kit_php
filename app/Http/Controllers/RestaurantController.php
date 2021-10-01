@@ -56,9 +56,9 @@ class RestaurantController extends Controller
     }
 
 
-    public function show($alias): \Illuminate\Http\JsonResponse
+    public function show($id): \Illuminate\Http\JsonResponse
     {
-        $restaurant = Restaurant::where('alias', $alias)
+        $restaurant = Restaurant::where('alias', $id)
 //            ->with('uploads')
             ->first();
 
