@@ -14,8 +14,7 @@ class AddForeignKeyRestaurant extends Migration
     public function up()
     {
         Schema::table('restaurants', function (Blueprint $table) {
-            $table->unsignedBigInteger('category_id')->after('alias');
-            $table->foreign('category_id', 'FK_category_restaurant_id_food')
+            $table->foreign('category_id', 'FK_category_restaurants_id')
                 ->references('id')
                 ->on('category_restaurants')
                 ->onUpdate('RESTRICT')
@@ -31,8 +30,7 @@ class AddForeignKeyRestaurant extends Migration
     public function down()
     {
         Schema::table('restaurants', function (Blueprint $table) {
-            $table->dropForeign('FK_category_restaurant_id_food');
-            $table->dropColumn('category_id');
+            $table->dropForeign('FK_category_restaurants_id');
         });
     }
 }

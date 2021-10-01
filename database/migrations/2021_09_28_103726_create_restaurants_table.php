@@ -17,6 +17,7 @@ class CreateRestaurantsTable extends Migration
             $table->id();
             $table->string('title',255)->nullable();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('category_id');
             $table->string('description',255)->nullable();
             $table->string('name',255)->nullable();
             $table->float('min_delivery_price',8,2)->default(0);
