@@ -11,8 +11,8 @@ class RestaurantController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
 
-        $take = $request->take ?? 25;
-        $skip = $request->skip ?? 0;
+        $take = (int) $request->take ?? 25;
+        $skip = (int) $request->skip ?? 0;
 
         $restaurants = Restaurant::take($take)
             ->skip($skip)

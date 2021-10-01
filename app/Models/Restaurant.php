@@ -19,6 +19,15 @@ class Restaurant extends Model
         'alias',
         'user_id',
     ];
+    protected $casts = [
+        'active' => 'bool',
+    ];
+
+
+    public function categoryRestaurant()
+    {
+        return $this->belongsTo(CategoryRestaurant::class,'category_id','id');
+    }
 
     public function restaurantFood()
     {
@@ -28,11 +37,6 @@ class Restaurant extends Model
     public function user()
     {
         return $this->belongsTo(User::class,'user_id','id');
-    }
-
-    public function categoryFood()
-    {
-        return $this->belongsTo(CategoryFood::class,'category_id','id');
     }
 
     public function images()

@@ -1,0 +1,70 @@
+version: '3'
+
+volumes:
+    dump:
+    images:
+
+services:
+
+  # PHP -----------------------------------------------
+  bb_php:
+    build:
+      context: images/php
+      dockerfile: Dockerfile
+      args:
+        - ENV=${DOCKER_ENV}
+        - USER=${USER}
+        - UID=${UID}
+    container_name: ${BB_PHP_WORKDIR}
+    environment:
+      PHP_IDE_CONFIG: "serverName=Docker"
+    restart: always
+    working_dir: /var/www/${BB_PHP_WORKDIR}
+    volumes:
+      - .:/var/www/${BB_PHP_WORKDIR}
+    depends_on:
+      - bb_mysql
+  # Nginx -----------------------------------------------
+  bb_nginx:
+    build:
+      context: images/nginx
+      dockerfile: Dockerfile
+      args:
+        - DOMAIN=${DOMAIN}
+        - ENV=${DOCKER_ENV}
+        - BACK_DIR=${BB_PHP_WORKDIR}
+        - LOCAL_DIR=${BB_NGINX_WORKDIR}
+    container_name: ${BB_NGINX_WORKDIR}
+    restart: always
+    ports:
+      - "${PORT_HTTP}:80"
+      - "${PORT_HTTPS}:443"
+    working_dir: /var/www/${BB_NGINX_WORKDIR}
+    volumes:
+      - .:/var/www/${BB_NGINX_WORKDIR}
+    depends_on:
+      - bb_php
+  # MySQL -------------------------------------------------
+  bb_mysql:
+    image: mysql:5.6
+    container_name: ${BB_MYSQL_WORKDIR}
+    restart: always
+    tty: true
+    ports:
+      - "${PORT_MYSQL}:3306"
+    volumes:
+      - ./dump:/var/lib/mysql
+      - ./images/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./images/mysql/mysqldump.cnf:/etc/mysql/conf.d/mysqldump.cnf
+      - ./images/mysql/optimize.cnf:/etc/mysql/conf.d/optimize.cnf
+  # Redis -------------------------------------------------
+  bb_redis:
+    image: redis:6-alpine
+    container_name: ${BB_REDIS_WORKDIR}
+    restart: always
+    volumes:
+      - ./images/redis/redis.conf:/redis.conf
+    depends_on:
+      - bb_php
+      - bb_mysql
+    command: [ "redis-server", "/redis.conf" ]

@@ -9,11 +9,11 @@ use Illuminate\Http\Request;
 class FoodController extends Controller
 {
 
-    public function index(Request $request, $alias)
+    public function index(Request $request, $id)
     {
-        $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
-        $take = $request->take ?? 25;
-        $skip = $request->skip ?? 0;
+//        $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
+        $take = (int) $request->take ?? 25;
+        $skip = (int) $request->skip ?? 0;
         $category = $request->category;
         $foods = RestaurantFood::take($take)
             ->skip($skip)
@@ -23,14 +23,14 @@ class FoodController extends Controller
                     $q->where('alias',$category);
                 });
             })
-            ->where('restaurant_id',$restaurant->getKey())
+            ->where('restaurant_id', $id)
             ->get();
 
 
         $count = RestaurantFood::take($take)
             ->skip($skip)
             ->where('active', 1)
-            ->where('restaurant_id',$restaurant->getKey())
+            ->where('restaurant_id',$id)
             ->count();
 
         $data = [

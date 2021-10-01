@@ -2,6 +2,8 @@
 
 namespace Database\Factories;
 
+use App\Models\CategoryFood;
+use App\Models\CategoryRestaurant;
 use App\Models\Restaurant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -28,6 +30,8 @@ class RestaurantFactory extends Factory
             'active' => 1,
             'alias' => $this->faker->slug(6),
             'user_id' => User::factory(),
+            'category_id' => CategoryRestaurant::factory(),
+            'min_delivery_price' => $this->faker->numberBetween(0,1500),
             'street' => $this->faker->streetAddress(),
             'house' => $this->faker->streetAddress(),
             'phone' => $this->faker->phoneNumber(),

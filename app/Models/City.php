@@ -9,6 +9,11 @@ class City extends Model
 {
     use HasFactory;
 
+    protected $casts = [
+        'active' => 'bool',
+    ];
+
+
     public function region()
     {
         return $this->hasOne(Region::class,'id','region_id');

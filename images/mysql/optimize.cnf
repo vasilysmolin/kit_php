@@ -1,0 +1,11 @@
+[mysqld]
+innodb_buffer_pool_size = 3G
+innodb_log_file_size = 512M
+innodb_log_buffer_size = 2M
+max_connections = 400
+query_cache_size = 0
+slow_query_log = /var/log/mysql/mysql-slow.log
+long_query_time = 1
+innodb_read_io_threads = 24
+innodb_write_io_threads = 24
+innodb_thread_concurrency = 16

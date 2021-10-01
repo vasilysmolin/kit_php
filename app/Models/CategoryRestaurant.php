@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryFood extends Model
+class CategoryRestaurant extends Model
 {
     use HasFactory;
 
@@ -13,9 +13,9 @@ class CategoryFood extends Model
         'active' => 'bool',
     ];
 
-    public function restaurantFood()
+    public function restaurant()
     {
-        return $this->hasMany(RestaurantFood::class,'category_id','id');
+        return $this->hasMany(Restaurant::class,'category_id','id');
     }
 
     public function images()

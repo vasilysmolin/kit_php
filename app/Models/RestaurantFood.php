@@ -10,6 +10,15 @@ class RestaurantFood extends Model
     use HasFactory;
     protected $table = 'restaurant_foods';
 
+    protected $casts = [
+      'price' => 'int',
+      'salePrice' => 'int',
+      'active' => 'bool',
+      'popular' => 'bool',
+      'sale' => 'bool',
+      'novetly' => 'bool',
+    ];
+
     public function categoryFood()
     {
         return $this->belongsTo(CategoryFood::class,'category_id','id');
