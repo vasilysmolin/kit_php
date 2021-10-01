@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 class CreateRestaurantsTable extends Migration
 {
     /**
-     * Run the migrations.
+     * Run the migrations..
      *
      * @return void
      */
