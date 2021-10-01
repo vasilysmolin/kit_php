@@ -26,7 +26,9 @@ class AuthController extends Controller
         $credentials = request(['email', 'password']);
 
 
-        if (! $token = auth('api')->attempt($credentials)) {
+        $token = auth('api')->attempt($credentials);
+
+        if ($token === false) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -42,15 +44,17 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-        $model = User::where('email',request('email'))->first();
+        $model = User::where('email', request('email'))->first();
 
 
-        if(!isset($model)) {
+        if (!isset($model)) {
             $user = new User();
             $user->email = request('email');
             $user->password = bcrypt(request('password'));
             $user->save();
-            if (! $token = auth('api')->attempt($credentials)) {
+            $token = auth('api')->attempt($credentials);
+
+            if ($token === false) {
                 return response()->json(['error' => 'Unauthorized'], 401);
             }
 
@@ -58,7 +62,6 @@ class AuthController extends Controller
         } else {
             return response()->json(['error' => 'Double'], 422);
         }
-
     }
 
     /**
@@ -105,7 +108,7 @@ class AuthController extends Controller
         return response()->json([
             'access_token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
+            'expires_in' => auth('api')->factory()->getTTL() * 60,
         ]);
     }
 }
