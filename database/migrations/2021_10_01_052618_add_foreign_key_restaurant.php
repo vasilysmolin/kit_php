@@ -30,7 +30,7 @@ class AddForeignKeyRestaurant extends Migration
      */
     public function down()
     {
-        Schema::table('restaurant_foods', function (Blueprint $table) {
+        Schema::table('restaurants', function (Blueprint $table) {
             $table->dropForeign('FK_category_restaurant_id_food');
             $table->dropColumn('category_id');
         });
