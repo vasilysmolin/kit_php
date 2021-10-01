@@ -46,7 +46,7 @@ services:
       - bb_php
   # MySQL -------------------------------------------------
   bb_mysql:
-    image: mysql:5.6
+    image: mysql:5.7
     container_name: ${BB_MYSQL_WORKDIR}
     restart: always
     tty: true
@@ -57,6 +57,8 @@ services:
       - ./images/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
       - ./images/mysql/mysqldump.cnf:/etc/mysql/conf.d/mysqldump.cnf
       - ./images/mysql/optimize.cnf:/etc/mysql/conf.d/optimize.cnf
+    env_file:
+      - ./.env
   # Redis -------------------------------------------------
   bb_redis:
     image: redis:6-alpine

@@ -25,6 +25,12 @@ ide-helper:
 	php artisan ide-helper:meta
 	php artisan ide-helper:mod -n
 
+build:
+	composer install --no-interaction --ansi --no-suggest
+	php artisan migrate --force
+	php artisan db:seed --force
+	php artisan optimize
+
 heroku-build:
 	php artisan migrate --force
 	php artisan db:seed --force
