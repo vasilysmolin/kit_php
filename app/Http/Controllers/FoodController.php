@@ -19,8 +19,8 @@ class FoodController extends Controller
             ->skip($skip)
             ->where('active', 1)
             ->when(isset($category), function ($q) use ($category) {
-                $q->whereHas('categoryFood', function ($q) use ($category){
-                    $q->where('alias',$category);
+                $q->whereHas('categoryFood', function ($q) use ($category) {
+                    $q->where('alias', $category);
                 });
             })
             ->where('restaurant_id', $id)
@@ -30,16 +30,16 @@ class FoodController extends Controller
         $count = RestaurantFood::take($take)
             ->skip($skip)
             ->where('active', 1)
-            ->where('restaurant_id',$id)
+            ->where('restaurant_id', $id)
             ->count();
 
         $data = [
             'meta' => [
                 'skip' => $skip ?? 0,
                 'limit' => 25,
-                'total' => $count ?? 0
+                'total' => $count ?? 0,
             ],
-            'restaurants' => $foods
+            'restaurants' => $foods,
         ];
 
         return response()->json($data);
@@ -52,7 +52,6 @@ class FoodController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -63,7 +62,6 @@ class FoodController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
 
@@ -73,7 +71,7 @@ class FoodController extends Controller
         $foods = RestaurantFood::
             where('active', 1)
             ->with(['categoryFood','restaurant'])
-            ->where('alias',$alias)
+            ->where('alias', $alias)
             ->first();
 
         return response()->json($foods);
@@ -87,7 +85,6 @@ class FoodController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -99,7 +96,6 @@ class FoodController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -110,6 +106,5 @@ class FoodController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

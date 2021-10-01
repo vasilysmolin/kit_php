@@ -29,9 +29,9 @@ class RestaurantController extends Controller
             'meta' => [
                 'skip' => $skip ?? 0,
                 'limit' => 25,
-                'total' => $count ?? 0
+                'total' => $count ?? 0,
             ],
-            'restaurants' => $restaurants
+            'restaurants' => $restaurants,
         ];
 
         return response()->json($data);
@@ -40,7 +40,7 @@ class RestaurantController extends Controller
 
     public function create(Request $request): \Illuminate\Http\JsonResponse
     {
-        return response()->json([],200);
+        return response()->json([], 200);
     }
 
 
@@ -52,7 +52,7 @@ class RestaurantController extends Controller
         $restaurant->fill($formData);
         $restaurant->save();
 
-        return response()->json([],201);
+        return response()->json([], 201);
     }
 
 
@@ -69,7 +69,7 @@ class RestaurantController extends Controller
     public function edit($id): \Illuminate\Http\JsonResponse
     {
 
-        return response()->json([],200);
+        return response()->json([], 200);
     }
 
     /**
@@ -81,13 +81,12 @@ class RestaurantController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
 
     public function destroy($id)
     {
         Restaurant::destroy($id);
-        return response()->json([],204);
+        return response()->json([], 204);
     }
 }

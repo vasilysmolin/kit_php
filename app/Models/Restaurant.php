@@ -23,20 +23,19 @@ class Restaurant extends Model
         'active' => 'bool',
     ];
 
-
     public function categoryRestaurant()
     {
-        return $this->belongsTo(CategoryRestaurant::class,'category_id','id');
+        return $this->belongsTo(CategoryRestaurant::class, 'category_id', 'id');
     }
 
     public function restaurantFood()
     {
-        return $this->hasMany(RestaurantFood::class,'restaurant_id','id');
+        return $this->hasMany(RestaurantFood::class, 'restaurant_id', 'id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class,'user_id','id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function images()

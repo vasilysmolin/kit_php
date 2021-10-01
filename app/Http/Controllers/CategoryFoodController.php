@@ -26,9 +26,9 @@ class CategoryFoodController extends Controller
             'meta' => [
                 'skip' => $skip ?? 0,
                 'limit' => 25,
-                'total' => $count ?? 0
+                'total' => $count ?? 0,
             ],
-            'restaurants' => $restaurants
+            'restaurants' => $restaurants,
         ];
 
         return response()->json($data);
@@ -41,7 +41,6 @@ class CategoryFoodController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -52,14 +51,13 @@ class CategoryFoodController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
 
     public function show($alias): \Illuminate\Http\JsonResponse
     {
         $foods = CategoryFood::where('active', 1)
-            ->where('alias',$alias)
+            ->where('alias', $alias)
             ->first();
 
         return response()->json($foods);
@@ -73,7 +71,6 @@ class CategoryFoodController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -85,7 +82,6 @@ class CategoryFoodController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -96,6 +92,5 @@ class CategoryFoodController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

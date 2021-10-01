@@ -13,7 +13,7 @@ class UserController extends Controller
     {
         $users = User::all();
         return view('admin.users.usersList', [
-            'users' => $users
+            'users' => $users,
         ]);
     }
 
@@ -24,7 +24,6 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -35,7 +34,6 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
 
@@ -44,7 +42,7 @@ class UserController extends Controller
 
         $user = User::find($id);
         return view('admin.users.usersEdit', [
-            'user' => $user
+            'user' => $user,
         ]);
     }
 
@@ -56,7 +54,6 @@ class UserController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
 
@@ -68,7 +65,7 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->update();
         return view('admin.users.usersEdit', [
-            'user' => $user
+            'user' => $user,
         ])->with('success', 'успешно')
 //            ->with('success', Lang::get('messages.admin_success_event'))
             ;
@@ -82,6 +79,5 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

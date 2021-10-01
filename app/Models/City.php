@@ -13,10 +13,8 @@ class City extends Model
         'active' => 'bool',
     ];
 
-
     public function region()
     {
-        return $this->hasOne(Region::class,'id','region_id');
+        return $this->hasOne(Region::class, 'id', 'region_id');
     }
-
 }

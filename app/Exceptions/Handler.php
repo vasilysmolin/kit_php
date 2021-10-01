@@ -21,7 +21,6 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        //
     ];
 
     /**
@@ -43,7 +42,6 @@ class Handler extends ExceptionHandler
     public function register()
     {
         $this->reportable(function (Throwable $e) {
-            //
         });
     }
 
@@ -65,12 +63,12 @@ class Handler extends ExceptionHandler
 //            Log::debug($request->headers->all());
 
 
-            if ($exception instanceof AuthenticationException){
+            if ($exception instanceof AuthenticationException) {
                 return response()->json([
                     'errors' => [
                         'code' => 401 ,
-                        'message' => 'не авторизован'
-                    ]
+                        'message' => 'не авторизован',
+                    ],
                 ], 401);
             }
 
@@ -81,8 +79,8 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,
-                        'message' => __('errors.user_have_not_permission')
-                    ]
+                        'message' => __('errors.user_have_not_permission'),
+                    ],
                 ], Response::HTTP_FORBIDDEN);
             }
 
@@ -95,22 +93,22 @@ class Handler extends ExceptionHandler
                 return response()->json([
                     'errors' => [
                         'code' => 100 ,
-                        'message' =>  __('errors.user_have_not_token')
-                    ]
+                        'message' =>  __('errors.user_have_not_token'),
+                    ],
                 ], Response::HTTP_UNAUTHORIZED);
             } elseif ($exception instanceof TokenInvalidException) {
                 return response()->json([
                     'errors' => [
                         'code' => 101 ,
-                        'message' => __('errors.user_have_not_token_failed')
-                    ]
+                        'message' => __('errors.user_have_not_token_failed'),
+                    ],
                 ], Response::HTTP_UNAUTHORIZED);
             } elseif ($exception instanceof TokenBlacklistedException) {
                 return response()->json([
                     'errors' => [
                         'code' => 102 ,
-                        'message' => __('errors.user_have_not_token_black_list')
-                    ]
+                        'message' => __('errors.user_have_not_token_black_list'),
+                    ],
                 ], Response::HTTP_UNAUTHORIZED);
             }
             if ($exception->getMessage() === 'Token not provided') {
@@ -118,8 +116,8 @@ class Handler extends ExceptionHandler
                     [
                         'errors' => [
                             'code' => 103 ,
-                            'message' => __('errors.user_have_not_token')
-                        ]
+                            'message' => __('errors.user_have_not_token'),
+                        ],
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );
@@ -129,8 +127,8 @@ class Handler extends ExceptionHandler
                     [
                         'errors' => [
                             'code' => 100 ,
-                            'message' => __('errors.user_have_not_token')
-                        ]
+                            'message' => __('errors.user_have_not_token'),
+                        ],
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );
@@ -140,8 +138,8 @@ class Handler extends ExceptionHandler
                     [
                         'errors' => [
                             'code' => 104 ,
-                            'message' => __('errors.user_have_not_token')
-                        ]
+                            'message' => __('errors.user_have_not_token'),
+                        ],
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );
@@ -151,8 +149,8 @@ class Handler extends ExceptionHandler
                     [
                         'errors' => [
                             'code' => 100 ,
-                            'message' => __('errors.user_have_not_token')
-                        ]
+                            'message' => __('errors.user_have_not_token'),
+                        ],
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );
@@ -162,8 +160,8 @@ class Handler extends ExceptionHandler
                     [
                         'errors' => [
                             'code' => 104 ,
-                            'message' => __('errors.user_have_not_token')
-                        ]
+                            'message' => __('errors.user_have_not_token'),
+                        ],
                     ],
                     Response::HTTP_UNAUTHORIZED
                 );
@@ -175,12 +173,11 @@ class Handler extends ExceptionHandler
                     'errors' => [
                         'code' => 500,
                         'message' => $exception->getMessage(),
-                        'trace' => config('app.env') == 'production' ? '' : $exception->getTrace() ,
+                        'trace' => config('app.env') === 'production' ? '' : $exception->getTrace() ,
                         //                        'trace' => $exception->getTrace() ,
-                    ]
+                    ],
                 ]
             );
         }
-
     }
 }

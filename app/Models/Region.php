@@ -13,19 +13,18 @@ class Region extends Model
         'active' => 'bool',
     ];
 
-
     public function country()
     {
-        return $this->hasOne(Country::class,'id','country_id');
+        return $this->hasOne(Country::class, 'id', 'country_id');
     }
 
     public function cities()
     {
-        return $this->hasMany(City::class,'region_id','id');
+        return $this->hasMany(City::class, 'region_id', 'id');
     }
 
     public function city()
     {
-        return $this->hasOne(City::class,'region_id','id');
+        return $this->hasOne(City::class, 'region_id', 'id');
     }
 }
