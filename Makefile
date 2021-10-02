@@ -31,6 +31,12 @@ build:
 	php artisan db:seed --force
 	php artisan optimize
 
+build-docker:
+	docker-compose exec php composer install --no-interaction --ansi --no-suggest
+	docker-compose exec php php artisan migrate --force
+	docker-compose exec php php artisan db:seed --force
+	docker-compose exec php php artisan optimize
+
 heroku-build:
 	php artisan migrate --force
 	php artisan db:seed --force

@@ -19,6 +19,7 @@ RUN set -xe \
     libwebp-tools \
     freetype-dev \
     libpng-dev \
+    postgresql-dev \
     libjpeg-turbo-dev \
     gmp-dev \
     && docker-php-ext-configure gd \
@@ -33,6 +34,7 @@ RUN set -xe \
     && docker-php-ext-install -j$(nproc) zip \
     && docker-php-ext-install -j$(nproc) exif \
     && docker-php-ext-install -j$(nproc) pdo_mysql \
+    && docker-php-ext-install -j$(nproc) pdo_pgsql \
     && docker-php-ext-install -j$(nproc) gmp \
     && pear install pear/PHP_CodeSniffer \
     && pecl install pcov
