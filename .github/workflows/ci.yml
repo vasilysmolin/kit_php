@@ -23,6 +23,6 @@ jobs:
         timeout-minutes: 1
         run: make ci-build
 
-      - name: Run test
+      - name: Run test and linter
         timeout-minutes: 1
         run: make ci-test
