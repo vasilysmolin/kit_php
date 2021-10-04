@@ -22,8 +22,3 @@ jobs:
       - name: Run build
         run: make ci-build
 
-      - name: Copy .env
-        run: php -r "sleep(20);"
-
-      - name: Run test and linter
-        run: make ci-test
