@@ -18,6 +18,8 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::post('me', 'AuthController@me');
 
+    Route::resource('restaurants', 'RestaurantController');
+
 });
 
 Route::resource('restaurants', 'RestaurantController');

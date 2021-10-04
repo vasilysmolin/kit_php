@@ -13,15 +13,21 @@ class RestaurantController extends Controller
 
         $take = (int) $request->take ?? 25;
         $skip = (int) $request->skip ?? 0;
+        $id = isset($request->id) ? explode(',', $request->id) : null;
 
         $restaurants = Restaurant::take($take)
             ->skip($skip)
+            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+                $query->whereIn('id', $id);
+            })
             ->where('active', 1)
             ->get();
 
         $count = Restaurant::take($take)
             ->skip($skip)
-
+            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+                $query->whereIn('id', $id);
+            })
             ->where('active', 1)
             ->count();
 
@@ -68,19 +74,23 @@ class RestaurantController extends Controller
 
     public function edit($id): \Illuminate\Http\JsonResponse
     {
-
-        return response()->json([], 200);
+        $restaurant = Restaurant::where('alias', $id)
+//            ->with('uploads')
+            ->first();
+        return response()->json($restaurant);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
+        $formData = $request->all();
+        $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
+        $formData['restaurant_id'] = $id;
+        $restaurant = new Restaurant();
+        $restaurant->fill($formData);
+        $restaurant->save();
+
+        return response()->json([], 204);
     }
 
 
