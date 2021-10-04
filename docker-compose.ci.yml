@@ -20,8 +20,15 @@ services:
       - .:/var/www/${BB_PHP_WORKDIR}
     depends_on:
       - database
-    command: "composer install --no-interaction --ansi --no-suggest"
-  # Nginx ----------------------------------------------
+    command: [
+        "composer install --no-interaction --ansi --no-suggest",
+        "php artisan migrate --force",
+        "php artisan db:seed --force",
+        "php artisan optimize",
+        "php composer exec phpcs -v",
+        "php php artisan test",
+    ]
+  # Nginx -----------------------------------------------
   nginx:
     build:
       context: images/nginx
