@@ -21,6 +21,7 @@ class Restaurant extends Model
     ];
     protected $casts = [
         'active' => 'bool',
+        'min_delivery_price' => 'int',
     ];
 
     public function categoryRestaurant()

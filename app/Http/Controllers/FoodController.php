@@ -39,7 +39,7 @@ class FoodController extends Controller
                 'limit' => 25,
                 'total' => $count ?? 0,
             ],
-            'restaurants' => $foods,
+            'dishes' => $foods,
         ];
 
         return response()->json($data);
