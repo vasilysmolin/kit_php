@@ -23,7 +23,7 @@ jobs:
         run: make ci-build
 
       - name: Copy .env
-        run: php -r "sleep(10);"
+        run: php -r "sleep(20);"
 
       - name: Run test and linter
         run: make ci-test
