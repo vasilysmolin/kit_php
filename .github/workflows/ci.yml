@@ -9,15 +9,12 @@ on:
 
 jobs:
   app-make-lint:
-    name: Linter code
+    name: CI
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: phpcs
-        run: make lint
-
-      - name: Start tests
-        run: make test
+      - name: Run CI
+        run: make ci

@@ -41,3 +41,13 @@ heroku-build:
 	php artisan migrate --force
 	php artisan db:seed --force
 	php artisan optimize
+
+ci:
+	docker-compose -f docker-compose.yml -p ci up -d --build
+#	docker-compose up -d --build
+	docker-compose exec php composer install --no-interaction --ansi --no-suggest
+	docker-compose exec php php artisan migrate --force
+	docker-compose exec php php artisan db:seed --force
+	docker-compose exec php php artisan optimize
+	docker-compose exec php composer exec phpcs -v
+	docker-compose exec php php artisan test
