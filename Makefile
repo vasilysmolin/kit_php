@@ -42,6 +42,7 @@ heroku-build:
 	php artisan db:seed --force
 	php artisan optimize
 
+
 ci-build:
 	docker-compose -f docker-compose.yml -p ci up -d --build
 
