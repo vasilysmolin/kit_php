@@ -47,8 +47,8 @@ ci-build:
 	docker-compose -f docker-compose.yml -p ci up -d --build
 
 ci-test:
-	docker-compose exec php composer install --no-interaction --ansi --no-suggest
 	docker-compose exec php php artisan migrate --force
+	docker-compose exec php composer install --no-interaction --ansi --no-suggest
 	docker-compose exec php php artisan db:seed --force
 	docker-compose exec php php artisan optimize
 	docker-compose exec php composer exec phpcs -v

@@ -20,9 +20,7 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Run build
-        timeout-minutes: 1
         run: make ci-build
 
       - name: Run test and linter
-        timeout-minutes: 1
         run: make ci-test
