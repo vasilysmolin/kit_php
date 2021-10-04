@@ -19,5 +19,11 @@ jobs:
       - name: Copy .env
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
-      - name: Run CI
-        run: make ci
+      - name: Run build
+        run: make ci-build
+
+      - name: timeout-minute run docker
+        timeout-minutes: 1
+
+      - name: Run CI-TEST
+        run: make ci-test
