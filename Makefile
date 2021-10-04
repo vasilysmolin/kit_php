@@ -44,19 +44,19 @@ heroku-build:
 
 
 ci-build:
-	docker-compose -f docker-compose.yml -p ci up -d --build
-	docker-compose -f docker-compose.yml exec php composer install --no-interaction --ansi --no-suggest
-	docker-compose -f docker-compose.yml exec php php artisan migrate --force
-	docker-compose -f docker-compose.yml exec php php artisan db:seed --force
-	docker-compose -f docker-compose.yml exec php php artisan optimize
-	docker-compose -f docker-compose.yml exec php composer exec phpcs -v
-	docker-compose -f docker-compose.yml exec php php artisan test
+	docker-compose -f docker-compose.ci.yml -p ci up -d --build
+	composer install --no-interaction --ansi --no-suggest
+	php artisan migrate --force
+	php artisan db:seed --force
+	php artisan optimize
+	php composer exec phpcs -v
+	php php artisan test
 
-ci-test:
-	docker-compose -f docker-compose.yml exec php composer install --no-interaction --ansi --no-suggest
-	docker-compose -f docker-compose.yml exec php php artisan migrate --force
-	docker-compose -f docker-compose.yml exec php php artisan db:seed --force
-	docker-compose -f docker-compose.yml exec php php artisan optimize
-	docker-compose -f docker-compose.yml exec php composer exec phpcs -v
-	docker-compose -f docker-compose.yml exec php php artisan test
+#ci-test:
+#	docker-compose -f docker-compose.yml exec php composer install --no-interaction --ansi --no-suggest
+#	docker-compose -f docker-compose.yml exec php php artisan migrate --force
+#	docker-compose -f docker-compose.yml exec php php artisan db:seed --force
+#	docker-compose -f docker-compose.yml exec php php artisan optimize
+#	docker-compose -f docker-compose.yml exec php composer exec phpcs -v
+#	docker-compose -f docker-compose.yml exec php php artisan test
 
