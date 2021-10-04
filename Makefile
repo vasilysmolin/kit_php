@@ -43,7 +43,7 @@ heroku-build:
 	php artisan optimize
 
 ci:
-	docker-compose -f docker-compose.yml -p ci up -d --build
+	docker-compose -f docker-compose.ci.yml -p ci up -d --build
 #	docker-compose up -d --build
 	docker-compose exec php composer install --no-interaction --ansi --no-suggest
 	docker-compose exec php php artisan migrate --force
