@@ -45,12 +45,12 @@ heroku-build:
 
 ci-build:
 	docker-compose -f docker-compose.ci.yml -p ci up -d --build
-	composer install --no-interaction --ansi --no-suggest
-	php artisan migrate --force
-	php artisan db:seed --force
-	php artisan optimize
-	php composer exec phpcs -v
-	php php artisan test
+#	composer install --no-interaction --ansi --no-suggest
+#	php artisan migrate --force
+#	php artisan db:seed --force
+#	php artisan optimize
+#	php composer exec phpcs -v
+#	php php artisan test
 
 #ci-test:
 #	docker-compose -f docker-compose.yml exec php composer install --no-interaction --ansi --no-suggest

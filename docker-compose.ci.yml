@@ -20,7 +20,7 @@ services:
       - .:/var/www/${BB_PHP_WORKDIR}
     depends_on:
       - database
-    command: ["make", "ci-test"]
+    command: ["composer install --no-interaction --ansi --no-suggest"]
   # Nginx -----------------------------------------------
   nginx:
     build:
