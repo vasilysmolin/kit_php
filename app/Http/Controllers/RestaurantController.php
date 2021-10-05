@@ -54,6 +54,7 @@ class RestaurantController extends Controller
     {
         $formData = $request->all();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
+        $formData['active'] = 1;
         $restaurant = new Restaurant();
         $restaurant->fill($formData);
         $restaurant->save();
@@ -64,7 +65,7 @@ class RestaurantController extends Controller
 
     public function show($id): \Illuminate\Http\JsonResponse
     {
-        $restaurant = Restaurant::where('alias', $id)
+        $restaurant = Restaurant::where('id', $id)
 //            ->with('uploads')
             ->first();
 
@@ -83,12 +84,12 @@ class RestaurantController extends Controller
 
     public function update(Request $request, $id)
     {
-        $formData = $request->all();
+//        $formData = $request->all();
+        $formData = json_decode($request->getContent(), true);
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
-        $formData['restaurant_id'] = $id;
-        $restaurant = new Restaurant();
+        $restaurant = Restaurant::find($id);
         $restaurant->fill($formData);
-        $restaurant->save();
+        $restaurant->update();
 
         return response()->json([], 204);
     }
