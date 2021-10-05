@@ -11,6 +11,24 @@ class RestaurantFood extends Model
 
     protected $table = 'restaurant_foods';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'alias',
+        'restaurant_id',
+        'category_id',
+        'description',
+        'price',
+        'salePrice',
+        'quantity',
+        'popular',
+        'sale',
+        'novetly',
+    ];
     protected $casts = [
       'price' => 'int',
       'salePrice' => 'int',

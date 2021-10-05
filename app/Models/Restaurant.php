@@ -19,6 +19,14 @@ class Restaurant extends Model
         'alias',
         'user_id',
         'category_id',
+        'title',
+        'description',
+        'min_delivery_price',
+        'street',
+        'house',
+        'coords',
+        'phone',
+        'email',
     ];
     protected $casts = [
         'active' => 'bool',

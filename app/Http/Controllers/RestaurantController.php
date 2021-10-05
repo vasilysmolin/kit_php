@@ -53,6 +53,7 @@ class RestaurantController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
+
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = 1;
         $restaurant = new Restaurant();

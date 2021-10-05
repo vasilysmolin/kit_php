@@ -61,24 +61,27 @@ class FoodController extends Controller
     {
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+
+    public function store(Request $request, $id)
     {
+        $formData = $request->all();
+        $formData['active'] = 1;
+        $formData['restaurant_id'] = $id;
+        $restaurant = new RestaurantFood();
+        $restaurant->fill($formData);
+        $restaurant->save();
+
+        return response()->json([], 201);
     }
 
 
-    public function show($alias)
+    public function show($id)
     {
 
         $foods = RestaurantFood::
             where('active', 1)
             ->with(['categoryFood','restaurant'])
-            ->where('alias', $alias)
+            ->where('id', $id)
             ->first();
 
         return response()->json($foods);
@@ -94,15 +97,16 @@ class FoodController extends Controller
     {
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(Request $request, $id)
     {
+        $formData = json_decode($request->getContent(), true);
+        $formData['active'] = 1;
+        $restaurant = RestaurantFood::find($id);
+        $restaurant->fill($formData);
+        $restaurant->update();
+
+        return response()->json([], 204);
     }
 
     /**
