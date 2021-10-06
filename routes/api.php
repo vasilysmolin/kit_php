@@ -24,6 +24,6 @@ Route::resource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
 ])->shallow();
 
-Route::post('import','FoodController');
+Route::post('import','FoodController@import');
 
 Route::resource('categories', 'CategoryFoodController');
