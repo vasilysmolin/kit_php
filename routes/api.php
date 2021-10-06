@@ -4,7 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    return $request->user()->load('restaurant');
 });
 
 Route::group([
@@ -16,15 +16,14 @@ Route::group([
     Route::post('register', 'AuthController@register')->withoutMiddleware('auth:api');
     Route::post('logout', 'AuthController@logout')->withoutMiddleware('auth:api');
     Route::post('refresh', 'AuthController@refresh');
-    Route::post('me', 'AuthController@me');
-
-//    Route::resource('restaurants', 'RestaurantController');
-
+    Route::get('user', 'AuthController@user');
 });
 
 Route::resource('restaurants', 'RestaurantController');
 Route::resource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
 ])->shallow();
+
+Route::post('import','FoodController');
 
 Route::resource('categories', 'CategoryFoodController');

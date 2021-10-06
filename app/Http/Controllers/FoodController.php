@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Import\FoodImport;
 use App\Models\Restaurant;
 use App\Models\RestaurantFood;
+use Beauty\Jobs\ClientsImportJob;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class FoodController extends Controller
 {
@@ -12,6 +15,12 @@ class FoodController extends Controller
     public function index(Request $request, $idRes)
     {
 //        $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
+        $cabinet = false;
+        $user = auth('api')->user();
+        if(isset($user) && $request->from == 'cabinet') {
+            $cabinet = true;
+        }
+
         $take = (int) $request->take ?? 25;
         $skip = (int) $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
@@ -22,6 +31,11 @@ class FoodController extends Controller
             ->when(isset($category), function ($q) use ($category) {
                 $q->whereHas('categoryFood', function ($q) use ($category) {
                     $q->where('alias', $category);
+                });
+            })
+            ->when(isset($cabinet), function ($q) use ($user) {
+                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                    $q->where('id', $user->id);
                 });
             })
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
@@ -75,16 +89,36 @@ class FoodController extends Controller
     }
 
 
-    public function show($id)
+    public function show(Request $request, $id)
     {
+
+        $cabinet = false;
+        $user = auth('api')->user();
+        if(isset($user) && $request->from == 'cabinet') {
+            $cabinet = true;
+        }
 
         $foods = RestaurantFood::
             where('active', 1)
-            ->with(['categoryFood','restaurant'])
+            ->when(isset($cabinet), function ($q) use ($user) {
+                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                    $q->where('id', $user->id);
+                });
+            })
+            ->with(['categoryFood','restaurant.user'])
             ->where('id', $id)
             ->first();
 
         return response()->json($foods);
+    }
+
+    public function import(Request $request)
+    {
+        $dishes = $request->dishes;
+        $user = auth('api')->user();
+
+        Excel::import(new FoodImport(), $dishes);
+        return response()->json([], 204);
     }
 
     /**
