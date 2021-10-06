@@ -176,7 +176,7 @@ class Handler extends ExceptionHandler
                         'trace' => config('app.env') === 'production' ? '' : $exception->getTrace() ,
                         //                        'trace' => $exception->getTrace() ,
                     ],
-                ]
+                ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
     }

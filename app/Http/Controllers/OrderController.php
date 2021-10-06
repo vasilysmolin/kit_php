@@ -45,6 +45,10 @@ class OrderController extends Controller
                 $orderRestaurant->restaurant_id = $key;
                 $orderRestaurant->order_id = $order->getKey();
                 $orderRestaurant->save();
+//                $orderRestaurant->createMany([
+//                    ['message' => 'A new comment.'],
+//                    ['message' => 'Another new comment.'],
+//                ])
                 foreach($val as $k => $v){
                     $food = RestaurantFood::find($k);
                     $orderFood = new OrderFood();
