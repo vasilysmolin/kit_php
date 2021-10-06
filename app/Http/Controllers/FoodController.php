@@ -114,10 +114,9 @@ class FoodController extends Controller
 
     public function import(Request $request)
     {
-        $dishes = $request->dishes;
+        $file = $request->file;
         $user = auth('api')->user();
-
-        Excel::import(new FoodImport(), $dishes);
+        Excel::import(new FoodImport(), $file);
         return response()->json([], 204);
     }
 

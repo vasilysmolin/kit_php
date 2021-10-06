@@ -43,13 +43,6 @@ class RestaurantController extends Controller
         return response()->json($data);
     }
 
-
-    public function create(Request $request): \Illuminate\Http\JsonResponse
-    {
-        return response()->json([], 200);
-    }
-
-
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
@@ -63,7 +56,6 @@ class RestaurantController extends Controller
         return response()->json([], 201);
     }
 
-
     public function show($id): \Illuminate\Http\JsonResponse
     {
         $restaurant = Restaurant::where('id', $id)
@@ -72,16 +64,6 @@ class RestaurantController extends Controller
 
         return response()->json($restaurant);
     }
-
-
-    public function edit($id): \Illuminate\Http\JsonResponse
-    {
-        $restaurant = Restaurant::where('alias', $id)
-//            ->with('uploads')
-            ->first();
-        return response()->json($restaurant);
-    }
-
 
     public function update(Request $request, $id)
     {
@@ -94,7 +76,6 @@ class RestaurantController extends Controller
 
         return response()->json([], 204);
     }
-
 
     public function destroy($id)
     {

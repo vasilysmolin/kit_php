@@ -19,11 +19,11 @@ Route::group([
     Route::get('user', 'AuthController@user');
 });
 
-Route::resource('restaurants', 'RestaurantController');
-Route::resource('restaurants.foods', 'FoodController')->scoped([
+Route::apiResource('restaurants', 'RestaurantController');
+Route::apiResource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
 ])->shallow();
 
 Route::post('import','FoodController@import');
 
-Route::resource('categories', 'CategoryFoodController');
+Route::apiResource('categories', 'CategoryFoodController');
