@@ -1,4 +1,4 @@
-FROM nginx:stable-alpine
+FROM vasilysmolin/nginx:latest
 
 ARG DOMAIN
 ARG ENV
