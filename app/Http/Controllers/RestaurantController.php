@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Restaurant;
+use App\Objects\Files;
 use Illuminate\Http\Request;
 
 class RestaurantController extends Controller
@@ -14,14 +15,23 @@ class RestaurantController extends Controller
         $take = (int) $request->take ?? 25;
         $skip = (int) $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
-
+        $files = resolve(Files::class);
         $restaurants = Restaurant::take($take)
             ->skip($skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
+            ->with('image')
             ->where('active', 1)
             ->get();
+
+        $restaurants->each(function($item) use ($files){
+            if(isset($item->image)) {
+                $item->photo = $files->getFilePath($item->image);
+                $item->makeHidden('image');
+            }
+
+        });
 
         $count = Restaurant::take($take)
             ->skip($skip)
@@ -48,10 +58,25 @@ class RestaurantController extends Controller
         $formData = $request->all();
 
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
-        $formData['active'] = 1;
+        $formData['active'] = true;
         $restaurant = new Restaurant();
         $restaurant->fill($formData);
         $restaurant->save();
+        $files = resolve(Files::class);
+
+        if (isset($request['files']) && count($request['files']) > 0) {
+            foreach ($request['files'] as $file) {
+                $dataFile = $files->preparationFileS3($file);
+                $restaurant->image()->create([
+                    'mimeType' => $dataFile['mineType'],
+                    'extension' => $dataFile['extension'],
+                    'name' => $dataFile['name'],
+                    'uniqueValue' => $dataFile['name'],
+                    'size' => $dataFile['size'],
+                ]);
+
+            }
+        }
 
         return response()->json([], 201);
     }
@@ -82,4 +107,5 @@ class RestaurantController extends Controller
         Restaurant::destroy($id);
         return response()->json([], 204);
     }
+
 }

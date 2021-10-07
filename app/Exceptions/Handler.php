@@ -6,6 +6,7 @@ use ErrorException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Throwable;
@@ -178,6 +179,15 @@ class Handler extends ExceptionHandler
                     ],
                 ], Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+
+        if($exception->getCode() == Response::HTTP_NOT_FOUND) {
+            return response()->json([
+            ], Response::HTTP_NOT_FOUND);
+        }
+        if($exception->getCode() == 0) {
+            return response()->json([
+            ], Response::HTTP_NOT_FOUND);
         }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Import\FoodImport;
 use App\Models\RestaurantFood;
+use App\Objects\Files;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 
@@ -23,6 +24,7 @@ class FoodController extends Controller
         $skip = (int) $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $category = $request->category;
+        $files = resolve(Files::class);
         $foods = RestaurantFood::take($take)
             ->skip($skip)
             ->where('active', 1)
@@ -40,6 +42,14 @@ class FoodController extends Controller
                 $query->whereIn('id', $id);
             })
             ->get();
+
+        $foods->each(function($item) use ($files){
+            if(isset($item->image)) {
+                $item->photo = $files->getFilePath($item->image);
+                $item->makeHidden('image');
+            }
+
+        });
 
 
         $count = RestaurantFood::take($take)
@@ -67,58 +77,6 @@ class FoodController extends Controller
         return response()->json($data);
     }
 
-//    public function indexFoods(Request $request, $idRes)
-//    {
-//        $cabinet = false;
-//        $user = auth('api')->user();
-//        if(isset($user) && $request->from == 'cabinet') {
-//            $cabinet = true;
-//        }
-//
-//        $take = (int) $request->take ?? 25;
-//        $skip = (int) $request->skip ?? 0;
-//        $id = isset($request->id) ? explode(',', $request->id) : null;
-//        $category = $request->category;
-//        $foods = RestaurantFood::take($take)
-//            ->skip($skip)
-//            ->where('active', 1)
-//            ->when(isset($category), function ($q) use ($category) {
-//                $q->whereHas('categoryFood', function ($q) use ($category) {
-//                    $q->where('alias', $category);
-//                });
-//            })
-//            ->when(isset($cabinet), function ($q) use ($user) {
-//                $q->whereHas('restaurant.user', function ($q) use ($user) {
-//                    $q->where('id', $user->id);
-//                });
-//            })
-//            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-//                $query->whereIn('id', $id);
-//            })
-//            ->where('restaurant_id', $idRes)
-//            ->get();
-//
-//
-//        $count = RestaurantFood::take($take)
-//            ->skip($skip)
-//            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-//                $query->whereIn('id', $id);
-//            })
-//            ->where('active', 1)
-//            ->where('restaurant_id', $idRes)
-//            ->count();
-//
-//        $data = [
-//            'meta' => [
-//                'skip' => $skip ?? 0,
-//                'limit' => 25,
-//                'total' => $count ?? 0,
-//            ],
-//            'dishes' => $foods,
-//        ];
-//
-//        return response()->json($data);
-//    }
 
     /**
      * Show the form for creating a new resource.
@@ -133,11 +91,27 @@ class FoodController extends Controller
     public function store(Request $request, $id)
     {
         $formData = $request->all();
-        $formData['active'] = 1;
+        $formData['active'] = true;
         $formData['restaurant_id'] = $id;
-        $restaurant = new RestaurantFood();
-        $restaurant->fill($formData);
-        $restaurant->save();
+        $restaurantFood = new RestaurantFood();
+        $restaurantFood->fill($formData);
+        $restaurantFood->save();
+
+        $files = resolve(Files::class);
+
+        if (isset($request['files']) && count($request['files']) > 0) {
+            foreach ($request['files'] as $file) {
+                $dataFile = $files->preparationFileS3($file);
+                $restaurantFood->image()->create([
+                    'mimeType' => $dataFile['mineType'],
+                    'extension' => $dataFile['extension'],
+                    'name' => $dataFile['name'],
+                    'uniqueValue' => $dataFile['name'],
+                    'size' => $dataFile['size'],
+                ]);
+
+            }
+        }
 
         return response()->json([], 201);
     }

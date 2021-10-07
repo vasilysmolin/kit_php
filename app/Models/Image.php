@@ -15,6 +15,17 @@ class Image extends Model
         'active' => 'bool',
     ];
 
+    protected $fillable = [
+        'name',
+        'mimeType',
+        'extension',
+        'size',
+        'imageable_type',
+        'imageable_id',
+        'crop',
+        'sort',
+    ];
+
     /**
      * Get the parent imageable model.
      */
