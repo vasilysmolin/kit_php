@@ -69,7 +69,7 @@ class FoodController extends Controller
         return response()->json($data);
     }
 
-    public function food(Request $request)
+    public function foods(Request $request)
     {
 //        $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
         $cabinet = false;
