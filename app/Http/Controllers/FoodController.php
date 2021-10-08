@@ -11,7 +11,65 @@ use Maatwebsite\Excel\Facades\Excel;
 class FoodController extends Controller
 {
 
-    public function index(Request $request)
+    public function index(Request $request, $idRes)
+    {
+        $cabinet = false;
+        $user = auth('api')->user();
+        if(isset($user) && $request->from == 'cabinet') {
+            $cabinet = true;
+        }
+
+        $take = (int) $request->take ?? 25;
+        $skip = (int) $request->skip ?? 0;
+        $id = isset($request->id) ? explode(',', $request->id) : null;
+        $category = $request->category;
+        $foods = RestaurantFood::take($take)
+            ->skip($skip)
+            ->where('active', 1)
+            ->when(isset($category), function ($q) use ($category) {
+                $q->whereHas('categoryFood', function ($q) use ($category) {
+                    $q->where('alias', $category);
+                });
+            })
+            ->when($cabinet !== false, function ($q) use ($user) {
+                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                    $q->where('id', $user->id);
+                });
+            })
+            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+                $query->whereIn('id', $id);
+            })
+            ->where('restaurant_id', $idRes)
+            ->get();
+
+
+        $count = RestaurantFood::take($take)
+            ->skip($skip)
+            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+                $query->whereIn('id', $id);
+            })
+            ->when($cabinet !== false, function ($q) use ($user) {
+                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                    $q->where('id', $user->id);
+                });
+            })
+            ->where('active', 1)
+            ->where('restaurant_id', $idRes)
+            ->count();
+
+        $data = [
+            'meta' => [
+                'skip' => $skip ?? 0,
+                'limit' => 25,
+                'total' => $count ?? 0,
+            ],
+            'dishes' => $foods,
+        ];
+
+        return response()->json($data);
+    }
+
+    public function food(Request $request)
     {
 //        $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
         $cabinet = false;
@@ -128,7 +186,7 @@ class FoodController extends Controller
 
         $foods = RestaurantFood::
             where('active', 1)
-            ->when(isset($cabinet), function ($q) use ($user) {
+            ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('restaurant.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });

@@ -22,8 +22,8 @@ Route::group([
 Route::apiResource('restaurants', 'RestaurantController');
 Route::apiResource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
-])->shallow()->except('index');
-Route::get('foods', 'FoodController@index');
+])->shallow();
+Route::get('food', 'FoodController@food');
 
 Route::apiResource('orders', 'OrderController');
 Route::post('import','FoodController@import');
