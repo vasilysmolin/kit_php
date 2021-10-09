@@ -51,7 +51,10 @@ class Handler extends ExceptionHandler
     {
 
         if ($exception instanceof NotFoundHttpException) {
-            return response()->json([
+            return response()->json(['errors' => [
+                'code' => Response::HTTP_NOT_FOUND,
+                'errors' => '',
+            ],
             ], Response::HTTP_NOT_FOUND);
         }
 
@@ -191,13 +194,13 @@ class Handler extends ExceptionHandler
             );
         }
 
-        if ($exception->getCode() === Response::HTTP_NOT_FOUND) {
-            return response()->json([
+        if ($exception->getCode() === Response::HTTP_NOT_FOUND || $exception->getCode() === 0) {
+            return response()->json(['errors' => [
+                'code' => Response::HTTP_NOT_FOUND,
+                'errors' => '',
+            ],
             ], Response::HTTP_NOT_FOUND);
         }
-        if ($exception->getCode() === 0) {
-            return response()->json([
-            ], Response::HTTP_NOT_FOUND);
-        }
+
     }
 }
