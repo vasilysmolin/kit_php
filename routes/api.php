@@ -12,7 +12,7 @@ Route::group([
     'prefix' => 'auth'
 ], function ($router) {
 
-    Route::post('login', 'AuthController@login');
+    Route::post('login', 'AuthController@login')->withoutMiddleware('auth:api');
     Route::post('register', 'AuthController@register')->withoutMiddleware('auth:api');
     Route::post('logout', 'AuthController@logout')->withoutMiddleware('auth:api');
     Route::post('refresh', 'AuthController@refresh');

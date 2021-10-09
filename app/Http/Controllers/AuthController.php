@@ -27,9 +27,12 @@ class AuthController extends Controller
 
 
         $token = auth('api')->attempt($credentials);
-
         if ($token === false) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+            return response()->json(['errors' => [
+                'code' => 422,
+                'message' => 'Неверный логин или пароль',
+                ],
+            ], 422);
         }
 
         return $this->respondWithToken($token);
@@ -55,12 +58,20 @@ class AuthController extends Controller
             $token = auth('api')->attempt($credentials);
 
             if ($token === false) {
-                return response()->json(['error' => 'Unauthorized'], 401);
+                return response()->json(['errors' => [
+                    'code' => 422,
+                    'message' => 'Неверный логин или пароль',
+                    ],
+                ], 422);
             }
 
             return $this->respondWithToken($token);
         } else {
-            return response()->json(['error' => 'Double'], 422);
+            return response()->json(['errors' => [
+                'code' => 422,
+                'message' => 'Пользователь уже существует',
+            ],
+            ], 422);
         }
     }
 

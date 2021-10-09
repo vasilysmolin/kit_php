@@ -13,6 +13,13 @@ class CategoryFood extends Model
         'active' => 'bool',
     ];
 
+    protected $fillable = [
+        'name',
+        'alias',
+        'active',
+        'sort',
+    ];
+
     public function restaurantFood()
     {
         return $this->hasMany(RestaurantFood::class, 'category_id', 'id');

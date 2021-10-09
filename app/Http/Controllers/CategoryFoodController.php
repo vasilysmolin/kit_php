@@ -2,33 +2,35 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreCategoryFoodRequest;
 use App\Models\CategoryFood;
 use App\Models\RestaurantFood;
+use App\Objects\Files;
 use Illuminate\Http\Request;
 
 class CategoryFoodController extends Controller
 {
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        $take = (int) $request->take ?? 25;
-        $skip = (int) $request->skip ?? 0;
-        $restaurants = CategoryFood::take($take)
-            ->skip($skip)
+        $take = $request->take ?? 25;
+        $skip = $request->skip ?? 0;
+        $restaurants = CategoryFood::take((int)$take)
+            ->skip((int)$skip)
             ->where('active', 1)
             ->get();
 
-        $count = CategoryFood::take($take)
-            ->skip($skip)
+        $count = CategoryFood::take((int)$take)
+            ->skip((int)$skip)
             ->where('active', 1)
             ->count();
 
         $data = [
             'meta' => [
-                'skip' => $skip ?? 0,
+                'skip' => (int) $skip ?? 0,
                 'limit' => 25,
                 'total' => $count ?? 0,
             ],
-            'restaurants' => $restaurants,
+            'categories' => $restaurants,
         ];
 
         return response()->json($data);
@@ -43,24 +45,47 @@ class CategoryFoodController extends Controller
     {
     }
 
+
     /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @param StoreCategoryFoodRequest $request
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(StoreCategoryFoodRequest $request)
     {
+        $formData = $request->all();
+        $formData['active'] = true;
+        $restaurantFood = new CategoryFood();
+        $restaurantFood->fill($formData);
+        $restaurantFood->save();
+
+        $files = resolve(Files::class);
+
+        if (isset($request['files']) && count($request['files']) > 0) {
+            foreach ($request['files'] as $file) {
+                $dataFile = $files->preparationFileS3($file);
+                $restaurantFood->image()->create([
+                    'mimeType' => $dataFile['mineType'],
+                    'extension' => $dataFile['extension'],
+                    'name' => $dataFile['name'],
+                    'uniqueValue' => $dataFile['name'],
+                    'size' => $dataFile['size'],
+                ]);
+            }
+        }
+
+        return response()->json([], 201);
     }
 
 
     public function show($alias): \Illuminate\Http\JsonResponse
     {
-        $foods = CategoryFood::where('active', 1)
+        $categoryFoods = CategoryFood::where('active', 1)
             ->where('alias', $alias)
             ->first();
 
-        return response()->json($foods);
+        abort_unless($categoryFoods, 404);
+
+        return response()->json($categoryFoods);
     }
 
     /**
@@ -73,15 +98,16 @@ class CategoryFoodController extends Controller
     {
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
+
+    public function update(StoreCategoryFoodRequest $request, $id): \Illuminate\Http\JsonResponse
     {
+        $formData = json_decode($request->getContent(), true);
+        $formData['active'] = 1;
+        $restaurant = CategoryFood::find($id);
+        $restaurant->fill($formData);
+        $restaurant->update();
+
+        return response()->json([], 204);
     }
 
     /**

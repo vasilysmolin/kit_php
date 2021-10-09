@@ -18,7 +18,6 @@ class OrderController extends Controller
      */
     public function index()
     {
-        //
     }
 
 
@@ -49,7 +48,7 @@ class OrderController extends Controller
 //                    ['message' => 'A new comment.'],
 //                    ['message' => 'Another new comment.'],
 //                ])
-                foreach($val as $k => $v){
+                foreach ($val as $k => $v) {
                     $food = RestaurantFood::find($k);
                     $orderFood = new OrderFood();
                     $orderFood->order_restaurant_id = $orderRestaurant->getKey();
@@ -58,10 +57,9 @@ class OrderController extends Controller
                     $orderFood->price = $food->price;
                     $orderFood->salePrice = $food->salePrice;
                     $orderFood->save();
-
                 }
             }
-        },3);
+        }, 3);
 
         return response()->json([], 201);
     }
@@ -74,7 +72,6 @@ class OrderController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -86,7 +83,6 @@ class OrderController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -97,6 +93,5 @@ class OrderController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Import\FoodImport;
+use App\Http\Requests\StoreRestaurantFoodRequest;
 use App\Models\RestaurantFood;
 use App\Objects\Files;
 use Illuminate\Http\Request;
@@ -15,16 +16,17 @@ class FoodController extends Controller
     {
         $cabinet = false;
         $user = auth('api')->user();
-        if(isset($user) && $request->from == 'cabinet') {
+        if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         }
 
-        $take = (int) $request->take ?? 25;
-        $skip = (int) $request->skip ?? 0;
+        $take = $request->take ?? 25;
+        $skip = $request->skip ?? 0;
+
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $category = $request->category;
-        $foods = RestaurantFood::take($take)
-            ->skip($skip)
+        $foods = RestaurantFood::take((int) $take)
+            ->skip((int) $skip)
             ->where('active', 1)
             ->when(isset($category), function ($q) use ($category) {
                 $q->whereHas('categoryFood', function ($q) use ($category) {
@@ -43,8 +45,8 @@ class FoodController extends Controller
             ->get();
 
 
-        $count = RestaurantFood::take($take)
-            ->skip($skip)
+        $count = RestaurantFood::take((int) $take)
+            ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
@@ -59,7 +61,7 @@ class FoodController extends Controller
 
         $data = [
             'meta' => [
-                'skip' => $skip ?? 0,
+                'skip' => (int) $skip ?? 0,
                 'limit' => 25,
                 'total' => $count ?? 0,
             ],
@@ -74,17 +76,17 @@ class FoodController extends Controller
 //        $restaurant = Restaurant::where('alias',$alias)->firstOrFail();
         $cabinet = false;
         $user = auth('api')->user();
-        if(isset($user) && $request->from == 'cabinet') {
+        if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         }
 
-        $take = (int) $request->take ?? 25;
-        $skip = (int) $request->skip ?? 0;
+        $take = $request->take ?? 25;
+        $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $category = $request->category;
         $files = resolve(Files::class);
-        $foods = RestaurantFood::take($take)
-            ->skip($skip)
+        $foods = RestaurantFood::take((int) $take)
+            ->skip((int) $skip)
             ->where('active', 1)
             ->when($category, function ($q) use ($category) {
                 $q->whereHas('categoryFood', function ($q) use ($category) {
@@ -101,17 +103,16 @@ class FoodController extends Controller
             })
             ->get();
 
-        $foods->each(function($item) use ($files){
-            if(isset($item->image)) {
+        $foods->each(function ($item) use ($files) {
+            if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-
         });
 
 
-        $count = RestaurantFood::take($take)
-            ->skip($skip)
+        $count = RestaurantFood::take((int) $take)
+            ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
@@ -125,7 +126,7 @@ class FoodController extends Controller
 
         $data = [
             'meta' => [
-                'skip' => $skip ?? 0,
+                'skip' => (int) $skip ?? 0,
                 'limit' => 25,
                 'total' => $count ?? 0,
             ],
@@ -146,7 +147,7 @@ class FoodController extends Controller
     }
 
 
-    public function store(Request $request, $id)
+    public function store(StoreRestaurantFoodRequest $request, $id)
     {
         $formData = $request->all();
         $formData['active'] = true;
@@ -167,7 +168,6 @@ class FoodController extends Controller
                     'uniqueValue' => $dataFile['name'],
                     'size' => $dataFile['size'],
                 ]);
-
             }
         }
 
@@ -180,7 +180,7 @@ class FoodController extends Controller
 
         $cabinet = false;
         $user = auth('api')->user();
-        if(isset($user) && $request->from == 'cabinet') {
+        if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         }
 
@@ -195,13 +195,15 @@ class FoodController extends Controller
             ->where('id', $id)
             ->first();
 
+        abort_unless($foods, 404);
+
         return response()->json($foods);
     }
 
     public function import(Request $request)
     {
         $file = $request->file;
-        $user = auth('api')->user();
+//        $user = auth('api')->user();
         Excel::import(new FoodImport(), $file);
         return response()->json([], 204);
     }
@@ -217,7 +219,7 @@ class FoodController extends Controller
     }
 
 
-    public function update(Request $request, $id)
+    public function update(StoreRestaurantFoodRequest $request, $id)
     {
         $formData = json_decode($request->getContent(), true);
         $formData['active'] = 1;

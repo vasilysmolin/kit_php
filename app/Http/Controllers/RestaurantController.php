@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\StoreRestaurantRequest;
 use App\Models\Restaurant;
 use App\Objects\Files;
 use Illuminate\Http\Request;
@@ -12,12 +13,12 @@ class RestaurantController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
 
-        $take = (int) $request->take ?? 25;
-        $skip = (int) $request->skip ?? 0;
+        $take = $request->take ?? 25;
+        $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
-        $restaurants = Restaurant::take($take)
-            ->skip($skip)
+        $restaurants = Restaurant::take((int) $take)
+            ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
@@ -25,16 +26,15 @@ class RestaurantController extends Controller
             ->where('active', 1)
             ->get();
 
-        $restaurants->each(function($item) use ($files){
-            if(isset($item->image)) {
+        $restaurants->each(function ($item) use ($files) {
+            if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-
         });
 
-        $count = Restaurant::take($take)
-            ->skip($skip)
+        $count = Restaurant::take((int) $take)
+            ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
@@ -43,7 +43,7 @@ class RestaurantController extends Controller
 
         $data = [
             'meta' => [
-                'skip' => $skip ?? 0,
+                'skip' => (int) $skip ?? 0,
                 'limit' => 25,
                 'total' => $count ?? 0,
             ],
@@ -53,7 +53,7 @@ class RestaurantController extends Controller
         return response()->json($data);
     }
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(StoreRestaurantRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
 
@@ -74,7 +74,6 @@ class RestaurantController extends Controller
                     'uniqueValue' => $dataFile['name'],
                     'size' => $dataFile['size'],
                 ]);
-
             }
         }
 
@@ -87,12 +86,13 @@ class RestaurantController extends Controller
 //            ->with('uploads')
             ->first();
 
+        abort_unless($restaurant, 404);
+
         return response()->json($restaurant);
     }
 
-    public function update(Request $request, $id)
+    public function update(StoreRestaurantRequest $request, $id)
     {
-//        $formData = $request->all();
         $formData = json_decode($request->getContent(), true);
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $restaurant = Restaurant::find($id);
@@ -107,5 +107,4 @@ class RestaurantController extends Controller
         Restaurant::destroy($id);
         return response()->json([], 204);
     }
-
 }

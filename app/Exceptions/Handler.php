@@ -2,13 +2,13 @@
 
 namespace App\Exceptions;
 
-use ErrorException;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -50,11 +50,12 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
 
-        /**
-         * Если отвалиться APi моего склада, чтобы не упал дашборд в Crm
-         * */
+        if ($exception instanceof NotFoundHttpException) {
+            return response()->json([
+            ], Response::HTTP_NOT_FOUND);
+        }
 
-        // лавливаем исключения guzzle
+
         if ($exception instanceof ConnectionException) {
             return response()->json([
             ], Response::HTTP_OK);
@@ -62,6 +63,14 @@ class Handler extends ExceptionHandler
 
         if ($exception && $request->is('api/*')) {
 //            Log::debug($request->headers->all());
+
+            if ($exception instanceof ValidationException) {
+                return response()->json(['errors' => [
+                    'code' => 422,
+                    'errors' => $exception->validator->getMessageBag(),
+                    ],
+                ], 422);
+            }
 
 
             if ($exception instanceof AuthenticationException) {
@@ -177,15 +186,16 @@ class Handler extends ExceptionHandler
                         'trace' => config('app.env') === 'production' ? '' : $exception->getTrace() ,
                         //                        'trace' => $exception->getTrace() ,
                     ],
-                ], Response::HTTP_INTERNAL_SERVER_ERROR
+                ],
+                Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
 
-        if($exception->getCode() == Response::HTTP_NOT_FOUND) {
+        if ($exception->getCode() === Response::HTTP_NOT_FOUND) {
             return response()->json([
             ], Response::HTTP_NOT_FOUND);
         }
-        if($exception->getCode() == 0) {
+        if ($exception->getCode() === 0) {
             return response()->json([
             ], Response::HTTP_NOT_FOUND);
         }

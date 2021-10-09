@@ -28,10 +28,6 @@ class Files
         ],
     ];
 
-    /**
-     * @param $modelPhoto
-     * @return string|null
-     */
     public function getFilePath($modelPhoto): ?string
     {
 
@@ -44,10 +40,6 @@ class Files
         return $url;
     }
 
-    /**
-     * @param string $nameWithType
-     * @return string
-     */
     protected function getFileType(string $nameWithType): string
     {
         $explodeAvatar = explode('.', $nameWithType);
@@ -68,19 +60,11 @@ class Files
         return md5(microtime() . random_int(0, 9999));
     }
 
-    /**
-     * @param string $nameFile
-     * @return string
-     */
     protected function getPathS3(string $nameFile): string
     {
         return $this->getOptimizeDirectoryS3($nameFile);
     }
 
-    /**
-     * @param $string
-     * @return string
-     */
     protected function getOptimizeDirectoryS3($string): string
     {
         $dir = '';
@@ -128,7 +112,4 @@ class Files
             'path' => $path,
         ];
     }
-
-
-
 }

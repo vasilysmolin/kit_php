@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Import;
 
-
 use App\Models\RestaurantFood;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
@@ -10,9 +9,6 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class FoodImport implements ToModel, WithStartRow
 {
 
-    /**
-     * @return int
-     */
     public function startRow(): int
     {
         return 2;
