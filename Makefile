@@ -32,7 +32,6 @@ build:
 	php artisan optimize
 
 build-docker:
-	git pull
 	docker-compose exec php composer install --no-interaction --ansi --no-suggest
 	docker-compose exec php php artisan migrate --force
 	docker-compose exec php php artisan db:seed --force
