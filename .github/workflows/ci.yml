@@ -20,5 +20,8 @@ jobs:
         run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
       - name: Run builds
-        run: make ci-build
+        run: docker-compose -f docker-compose.ci.yml -p ci up -d --build
+
+      - name: Run install
+        run: docker-compose -f docker-compose.yml exec php composer install --no-interaction --ansi --no-suggest
 
