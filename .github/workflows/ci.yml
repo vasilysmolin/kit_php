@@ -22,6 +22,11 @@ jobs:
       - name: Run builds
         run: docker-compose -f docker-compose.yml up -d --build
 
+      - name: Install node
+        uses: actions/setup-node@v1
+        with:
+           node-version: 14.x
+
       - name: Run install
         run: docker-compose -f docker-compose.yml exec -T php composer install --no-interaction --ansi --no-suggest
 
