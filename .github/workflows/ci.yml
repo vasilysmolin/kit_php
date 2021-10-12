@@ -22,6 +22,9 @@ jobs:
       - name: Run builds
         run: docker-compose -f docker-compose.ci.yml up -d --build
 
+      - name: Run builds
+        run: docker-compose -f docker-compose.ci.yml up
+
       - name: Run install
         run: docker-compose -f docker-compose.ci.yml exec -T php composer install --no-interaction --ansi --no-suggest
 
