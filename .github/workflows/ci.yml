@@ -26,5 +26,5 @@ jobs:
         run: docker-compose -f docker-compose.ci.yml up -d
 
       - name: Run install
-        run: docker-compose -f docker-compose.ci.yml exec -T php composer install --no-interaction --ansi --no-suggest
+        run: docker-compose -f docker-compose.ci.yml exec -T php php -d memory_limit=-1 $(which composer) install
 
