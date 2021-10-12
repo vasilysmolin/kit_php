@@ -39,20 +39,33 @@ class RestaurantFood extends Model
       'novetly' => 'bool',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function categoryFood()
     {
         return $this->belongsTo(CategoryFood::class, 'category_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
     public function restaurant()
     {
         return $this->belongsTo(Restaurant::class, 'restaurant_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphMany
+     */
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');
     }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphOne
+     */
     public function image()
     {
         return $this->morphOne(Image::class, 'imageable');
