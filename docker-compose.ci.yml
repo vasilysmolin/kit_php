@@ -18,16 +18,9 @@ services:
     working_dir: /var/www/${BB_PHP_WORKDIR}
     volumes:
       - .:/var/www/${BB_PHP_WORKDIR}
-    depends_on:
-      - database
-    command: [
-        "composer install --no-interaction --ansi --no-suggest",
-        "php artisan migrate --force",
-        "php artisan db:seed --force",
-        "php artisan optimize",
-        "php composer exec phpcs -v",
-        "php php artisan test",
-    ]
+#    depends_on:
+#      - database
+
   # Nginx -----------------------------------------------
   nginx:
     build:
