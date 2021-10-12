@@ -77,7 +77,7 @@ class RestaurantController extends Controller
             }
         }
 
-        return response()->json([], 201);
+        return response()->json([], 201, ['Location' => "/restaurants/$restaurant->id"]);
     }
 
     public function show($id): \Illuminate\Http\JsonResponse

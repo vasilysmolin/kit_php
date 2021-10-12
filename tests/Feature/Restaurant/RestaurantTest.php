@@ -2,9 +2,14 @@
 
 namespace Tests\Feature\Restaurant;
 
+use App\Models\CategoryFood;
+use App\Models\CategoryRestaurant;
 use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Http\Response;
 use Tests\TestCase;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
  * @group restaurant
@@ -38,28 +43,42 @@ class RestaurantTestTest extends TestCase
         $response->assertStatus(404);
     }
 
-//    /**
-//     * @group restaurant1
-//     * @group ci
-//     * */
-//    public function testStoreRestaurant()
-//    {
-//        $category = CategoryFood::factory()->create();
-//        $user = User::factory()->create();
-//        $this->actingAs($user)->withToken('123');
-//
-//        $response = $this
-//            ->withToken('123')
-//            ->json('POST', route('restaurants.store'), [
-//                'name' => 'test',
-//                'alias' => 'test',
-//                'category_id' => $category->id,
-//            ]);
-//        dd($response->getContent());
-//        $order = Order::latest()->first();
-//        dd($order);
-//
-//
-//        $response->assertStatus(Response::HTTP_CREATED);
-//    }
+
+    public function testStoreRestaurant()
+    {
+        $category = CategoryRestaurant::factory()->create();
+        $user = User::factory()->create();
+        $access_token = JWTAuth::fromUser($user);
+
+        $response = $this
+            ->withToken($access_token)
+            ->json('POST', route('restaurants.store'), [
+                'name' => 'test',
+                'alias' => 'test',
+                'category_id' => $category->id,
+            ]);
+
+        $id = explode('/restaurants/', $response->baseResponse->headers->get('Location'));
+        $this->assertDatabaseHas('restaurants', [ 'id' => $id[1] ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+    }
+
+    /**
+     * @group restaurant1
+     * @group ci
+     * */
+    public function testDestroyRestaurant()
+    {
+        $restaraunt = Restaurant::factory()->create();
+        $user = User::factory()->create();
+        $access_token = JWTAuth::fromUser($user);
+
+        $response = $this
+            ->withToken($access_token)
+            ->json('DELETE', route('restaurants.destroy',[$restaraunt->id]), []);
+
+        $this->assertNull(Restaurant::find($restaraunt->id));
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
 }
