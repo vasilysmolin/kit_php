@@ -15,6 +15,12 @@ services:
     environment:
       PHP_IDE_CONFIG: "serverName=Docker"
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
+        reservations:
+          memory: 2000M
     working_dir: /var/www/${BB_PHP_WORKDIR}
     volumes:
       - .:/var/www/${BB_PHP_WORKDIR}
@@ -36,6 +42,12 @@ services:
     ports:
       - "${PORT_HTTP}:80"
       - "${PORT_HTTPS}:443"
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
+        reservations:
+          memory: 2000M
     working_dir: /var/www/${BB_NGINX_WORKDIR}
     volumes:
       - .:/var/www/${BB_NGINX_WORKDIR}
@@ -65,6 +77,12 @@ services:
     image: redis:6-alpine
     container_name: ${BB_REDIS_WORKDIR}
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
+        reservations:
+          memory: 2000M
     volumes:
       - ./images/redis/redis.conf:/redis.conf
     depends_on:
@@ -78,6 +96,12 @@ services:
       dockerfile: Dockerfile
     container_name: database
     restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 2000M
+        reservations:
+          memory: 2000M
     environment:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: laravel_docker
