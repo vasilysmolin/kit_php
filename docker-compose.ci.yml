@@ -2,7 +2,6 @@ version: '3'
 
 services:
 
-  # PHP -----------------------------------------------
   php:
     build:
       context: images/php
@@ -18,71 +17,6 @@ services:
     working_dir: /var/www/${BB_PHP_WORKDIR}
     volumes:
       - .:/var/www/${BB_PHP_WORKDIR}
-#    depends_on:
-#      - database
-
-  # Nginx -----------------------------------------------
-#  nginx:
-#    build:
-#      context: images/nginx
-#      dockerfile: Dockerfile
-#      args:
-#        - DOMAIN=${DOMAIN}
-#        - ENV=${DOCKER_ENV}
-#        - BACK_DIR=${BB_PHP_WORKDIR}
-#        - LOCAL_DIR=${BB_NGINX_WORKDIR}
-#    container_name: ${BB_NGINX_WORKDIR}
-#    restart: always
-#    ports:
-#      - "${PORT_HTTP}:80"
-#      - "${PORT_HTTPS}:443"
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 2000M
-#        reservations:
-#          memory: 2000M
-#    working_dir: /var/www/${BB_NGINX_WORKDIR}
-#    volumes:
-#      - .:/var/www/${BB_NGINX_WORKDIR}
-#    depends_on:
-#      - php
-  # MySQL -------------------------------------------------
-#  mysql:
-#    image: mysql:5.7.4
-#    container_name: ${BB_MYSQL_WORKDIR}
-#    restart: always
-#    tty: true
-#    ports:
-#      - "${PORT_MYSQL}:3306"
-#    volumes:
-#      - ./dump:/var/lib/mysql
-#      - ./images/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-#      - ./images/mysql/mysqldump.cnf:/etc/mysql/conf.d/mysqldump.cnf
-#      - ./images/mysql/optimize.cnf:/etc/mysql/conf.d/optimize.cnf
-#    environment:
-#        - MYSQL_DATABASE=${MYSQL_DATABASE}
-#        - MYSQL_USER=${MYSQL_USER}
-#        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-#        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-
-  # Redis -------------------------------------------------
-#  redis:
-#    image: redis:6-alpine
-#    container_name: ${BB_REDIS_WORKDIR}
-#    restart: always
-#    deploy:
-#      resources:
-#        limits:
-#          memory: 2000M
-#        reservations:
-#          memory: 2000M
-#    volumes:
-#      - ./images/redis/redis.conf:/redis.conf
-#    depends_on:
-#      - php
-#      - database
-#    command: [ "redis-server", "/redis.conf" ]
 
   database:
     build:
