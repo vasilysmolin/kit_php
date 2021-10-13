@@ -12,21 +12,67 @@ jobs:
     name: CI
     runs-on: ubuntu-latest
 
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      postgres:
+        # Docker Hub image
+        image: postgres
+        # Provide the password for postgres
+        env:
+          POSTGRES_PASSWORD: password
+          DB_PASSWORD: password
+          DB_DATABASE: postgres
+          DB_USERNAME: postgres
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
+
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Copy .env
-        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+      - name: install make utils
+        run: make install
 
-      - name: Run builds
-        run: docker-compose -f docker-compose.ci.yml up -d --build
-
-      - name: Run builds
-        run: docker-compose -f docker-compose.ci.yml up -d
-
-      - name: Run install
-        uses: MilesChou/composer-action/7.4/install@master
+      - name: Setup PHP with PECL extension
+        uses: shivammathur/setup-php@v2
         with:
-          args: install
+          php-version: '7.4'
+          extensions: zip, gmp, pdo_mysql, gd, pcov, curl, exif, json, fileinfo
+
+      - name: Setup project
+        run: make setup
+        env:
+          # The hostname used to communicate with the PostgreSQL service container
+          DB_HOST: localhost
+          # The default PostgreSQL port
+          DB_PORT: 5432
+          # The hostname used to communicate with the PostgreSQL service container
+          POSTGRES_HOST: localhost
+          # The default PostgreSQL port
+          POSTGRES_PORT: 5432
+
+      - name: Check lint
+        run: make lint
+
+      - name: Run tests
+        run: make test
+        env:
+          # The hostname used to communicate with the PostgreSQL service container
+          DB_HOST: localhost
+          # The default PostgreSQL port
+          DB_PORT: 5432
+          # The hostname used to communicate with the PostgreSQL service container
+          POSTGRES_HOST: localhost
+          # The default PostgreSQL port
+          POSTGRES_PORT: 5432
+
 
