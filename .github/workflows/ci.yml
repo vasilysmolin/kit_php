@@ -1,4 +1,4 @@
-name: ci-cd
+name: ci
 
 on:
   push:
@@ -38,9 +38,6 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: install make utils
-        run: make install
 
       - name: Setup PHP with PECL extension
         uses: shivammathur/setup-php@v2
