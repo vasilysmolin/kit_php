@@ -73,6 +73,9 @@ jobs:
       - name: Check lint
         run: make lint
 
+      - name: Check phpstan
+        run: make phpstan
+
       - name: Run tests
         run: make test
         env:
