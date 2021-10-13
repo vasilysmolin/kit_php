@@ -8,7 +8,7 @@ lint-fix:
 	composer exec phpcbf -v
 
 phpstan:
-	./vendor/bin/phpstan analyse
+	composer exec phpstan analyse
 
 analyse:
 	composer exec phpstan analyse -v

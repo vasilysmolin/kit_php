@@ -9,19 +9,17 @@ use Maatwebsite\Excel\Concerns\WithStartRow;
 class FoodImport implements ToModel, WithStartRow
 {
 
-    /**
-     * @return int
-     */
     public function startRow(): int
     {
         return 2;
     }
 
+
     /**
      * @param array $row
      * @return RestaurantFood
      */
-    public function model(array $row)
+    public function model(array $row): RestaurantFood
     {
 
         return new RestaurantFood([
