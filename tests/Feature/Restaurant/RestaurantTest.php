@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Restaurant;
 
-use App\Models\CategoryFood;
 use App\Models\CategoryRestaurant;
 use App\Models\Restaurant;
 use App\Models\User;
