@@ -43,7 +43,7 @@ heroku-build:
 	php artisan optimize
 
 setup:
-	php composer install
+	composer install
 	php artisan migrate --force
 	php artisan db:seed --force
 	php artisan optimize
