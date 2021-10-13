@@ -201,6 +201,5 @@ class Handler extends ExceptionHandler
             ],
             ], Response::HTTP_NOT_FOUND);
         }
-
     }
 }
