@@ -1,6 +1,9 @@
 test:
 	php artisan test
 
+test-coverage:
+	php artisan test --coverage-clover storage/logs/test/coverage.xml --log-junit storage/logs/test/junit.xml
+
 lint:
 	composer exec phpcs -v
 
