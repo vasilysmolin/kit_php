@@ -32,7 +32,7 @@ class RestaurantFactory extends Factory
             'user_id' => User::factory(),
             'category_id' => CategoryRestaurant::factory(),
             'min_delivery_price' => $this->faker->numberBetween(0,1500),
-            'street' => $this->faker->streetAddress(),
+            'address' => $this->faker->streetAddress(),
             'house' => $this->faker->streetAddress(),
             'phone' => $this->faker->phoneNumber(),
             'email' => $this->faker->companyEmail(),
