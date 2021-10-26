@@ -83,9 +83,13 @@ class RestaurantController extends Controller
     public function show($id): \Illuminate\Http\JsonResponse
     {
         $restaurant = Restaurant::where('id', $id)
-//            ->with('uploads')
+            ->with('image')
             ->first();
-
+        $files = resolve(Files::class);
+        if (isset($restaurant->image)) {
+            $restaurant->photo = $files->getFilePath($restaurant->image);
+            $restaurant->makeHidden('image');
+        }
         abort_unless($restaurant, 404);
 
         return response()->json($restaurant);

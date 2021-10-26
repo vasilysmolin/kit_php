@@ -184,7 +184,7 @@ class FoodController extends Controller
             $cabinet = true;
         }
 
-        $foods = RestaurantFood::
+        $food = RestaurantFood::
             where('active', 1)
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('restaurant.user', function ($q) use ($user) {
@@ -195,9 +195,15 @@ class FoodController extends Controller
             ->where('id', $id)
             ->first();
 
-        abort_unless($foods, 404);
+        $files = resolve(Files::class);
+        if (isset($food->image)) {
+            $food->photo = $files->getFilePath($food->image);
+            $food->makeHidden('image');
+        }
 
-        return response()->json($foods);
+        abort_unless($food, 404);
+
+        return response()->json($food);
     }
 
     public function import(Request $request)
