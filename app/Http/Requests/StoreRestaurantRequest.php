@@ -37,10 +37,10 @@ class StoreRestaurantRequest extends FormRequest
         ];
     }
 
-//    public function messages(): array
-//    {
-//        return [
-//            'required' => 'тест',
-//        ];
-//    }
+    public function messages(): array
+    {
+        return [
+            'unique' => 'не уникален',
+        ];
+    }
 }
