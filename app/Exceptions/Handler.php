@@ -181,6 +181,14 @@ class Handler extends ExceptionHandler
             }
 
 
+            if ($exception->getCode() === Response::HTTP_FORBIDDEN) {
+                return response()->json(['errors' => [
+                    'code' => Response::HTTP_FORBIDDEN,
+                    'errors' => '',
+                ],
+                ], Response::HTTP_FORBIDDEN);
+            }
+
             return response()->json(
                 [
                     'errors' => [

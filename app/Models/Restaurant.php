@@ -18,6 +18,8 @@ class Restaurant extends Model
         'name',
         'alias',
         'active',
+        'delivery_time',
+        'work_time',
         'user_id',
         'category_id',
         'title',
@@ -29,8 +31,34 @@ class Restaurant extends Model
         'phone',
         'email',
     ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $hidden = [
+//        'name',
+//        'alias',
+        'active',
+        'user_id',
+//        'category_id',
+//        'title',
+//        'description',
+//        'min_delivery_price',
+//        'street',
+        'house',
+        'coords',
+//        'coords',
+//        'phone',
+//        'email',
+        'updated_at',
+        'created_at',
+    ];
     protected $casts = [
         'active' => 'bool',
+        'work_time' => 'array',
+        'delivery_time' => 'array',
         'min_delivery_price' => 'int',
     ];
 
