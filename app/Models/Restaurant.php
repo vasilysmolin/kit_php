@@ -25,7 +25,7 @@ class Restaurant extends Model
         'title',
         'description',
         'min_delivery_price',
-        'street',
+        'address',
         'house',
         'coords',
         'phone',
