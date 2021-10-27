@@ -4,13 +4,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Import\FoodImport;
 use App\Http\Requests\StoreRestaurantFoodRequest;
+use App\Http\Requests\UpdateRestaurantFoodRequest;
+use App\Models\Restaurant;
 use App\Models\RestaurantFood;
 use App\Objects\Files;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Maatwebsite\Excel\Facades\Excel;
 
 class FoodController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware('auth:api', ['except' => ['index','show']]);
+    }
 
     public function index(Request $request, $idRes)
     {
@@ -136,7 +145,6 @@ class FoodController extends Controller
         return response()->json($data);
     }
 
-
     /**
      * Show the form for creating a new resource.
      *
@@ -145,7 +153,6 @@ class FoodController extends Controller
     public function create()
     {
     }
-
 
     public function store(StoreRestaurantFoodRequest $request, $id)
     {
@@ -173,7 +180,6 @@ class FoodController extends Controller
 
         return response()->json([], 201);
     }
-
 
     public function show(Request $request, $id)
     {
@@ -224,12 +230,18 @@ class FoodController extends Controller
     {
     }
 
-
-    public function update(StoreRestaurantFoodRequest $request, $id)
+    public function update(UpdateRestaurantFoodRequest $request, $id)
     {
         $formData = json_decode($request->getContent(), true);
+        $user = auth('api')->user();
         $formData['active'] = 1;
-        $restaurant = RestaurantFood::find($id);
+        $restaurant = RestaurantFood::where('id', $id)
+            ->whereHas('user', function ($q) use ($user) {
+                $q->where('id', $user->id);
+            })->first();
+        if(!isset($restaurant)) {
+            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+        }
         $restaurant->fill($formData);
         $restaurant->update();
 

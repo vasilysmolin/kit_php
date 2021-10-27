@@ -13,7 +13,13 @@ class CategoryRestaurant extends Model
         'active' => 'bool',
     ];
 
-    public function restaurant()
+    protected $hidden = [
+        'active',
+        'updated_at',
+        'created_at',
+    ];
+
+    public function restaurants()
     {
         return $this->hasMany(Restaurant::class, 'category_id', 'id');
     }

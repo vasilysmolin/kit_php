@@ -20,6 +20,7 @@ Route::group([
 });
 
 Route::apiResource('restaurants', 'RestaurantController');
+Route::apiResource('category-restaurants', 'CategoryRestaurantController');
 Route::apiResource('restaurants.foods', 'FoodController')->scoped([
     'restaurantFood' => 'alias',
 ])->shallow();

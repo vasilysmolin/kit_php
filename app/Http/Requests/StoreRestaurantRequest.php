@@ -32,7 +32,7 @@ class StoreRestaurantRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-            'category_id' => 'required|integer|max:99999999',
+            'category_id' => 'array',
 
         ];
     }

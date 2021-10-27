@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
+use App\Models\CategoryRestaurant;
 use App\Models\Restaurant;
 use App\Objects\Files;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -41,7 +42,7 @@ class RestaurantController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->with('image')
+            ->with('image','categoryRestaurant')
             ->where('active', 1)
             ->get();
 
@@ -80,13 +81,17 @@ class RestaurantController extends Controller
     public function store(StoreRestaurantRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = true;
+        unset($formData['category_id']);
         $restaurant = new Restaurant();
         $restaurant->fill($formData);
         $restaurant->save();
         $files = resolve(Files::class);
+
+        if (isset($request['category_id'])) {
+           $restaurant->categoryRestaurant()->sync($request['category_id']);
+        }
 
         if (isset($request['files']) && count($request['files']) > 0) {
             foreach ($request['files'] as $file) {
@@ -114,7 +119,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant = Restaurant::where('id', $id)
-            ->with('image')
+            ->with('image','categoryRestaurant')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -137,7 +142,7 @@ class RestaurantController extends Controller
         $formData = json_decode($request->getContent(), true);
         $user = auth('api')->user();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
-
+        unset($formData['category_id']);
         $restaurant = Restaurant::where('id', $id)
             ->whereHas('user', function ($q) use ($user) {
                 $q->where('id', $user->id);
@@ -149,6 +154,10 @@ class RestaurantController extends Controller
 
         $restaurant->fill($formData);
         $restaurant->update();
+
+        if (isset($request['category_id'])) {
+            $restaurant->categoryRestaurant()->sync($request['category_id']);
+        }
 
         return response()->json([], 204);
     }

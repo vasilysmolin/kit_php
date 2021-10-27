@@ -20,6 +20,12 @@ class CategoryFood extends Model
         'sort',
     ];
 
+    protected $hidden = [
+        'active',
+        'updated_at',
+        'created_at',
+    ];
+
     public function restaurantFood()
     {
         return $this->hasMany(RestaurantFood::class, 'category_id', 'id');
