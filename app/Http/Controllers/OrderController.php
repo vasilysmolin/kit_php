@@ -25,18 +25,17 @@ class OrderController extends Controller
     {
 //        dd($request->getContent());
         $content = json_decode($request->getContent(), true);
-
-        DB::transaction(function () use ($content) {
+        $user = auth('api')->user();
+        DB::transaction(function () use ($content, $user) {
             $order = new Order();
             $order->name = $content['name'];
-            $order->user_id = auth('api')->user()->getAuthIdentifier();
-            $order->surname = $content['surname'];
-            $order->patronymic = $content['patronymic'];
-            $order->patronymic = $content['patronymic'];
-            $order->email = $content['email'];
-            $order->phone = $content['phone'];
-            $order->city_id = $content['city_id'];
-            $order->address = $content['address'];
+            $order->user_id = isset($user) ? $user->getAuthIdentifier(): null;
+            $order->surname = $content['surname'] ?? null;
+            $order->patronymic = $content['patronymic'] ?? null;
+            $order->email = $content['email'] ?? null;
+            $order->phone = $content['phone'] ?? null;
+            $order->city_id = $content['city_id'] ?? null;
+            $order->address = $content['address'] ?? null;
             $order->save();
 
             foreach ($content['order'] as $key => $val) {

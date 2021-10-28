@@ -40,7 +40,7 @@ class Restaurant extends Model
      * @var array
      */
     protected $hidden = [
-//        'name',
+        'title',
 //        'alias',
         'active',
         'user_id',

@@ -46,11 +46,20 @@ class RestaurantController extends Controller
             ->where('active', 1)
             ->get();
 
+
         $restaurants->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
+            if ($item->work_time === null) {
+                $item->work_time = [30,60];
+            }
+            if ($item->delivery_time === null) {
+                $item->delivery_time = [600 ,1260];
+            }
+            $item->category_restaurant_id = $item->categoriesRestaurant->pluck('id');
+            $item->makeHidden('categoriesRestaurant');
         });
 
         $count = Restaurant::take((int) $take)
@@ -134,7 +143,10 @@ class RestaurantController extends Controller
             $restaurant->photo = $files->getFilePath($restaurant->image);
             $restaurant->makeHidden('image');
         }
+
         abort_unless($restaurant, 404);
+        $restaurant->category_restaurant_id = $restaurant->categoriesRestaurant->pluck('id');
+        $restaurant->makeHidden('categoriesRestaurant');
 
         return response()->json($restaurant);
     }
@@ -144,7 +156,9 @@ class RestaurantController extends Controller
         $formData = json_decode($request->getContent(), true);
         $user = auth('api')->user();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
-        $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
+        if (isset($formData['name'])) {
+            $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
+        }
         unset($formData['category_restaurant_id']);
         $restaurant = Restaurant::where('id', $id)
             ->whereHas('user', function ($q) use ($user) {
