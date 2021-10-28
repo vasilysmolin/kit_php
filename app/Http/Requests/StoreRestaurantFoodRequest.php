@@ -28,7 +28,7 @@ class StoreRestaurantFoodRequest extends FormRequest
             'files' => 'nullable|file:1,20000|image',
             'alias' => [
                 'unique:restaurant_foods,alias',
-                'required',
+//                'required',
                 'string',
                 'max:255',
             ],

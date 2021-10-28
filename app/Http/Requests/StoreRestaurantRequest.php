@@ -28,11 +28,13 @@ class StoreRestaurantRequest extends FormRequest
             'files' => 'nullable|file:1,20000|image',
             'alias' => [
                 'unique:restaurants,alias',
-                'required',
+//                'required',
                 'string',
                 'max:255',
             ],
-            'category_id' => 'array',
+            'category_restaurant_id' => 'array',
+            'isDelivery' => 'boolean',
+            'isPickup' => 'boolean',
 
         ];
     }

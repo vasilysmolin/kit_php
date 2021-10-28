@@ -27,7 +27,7 @@ class CategoryRestaurantController extends Controller
                 'limit' => 25,
                 'total' => $count ?? 0,
             ],
-            'categories' => $restaurants,
+            'categories_restaurant' => $restaurants,
         ];
 
         return response()->json($data);

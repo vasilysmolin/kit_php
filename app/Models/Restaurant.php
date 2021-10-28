@@ -18,10 +18,12 @@ class Restaurant extends Model
         'name',
         'alias',
         'active',
+        'isDelivery',
+        'isPickup',
+        'active',
         'delivery_time',
         'work_time',
         'user_id',
-        'category_id',
         'title',
         'description',
         'min_delivery_price',
@@ -60,9 +62,11 @@ class Restaurant extends Model
         'work_time' => 'array',
         'delivery_time' => 'array',
         'min_delivery_price' => 'int',
+        'isDelivery' => 'bool',
+        'isPickup' => 'bool',
     ];
 
-    public function categoryRestaurant()
+    public function categoriesRestaurant()
     {
         return $this->belongsToMany(CategoryRestaurant::class, 'restaurant_has_categories','restaurant_id', 'category_id');
     }
