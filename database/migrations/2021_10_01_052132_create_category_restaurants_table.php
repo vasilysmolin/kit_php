@@ -18,7 +18,7 @@ class CreateCategoryRestaurantsTable extends Migration
             $table->string('name',255)->nullable();
             $table->string('alias',255)->unique();
             $table->string('description',255)->nullable();
-            $table->boolean('sort')->nullable();
+            $table->boolean('sort')->nullable()->default(1);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });
