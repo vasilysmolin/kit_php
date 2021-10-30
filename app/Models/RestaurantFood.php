@@ -21,7 +21,6 @@ class RestaurantFood extends Model
         'alias',
         'active',
         'restaurant_id',
-        'category_id',
         'description',
         'price',
         'salePrice',
@@ -37,6 +36,16 @@ class RestaurantFood extends Model
       'popular' => 'bool',
       'sale' => 'bool',
       'novetly' => 'bool',
+    ];
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'updated_at',
+        'created_at',
     ];
 
     /**

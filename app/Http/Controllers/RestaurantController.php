@@ -52,12 +52,6 @@ class RestaurantController extends Controller
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-            if ($item->work_time === null) {
-                $item->work_time = [30,60];
-            }
-            if ($item->delivery_time === null) {
-                $item->delivery_time = [600 ,1260];
-            }
             $item->category_restaurant_id = $item->categoriesRestaurant->pluck('id');
             $item->makeHidden('categoriesRestaurant');
         });

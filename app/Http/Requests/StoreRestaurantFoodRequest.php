@@ -31,9 +31,7 @@ class StoreRestaurantFoodRequest extends FormRequest
 //                'required',
                 'string',
                 'max:255',
-            ],
-            'category_id' => 'required|integer|max:99999999',
-
+            ]
         ];
     }
 }

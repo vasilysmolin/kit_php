@@ -31,7 +31,6 @@ class UpdateRestaurantRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-            'category_restaurant_id' => 'array|max:99999999',
         ];
     }
 

@@ -27,7 +27,6 @@ class RestaurantFoodFactory extends Factory
             'alias' => $this->faker->slug(6),
             'price' => $this->faker->numberBetween(100,1000),
             'salePrice' => $this->faker->numberBetween(1,90),
-            'category_id' => CategoryFood::factory(),
             'description' => $this->faker->text(),
             'active' => 1,
             'quantity' => $this->faker->numberBetween(0,1000),

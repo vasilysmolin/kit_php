@@ -15,8 +15,8 @@ class ChangeRestaurantTable extends Migration
     {
         Schema::table('restaurants', function (Blueprint $table) {
             $table->renameColumn('street', 'address');
-            $table->json('work_time')->nullable()->after('name');
-            $table->json('delivery_time')->nullable()->after('name');
+            $table->json('work_time')->after('name')->default(json_encode([30,60]));
+            $table->json('delivery_time')->after('name')->default(json_encode([600 ,1260]));
         });
     }
 

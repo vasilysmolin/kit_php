@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Import\FoodImport;
 use App\Http\Requests\StoreRestaurantFoodRequest;
 use App\Http\Requests\UpdateRestaurantFoodRequest;
-use App\Models\Restaurant;
 use App\Models\RestaurantFood;
 use App\Objects\Files;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
