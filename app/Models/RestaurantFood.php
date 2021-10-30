@@ -48,12 +48,9 @@ class RestaurantFood extends Model
         'created_at',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function categoryFood()
+    public function categoriesRestaurantFood()
     {
-        return $this->belongsTo(CategoryFood::class, 'category_id', 'id');
+        return $this->belongsToMany(CategoryFood::class, 'restaurant_food_has_categories','restaurant_food_id', 'category_id');
     }
 
     /**

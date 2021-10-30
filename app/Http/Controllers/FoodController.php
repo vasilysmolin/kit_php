@@ -10,6 +10,7 @@ use App\Objects\Files;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
 class FoodController extends Controller
@@ -27,7 +28,7 @@ class FoodController extends Controller
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         }
-
+        $files = resolve(Files::class);
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
 
@@ -51,6 +52,15 @@ class FoodController extends Controller
             })
             ->where('restaurant_id', $idRes)
             ->get();
+
+        $foods->each(function ($item) use ($files) {
+            if (isset($item->image)) {
+                $item->photo = $files->getFilePath($item->image);
+                $item->makeHidden('image');
+            }
+            $item->category_restaurant_food_id = $item->categoriesRestaurantFood->pluck('id');
+            $item->makeHidden('categoriesRestaurantFood');
+        });
 
 
         $count = RestaurantFood::take((int) $take)
@@ -159,8 +169,13 @@ class FoodController extends Controller
         $formData['active'] = true;
         $formData['restaurant_id'] = $id;
         $restaurantFood = new RestaurantFood();
+        unset($formData['category_restaurant_food_id']);
         $restaurantFood->fill($formData);
         $restaurantFood->save();
+
+        if (isset($request['category_restaurant_food_id'])) {
+            $restaurantFood->categoriesRestaurantFood()->sync($request['category_restaurant_food_id']);
+        }
 
         $files = resolve(Files::class);
 
@@ -207,7 +222,8 @@ class FoodController extends Controller
         }
 
         abort_unless($food, 404);
-
+        $food->category_restaurant_food_id = $food->categoriesRestaurantFood->pluck('id');
+        $food->makeHidden('categoriesRestaurantFood');
         return response()->json($food);
     }
 
@@ -234,6 +250,9 @@ class FoodController extends Controller
         $formData = json_decode($request->getContent(), true);
         $user = auth('api')->user();
         $formData['active'] = 1;
+        if (isset($formData['name'])) {
+            $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
+        }
         $restaurant = RestaurantFood::where('id', $id)
             ->whereHas('user', function ($q) use ($user) {
                 $q->where('id', $user->id);
@@ -243,6 +262,10 @@ class FoodController extends Controller
         }
         $restaurant->fill($formData);
         $restaurant->update();
+
+        if (isset($request['category_restaurant_food_id'])) {
+            $restaurant->categoriesRestaurantFood()->sync($request['category_restaurant_food_id']);
+        }
 
         return response()->json([], 204);
     }
