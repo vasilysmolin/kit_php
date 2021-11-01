@@ -93,6 +93,8 @@ class RestaurantController extends Controller
         }
         if(isset($formData['address']) && isset($formData['address']['text'])) {
             $formData['address'] = $formData['address']['text'];
+        } else {
+            $formData['address'] = '';
         }
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         unset($formData['category_restaurant_id']);
