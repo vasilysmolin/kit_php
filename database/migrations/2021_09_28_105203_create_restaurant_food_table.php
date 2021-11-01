@@ -22,7 +22,7 @@ class CreateRestaurantFoodTable extends Migration
             $table->float('price',10,2)->default(0);
             $table->float('salePrice',10,2)->default(0);
             $table->integer('quantity')->default(0);
-            $table->boolean('sort')->nullable();
+            $table->integer('sort')->nullable();
             $table->boolean('active')->default(0);
             $table->boolean('popular')->default(0);
             $table->boolean('sale')->default(0);

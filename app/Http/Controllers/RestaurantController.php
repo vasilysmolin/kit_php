@@ -86,7 +86,7 @@ class RestaurantController extends Controller
         $formData = $request->all();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = true;
-
+        unset($formData['address']);
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         unset($formData['category_restaurant_id']);
         $restaurant = new Restaurant();

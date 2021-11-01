@@ -28,6 +28,7 @@ class FoodController extends Controller
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         }
+
         $files = resolve(Files::class);
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
@@ -58,7 +59,7 @@ class FoodController extends Controller
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-            $item->category_restaurant_food_id = $item->categoriesRestaurantFood->pluck('id');
+            $item->category_dishes_id = $item->categoriesRestaurantFood->pluck('id');
             $item->makeHidden('categoriesRestaurantFood');
         });
 
@@ -126,6 +127,8 @@ class FoodController extends Controller
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
+            $item->category_dishes_id = $item->categoriesRestaurantFood->pluck('id');
+            $item->makeHidden('categoriesRestaurantFood');
         });
 
 
@@ -166,15 +169,18 @@ class FoodController extends Controller
     public function store(StoreRestaurantFoodRequest $request, $id)
     {
         $formData = $request->all();
-        $formData['active'] = true;
+        $formData['active'] = 1;
         $formData['restaurant_id'] = $id;
         $restaurantFood = new RestaurantFood();
-        unset($formData['category_restaurant_food_id']);
+        unset($formData['category_dishes_id']);
+        if (isset($formData['name'])) {
+            $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
+        }
         $restaurantFood->fill($formData);
         $restaurantFood->save();
 
-        if (isset($request['category_restaurant_food_id'])) {
-            $restaurantFood->categoriesRestaurantFood()->sync($request['category_restaurant_food_id']);
+        if (isset($request['category_dishes_id'])) {
+            $restaurantFood->categoriesRestaurantFood()->sync($request['category_dishes_id']);
         }
 
         $files = resolve(Files::class);
@@ -211,7 +217,7 @@ class FoodController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->with(['categoryFood','restaurant.user'])
+            ->with(['categoriesRestaurantFood','restaurant'])
             ->where('id', $id)
             ->first();
 
@@ -222,8 +228,10 @@ class FoodController extends Controller
         }
 
         abort_unless($food, 404);
-        $food->category_restaurant_food_id = $food->categoriesRestaurantFood->pluck('id');
+        $food->category_dishes_id = $food->categoriesRestaurantFood->pluck('id');
+        $food->restaurant_id = $food->restaurant->id;
         $food->makeHidden('categoriesRestaurantFood');
+        $food->makeHidden('restaurant');
         return response()->json($food);
     }
 
@@ -253,18 +261,20 @@ class FoodController extends Controller
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
-        $restaurant = RestaurantFood::where('id', $id)
-            ->whereHas('user', function ($q) use ($user) {
+
+        $food = RestaurantFood::where('id', $id)
+            ->whereHas('restaurant.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })->first();
-        if(!isset($restaurant)) {
+
+        if(!isset($food)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
-        $restaurant->fill($formData);
-        $restaurant->update();
+        $food->fill($formData);
+        $food->update();
 
-        if (isset($request['category_restaurant_food_id'])) {
-            $restaurant->categoriesRestaurantFood()->sync($request['category_restaurant_food_id']);
+        if (isset($request['category_dishes_id'])) {
+            $food->categoriesRestaurantFood()->sync($request['category_dishes_id']);
         }
 
         return response()->json([], 204);

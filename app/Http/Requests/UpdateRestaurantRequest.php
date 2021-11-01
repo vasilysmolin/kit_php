@@ -31,6 +31,11 @@ class UpdateRestaurantRequest extends FormRequest
                 'string',
                 'max:255',
             ],
+            'address' => 'array',
+            'category_restaurant_id' => 'array',
+            'isDelivery' => 'boolean',
+            'isPickup' => 'boolean',
+
         ];
     }
 
