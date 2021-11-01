@@ -153,6 +153,7 @@ class RestaurantController extends Controller
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
+        unset($formData['address']);
         unset($formData['category_restaurant_id']);
         $restaurant = Restaurant::where('id', $id)
             ->whereHas('user', function ($q) use ($user) {
