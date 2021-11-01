@@ -27,10 +27,12 @@ class RestaurantFood extends Model
         'quantity',
         'popular',
         'sale',
+        'weight',
         'novetly',
     ];
     protected $casts = [
       'price' => 'int',
+      'weight' => 'int',
       'salePrice' => 'int',
       'active' => 'bool',
       'popular' => 'bool',

@@ -21,6 +21,8 @@ class Restaurant extends Model
         'isDelivery',
         'isPickup',
         'active',
+        'latitude',
+        'longitude',
         'delivery_time',
         'work_time',
         'user_id',

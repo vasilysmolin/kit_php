@@ -25,18 +25,19 @@ class StoreRestaurantFoodRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
+//            'files' => 'nullable|file:1,20000|image',
             'price' => 'required|integer|max:9999999',
             'salePrice' => 'integer|max:9999999',
             'popular' => 'boolean',
             'sale' => 'boolean',
             'novetly' => 'boolean',
-            'files' => 'nullable|file:1,20000|image',
-//            'alias' => [
-//                'unique:restaurant_foods,alias',
-//                'string',
-//                'max:255',
-//            ],
+        ];
+    }
 
+    public function messages(): array
+    {
+        return [
+            'unique' => 'не уникален',
         ];
     }
 }

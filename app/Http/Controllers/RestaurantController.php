@@ -86,7 +86,14 @@ class RestaurantController extends Controller
         $formData = $request->all();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = true;
-        unset($formData['address']);
+
+        if(isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
+            $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
+            $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
+        }
+        if(isset($formData['address']) && isset($formData['address']['text'])) {
+            $formData['address'] = $formData['address']['text'];
+        }
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         unset($formData['category_restaurant_id']);
         $restaurant = new Restaurant();
@@ -150,10 +157,19 @@ class RestaurantController extends Controller
         $formData = json_decode($request->getContent(), true);
         $user = auth('api')->user();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
+
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
-        unset($formData['address']);
+
+        if(isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
+            $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
+            $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
+        }
+
+        if(isset($formData['address']) && isset($formData['address']['text'])) {
+            $formData['address'] = $formData['address']['text'];
+        }
         unset($formData['category_restaurant_id']);
         $restaurant = Restaurant::where('id', $id)
             ->whereHas('user', function ($q) use ($user) {

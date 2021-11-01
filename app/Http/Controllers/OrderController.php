@@ -23,7 +23,6 @@ class OrderController extends Controller
 
     public function store(Request $request)
     {
-//        dd($request->getContent());
         $content = json_decode($request->getContent(), true);
         $user = auth('api')->user();
         DB::transaction(function () use ($content, $user) {
@@ -35,7 +34,15 @@ class OrderController extends Controller
             $order->email = $content['email'] ?? null;
             $order->phone = $content['phone'] ?? null;
             $order->city_id = $content['city_id'] ?? null;
-            $order->address = $content['address'] ?? null;
+
+            if(isset($content['address']) && isset($content['address']['coords']) && is_array($content['address']['coords'])) {
+                $order['latitude'] = $content['address']['coords'][0] ?? 0;
+                $order['longitude'] = $content['address']['coords'][1] ?? 0;
+            }
+
+            if(isset($formData['address']) && isset($formData['address']['text'])) {
+                $order['address'] = $formData['address']['text'];
+            }
             $order->save();
 
             foreach ($content['order'] as $key => $val) {
@@ -43,10 +50,6 @@ class OrderController extends Controller
                 $orderRestaurant->restaurant_id = $key;
                 $orderRestaurant->order_id = $order->getKey();
                 $orderRestaurant->save();
-//                $orderRestaurant->createMany([
-//                    ['message' => 'A new comment.'],
-//                    ['message' => 'Another new comment.'],
-//                ])
                 foreach ($val as $k => $v) {
                     $food = RestaurantFood::find($k);
                     $orderFood = new OrderFood();

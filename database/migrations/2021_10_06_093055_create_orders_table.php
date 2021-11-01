@@ -24,6 +24,8 @@ class CreateOrdersTable extends Migration
             $table->string('city_id');
             $table->string('zip')->nullable();
             $table->string('address')->nullable();
+            $table->float('latitude', 10, 0)->nullable();
+            $table->float('longitude', 10, 0)->nullable();
             $table->string('delivery_type', 45)->nullable();
             $table->integer('status')->default(1);
             $table->timestamps();

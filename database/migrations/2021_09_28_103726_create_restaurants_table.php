@@ -25,6 +25,8 @@ class CreateRestaurantsTable extends Migration
             $table->boolean('active')->default(0);
             $table->boolean('sort')->nullable();
             $table->string('street',255)->nullable();
+            $table->float('latitude', 10, 0)->nullable();
+            $table->float('longitude', 10, 0)->nullable();
             $table->string('house',255)->nullable();
             $table->string('coords',255)->nullable();
             $table->string('phone',255)->nullable();
