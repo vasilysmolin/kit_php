@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\OrderShipped;
 use App\Models\Order;
 use App\Models\OrderFood;
 use App\Models\OrderRestaurant;
@@ -67,20 +68,13 @@ class OrderController extends Controller
 
                 $restaurant = Restaurant::find($key);
                 if (isset($restaurant) && isset($restaurant->user)) {
-                    Mail::send('emails.order', ['order' => $order], function ($m) use ($order, $restaurant) {
-                        $m->from('welcome@tapigo.ru', 'Tapigo');
-                        $m->to($restaurant->user->email, $order->name)->subject('Ваш заказ!');
-                    });
+                    Mail::to($restaurant->user->email)->send(new OrderShipped($order));
                 }
 
             }
 
-            Mail::send('emails.order', ['order' => $order], function ($m) use ($order) {
-                $m->from('welcome@tapigo.ru', 'Tapigo');
+            Mail::to($order->email)->send(new OrderShipped($order));
 
-                $m->to($order->email, $order->name)->subject('Ваш заказ!');
-                $m->to($order->email, $order->name)->subject('Ваш заказ!');
-            });
         }, 3);
 
 
