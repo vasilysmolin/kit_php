@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderFood;
 use App\Models\OrderRestaurant;
+use App\Models\Restaurant;
 use App\Models\RestaurantFood;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class OrderController extends Controller
 {
@@ -42,6 +44,8 @@ class OrderController extends Controller
 
             if(isset($formData['address']) && isset($formData['address']['text'])) {
                 $order['address'] = $formData['address']['text'];
+            } else {
+                $order['address'] = '';
             }
             $order->save();
 
@@ -60,8 +64,26 @@ class OrderController extends Controller
                     $orderFood->salePrice = $food->salePrice;
                     $orderFood->save();
                 }
+
+                $restaurant = Restaurant::find($key);
+                if (isset($restaurant) && isset($restaurant->user)) {
+                    Mail::send('emails.order', ['order' => $order], function ($m) use ($order, $restaurant) {
+                        $m->from('welcome@tapigo.ru', 'Tapigo');
+                        $m->to($restaurant->user->email, $order->name)->subject('Ваш заказ!');
+                    });
+                }
+
             }
+
+            Mail::send('emails.order', ['order' => $order], function ($m) use ($order) {
+                $m->from('welcome@tapigo.ru', 'Tapigo');
+
+                $m->to($order->email, $order->name)->subject('Ваш заказ!');
+                $m->to($order->email, $order->name)->subject('Ваш заказ!');
+            });
         }, 3);
+
+
 
         return response()->json([], 201);
     }
