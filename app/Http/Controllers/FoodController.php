@@ -185,18 +185,18 @@ class FoodController extends Controller
 
         $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $restaurantFood->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+//        if (isset($request['files']) && count($request['files']) > 0) {
+//            foreach ($request['files'] as $file) {
+//                $dataFile = $files->preparationFileS3($file);
+//                $restaurantFood->image()->create([
+//                    'mimeType' => $dataFile['mineType'],
+//                    'extension' => $dataFile['extension'],
+//                    'name' => $dataFile['name'],
+//                    'uniqueValue' => $dataFile['name'],
+//                    'size' => $dataFile['size'],
+//                ]);
+//            }
+//        }
 
         return response()->json([], 201);
     }
