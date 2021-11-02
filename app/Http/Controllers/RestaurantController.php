@@ -52,7 +52,7 @@ class RestaurantController extends Controller
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-            $item->category_restaurant_id = $item->categoriesRestaurant->pluck('id');
+            $item->categoryRestaurantID = $item->categoriesRestaurant->pluck('id');
             $item->makeHidden('categoriesRestaurant');
         });
 
@@ -97,14 +97,14 @@ class RestaurantController extends Controller
             $formData['address'] = '';
         }
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-        unset($formData['category_restaurant_id']);
+        unset($formData['categoryRestaurantID']);
         $restaurant = new Restaurant();
         $restaurant->fill($formData);
         $restaurant->save();
         $files = resolve(Files::class);
 
-        if (isset($request['category_restaurant_id'])) {
-           $restaurant->categoriesRestaurant()->sync($request['category_restaurant_id']);
+        if (isset($request['categoryRestaurantID'])) {
+           $restaurant->categoriesRestaurant()->sync($request['categoryRestaurantID']);
         }
 
         if (isset($request['files']) && count($request['files']) > 0) {
@@ -133,7 +133,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant = Restaurant::where('id', $id)
-            ->with('image','categoriesRestaurant')
+            ->with('image','categoriesRestaurant:id', 'restaurantFood:id')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -148,8 +148,10 @@ class RestaurantController extends Controller
         }
 
         abort_unless($restaurant, 404);
-        $restaurant->category_restaurant_id = $restaurant->categoriesRestaurant->pluck('id');
+        $restaurant->categoryRestaurantID = $restaurant->categoriesRestaurant->pluck('id');
+        $restaurant->restaurantFoodID = $restaurant->restaurantFood->pluck('id');
         $restaurant->makeHidden('categoriesRestaurant');
+        $restaurant->makeHidden('restaurantFood');
 
         return response()->json($restaurant);
     }
@@ -172,7 +174,7 @@ class RestaurantController extends Controller
         if(isset($formData['address']) && isset($formData['address']['text'])) {
             $formData['address'] = $formData['address']['text'];
         }
-        unset($formData['category_restaurant_id']);
+        unset($formData['categoryRestaurantID']);
         $restaurant = Restaurant::where('id', $id)
             ->whereHas('user', function ($q) use ($user) {
                 $q->where('id', $user->id);
@@ -185,8 +187,8 @@ class RestaurantController extends Controller
         $restaurant->fill($formData);
         $restaurant->update();
 
-        if (isset($request['category_restaurant_id'])) {
-            $restaurant->categoriesRestaurant()->sync($request['category_restaurant_id']);
+        if (isset($request['categoryRestaurantID'])) {
+            $restaurant->categoriesRestaurant()->sync($request['categoryRestaurantID']);
         }
 
         return response()->json([], 204);

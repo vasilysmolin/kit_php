@@ -54,7 +54,7 @@ class RestaurantTestTest extends TestCase
             ->json('POST', route('restaurants.store'), [
                 'name' => 'test',
                 'alias' => 'test',
-                'category_restaurant_id' => [$category->id],
+                'categoryRestaurantID' => [$category->id],
             ]);
 
         $id = explode('/restaurants/', $response->baseResponse->headers->get('Location'));

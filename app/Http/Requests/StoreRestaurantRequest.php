@@ -32,7 +32,7 @@ class StoreRestaurantRequest extends FormRequest
                 'string',
                 'max:255',
             ],
-            'category_restaurant_id' => 'array',
+            'categoryRestaurantID' => 'array',
             'isDelivery' => 'boolean',
             'isPickup' => 'boolean',
             'address' => 'array'
