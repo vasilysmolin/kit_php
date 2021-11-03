@@ -68,12 +68,12 @@ class OrderController extends Controller
 
                 $restaurant = Restaurant::find($key);
                 if (isset($restaurant) && isset($restaurant->user)) {
-                    Mail::to($restaurant->user->email)->send(new OrderShipped($order));
+                    Mail::to($restaurant->user->email)->queue(new OrderShipped($order));
                 }
 
             }
 
-            Mail::to($order->email)->send(new OrderShipped($order));
+            Mail::to($order->email)->queue(new OrderShipped($order));
 
         }, 3);
 

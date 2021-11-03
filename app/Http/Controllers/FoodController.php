@@ -59,7 +59,7 @@ class FoodController extends Controller
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-            $item->category_dishes_id = $item->categoriesRestaurantFood->pluck('id');
+            $item->categoryDishesID = $item->categoriesRestaurantFood->pluck('id');
             $item->makeHidden('categoriesRestaurantFood');
         });
 
@@ -127,7 +127,7 @@ class FoodController extends Controller
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-            $item->category_dishes_id = $item->categoriesRestaurantFood->pluck('id');
+            $item->categoryDishesID = $item->categoriesRestaurantFood->pluck('id');
             $item->makeHidden('categoriesRestaurantFood');
         });
 
@@ -172,31 +172,31 @@ class FoodController extends Controller
         $formData['active'] = 1;
         $formData['restaurant_id'] = $id;
         $restaurantFood = new RestaurantFood();
-        unset($formData['category_dishes_id']);
+        unset($formData['categoryDishesID']);
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
         $restaurantFood->fill($formData);
         $restaurantFood->save();
 
-        if (isset($request['category_dishes_id'])) {
-            $restaurantFood->categoriesRestaurantFood()->sync($request['category_dishes_id']);
+        if (isset($request['categoryDishesID'])) {
+            $restaurantFood->categoriesRestaurantFood()->sync($request['categoryDishesID']);
         }
 
         $files = resolve(Files::class);
 
-//        if (isset($request['files']) && count($request['files']) > 0) {
-//            foreach ($request['files'] as $file) {
-//                $dataFile = $files->preparationFileS3($file);
-//                $restaurantFood->image()->create([
-//                    'mimeType' => $dataFile['mineType'],
-//                    'extension' => $dataFile['extension'],
-//                    'name' => $dataFile['name'],
-//                    'uniqueValue' => $dataFile['name'],
-//                    'size' => $dataFile['size'],
-//                ]);
-//            }
-//        }
+        if (isset($request['files']) && count($request['files']) > 0) {
+            foreach ($request['files'] as $file) {
+                $dataFile = $files->preparationFileS3($file);
+                $restaurantFood->image()->create([
+                    'mimeType' => $dataFile['mineType'],
+                    'extension' => $dataFile['extension'],
+                    'name' => $dataFile['name'],
+                    'uniqueValue' => $dataFile['name'],
+                    'size' => $dataFile['size'],
+                ]);
+            }
+        }
 
         return response()->json([], 201);
     }
@@ -228,7 +228,7 @@ class FoodController extends Controller
         }
 
         abort_unless($food, 404);
-        $food->category_dishes_id = $food->categoriesRestaurantFood->pluck('id');
+        $food->categoryDishesID = $food->categoriesRestaurantFood->pluck('id');
         $food->restaurant_id = $food->restaurant->id;
         $food->makeHidden('categoriesRestaurantFood');
         $food->makeHidden('restaurant');
@@ -273,8 +273,8 @@ class FoodController extends Controller
         $food->fill($formData);
         $food->update();
 
-        if (isset($request['category_dishes_id'])) {
-            $food->categoriesRestaurantFood()->sync($request['category_dishes_id']);
+        if (isset($request['categoryDishesID'])) {
+            $food->categoriesRestaurantFood()->sync($request['categoryDishesID']);
         }
 
         return response()->json([], 204);
