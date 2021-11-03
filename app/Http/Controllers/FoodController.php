@@ -267,7 +267,7 @@ class FoodController extends Controller
                 $q->where('id', $user->id);
             })->first();
 
-        if(!isset($food)) {
+        if (!isset($food)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
         $food->fill($formData);

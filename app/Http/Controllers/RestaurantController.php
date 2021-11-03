@@ -42,7 +42,7 @@ class RestaurantController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->with('image','categoriesRestaurant')
+            ->with('image', 'categoriesRestaurant')
             ->where('active', 1)
             ->get();
 
@@ -88,11 +88,11 @@ class RestaurantController extends Controller
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = true;
 
-        if(isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
+        if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
             $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
             $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
         }
-        if(isset($formData['address']) && isset($formData['address']['text'])) {
+        if (isset($formData['address']) && isset($formData['address']['text'])) {
             $formData['address'] = $formData['address']['text'];
         } else {
             $formData['address'] = '';
@@ -105,7 +105,7 @@ class RestaurantController extends Controller
         $files = resolve(Files::class);
 
         if (isset($request['categoryRestaurantID'])) {
-           $restaurant->categoriesRestaurant()->sync($request['categoryRestaurantID']);
+            $restaurant->categoriesRestaurant()->sync($request['categoryRestaurantID']);
         }
 
         if (isset($request['files']) && count($request['files']) > 0) {
@@ -124,7 +124,7 @@ class RestaurantController extends Controller
         return response()->json([], 201, ['Location' => "/restaurants/$restaurant->id"]);
     }
 
-    public function show(Request $request,$id): \Illuminate\Http\JsonResponse
+    public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         if (isset($user) && $request->from === 'cabinet') {
@@ -134,7 +134,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant = Restaurant::where('id', $id)
-            ->with('image','categoriesRestaurant:id', 'restaurantFood:id')
+            ->with('image', 'categoriesRestaurant:id', 'restaurantFood:id')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -167,12 +167,12 @@ class RestaurantController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
 
-        if(isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
+        if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
             $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
             $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
         }
 
-        if(isset($formData['address']) && isset($formData['address']['text'])) {
+        if (isset($formData['address']) && isset($formData['address']['text'])) {
             $formData['address'] = $formData['address']['text'];
         }
         unset($formData['categoryRestaurantID']);
@@ -181,7 +181,7 @@ class RestaurantController extends Controller
                 $q->where('id', $user->id);
             })->first();
 
-        if(!isset($restaurant)) {
+        if (!isset($restaurant)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
 

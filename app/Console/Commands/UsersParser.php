@@ -46,22 +46,20 @@ class UsersParser extends Command
         $contents = $response->getBody()->getContents();
         $contents = json_decode($contents, true);
 //        DB::transaction(function () use ($contents) {
-            foreach($contents as $item) {
+        foreach ($contents as $item) {
+            $count = User::where('phone', $item['phone'])
+                ->orWhere('email', $item['email'])->get();
 
-                $count = User::where('phone', $item['phone'])
-                    ->orWhere('email', $item['email'])->get();
-
-                if ($count->count() === 0) {
-                    $user = new User();
-                    $user->id = $item['id'];
-                    $user->email = $item['email'];
-                    $user->password = $item['password'];
-                    $user->phone = $item['phone'];
-                    $user->name = $item['profile']['name'];
-                    $user->save();
-                }
-
+            if ($count->count() === 0) {
+                $user = new User();
+                $user->id = $item['id'];
+                $user->email = $item['email'];
+                $user->password = $item['password'];
+                $user->phone = $item['phone'];
+                $user->name = $item['profile']['name'];
+                $user->save();
             }
+        }
 //        },2);
 
         return 1;

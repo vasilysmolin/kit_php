@@ -70,7 +70,7 @@ class Restaurant extends Model
 
     public function categoriesRestaurant()
     {
-        return $this->belongsToMany(CategoryRestaurant::class, 'restaurant_has_categories','restaurant_id', 'category_id');
+        return $this->belongsToMany(CategoryRestaurant::class, 'restaurant_has_categories', 'restaurant_id', 'category_id');
     }
 
     public function restaurantFood()

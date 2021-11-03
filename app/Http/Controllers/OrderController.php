@@ -31,19 +31,19 @@ class OrderController extends Controller
         DB::transaction(function () use ($content, $user) {
             $order = new Order();
             $order->name = $content['name'];
-            $order->user_id = isset($user) ? $user->getAuthIdentifier(): null;
+            $order->user_id = isset($user) ? $user->getAuthIdentifier() : null;
             $order->surname = $content['surname'] ?? null;
             $order->patronymic = $content['patronymic'] ?? null;
             $order->email = $content['email'] ?? null;
             $order->phone = $content['phone'] ?? null;
             $order->city_id = $content['city_id'] ?? null;
 
-            if(isset($content['address']) && isset($content['address']['coords']) && is_array($content['address']['coords'])) {
+            if (isset($content['address']) && isset($content['address']['coords']) && is_array($content['address']['coords'])) {
                 $order['latitude'] = $content['address']['coords'][0] ?? 0;
                 $order['longitude'] = $content['address']['coords'][1] ?? 0;
             }
 
-            if(isset($formData['address']) && isset($formData['address']['text'])) {
+            if (isset($formData['address']) && isset($formData['address']['text'])) {
                 $order['address'] = $formData['address']['text'];
             } else {
                 $order['address'] = '';
@@ -70,11 +70,9 @@ class OrderController extends Controller
                 if (isset($restaurant) && isset($restaurant->user)) {
                     Mail::to($restaurant->user->email)->queue(new OrderShipped($order));
                 }
-
             }
 
             Mail::to($order->email)->queue(new OrderShipped($order));
-
         }, 3);
 
 

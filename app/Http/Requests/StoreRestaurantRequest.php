@@ -35,7 +35,7 @@ class StoreRestaurantRequest extends FormRequest
             'categoryRestaurantID' => 'array',
             'isDelivery' => 'boolean',
             'isPickup' => 'boolean',
-            'address' => 'array'
+            'address' => 'array',
 
         ];
     }
