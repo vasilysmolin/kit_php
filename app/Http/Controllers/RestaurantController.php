@@ -53,6 +53,7 @@ class RestaurantController extends Controller
                 $item->makeHidden('image');
             }
             $item->categoryRestaurantID = $item->categoriesRestaurant->pluck('id');
+            $item->restaurantFoodID = $item->restaurantFood->pluck('id');
             $item->makeHidden('categoriesRestaurant');
         });
 
