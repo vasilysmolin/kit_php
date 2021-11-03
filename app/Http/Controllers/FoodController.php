@@ -183,9 +183,9 @@ class FoodController extends Controller
             $restaurantFood->categoriesRestaurantFood()->sync($request['categoryDishesID']);
         }
 
-        $files = resolve(Files::class);
+//        $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
+//        if (isset($request['files']) && count($request['files']) > 0) {
 //            foreach ($request['files'] as $file) {
 //                $dataFile = $files->preparationFileS3($file);
 //                $restaurantFood->image()->create([
@@ -196,7 +196,7 @@ class FoodController extends Controller
 //                    'size' => $dataFile['size'],
 //                ]);
 //            }
-        }
+//        }
 
         return response()->json([], 201);
     }
