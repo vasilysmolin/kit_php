@@ -35,7 +35,7 @@ class Files
         $url = Storage::url($path . '_'
             . 400 . 'x'
             . 400 . '.' .
-            'webp');
+            'jpg');
 
         return $url;
     }
@@ -94,12 +94,12 @@ class Files
             $image = \Intervention\Image\Facades\Image::make($file);
             $filteredImage = $image
                 ->fit($resolution['width'], $resolution['height'])
-                ->encode('webp', 100);
+                ->encode('jpg', 100);
             Storage::put(
                 $path . '_'
                 . $resolution['width'] . 'x'
                 . $resolution['height'] . '.' .
-                'webp',
+                'jpg',
                 $filteredImage
             );
         }
