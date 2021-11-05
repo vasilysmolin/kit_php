@@ -13,6 +13,7 @@ Route::group([
 ], function ($router) {
 
     Route::post('login', 'AuthController@login')->withoutMiddleware('auth:api');
+    Route::post('login-hash', 'AuthController@loginHash')->withoutMiddleware('auth:api');
     Route::post('register', 'AuthController@register')->withoutMiddleware('auth:api');
     Route::post('logout', 'AuthController@logout')->withoutMiddleware('auth:api');
     Route::post('refresh', 'AuthController@refresh');

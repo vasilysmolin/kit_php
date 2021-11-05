@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Models\User;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class UsersParser extends Command
 {
@@ -47,18 +46,29 @@ class UsersParser extends Command
         $contents = json_decode($contents, true);
 //        DB::transaction(function () use ($contents) {
         foreach ($contents as $item) {
-            $count = User::where('phone', $item['phone'])
-                ->orWhere('email', $item['email'])->get();
-
-            if ($count->count() === 0) {
-                $user = new User();
+            $userDB = User::find($item['id']);
+            if(isset($userDB)) {
+                $user = $userDB;
                 $user->id = $item['id'];
                 $user->email = $item['email'];
                 $user->password = $item['password'];
                 $user->phone = $item['phone'];
                 $user->name = $item['profile']['name'];
-                $user->save();
+                $user->update();
+            } else {
+                $count = User::where('email', $item['email'])->get();
+
+                if ($count->count() === 0) {
+                    $user = new User();
+                    $user->id = $item['id'];
+                    $user->email = $item['email'];
+                    $user->password = $item['password'];
+                    $user->phone = $item['phone'];
+                    $user->name = $item['profile']['name'];
+                    $user->save();
+                }
             }
+
         }
 //        },2);
 

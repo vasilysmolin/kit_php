@@ -3,6 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use GuzzleHttp\Exception\RequestException;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\DB;
 
 class AuthController extends Controller
 {
@@ -36,6 +41,59 @@ class AuthController extends Controller
         }
 
         return $this->respondWithToken($token);
+    }
+
+    /**
+     * Get a JWT via given credentials.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function loginHash()
+    {
+//        $str = '794:black_info@bk.ru';
+//        $crypt = Crypt::encryptString($str);
+        $crypt = request(['hash']);
+        if(isset($crypt['hash'])) {
+            try{
+                $crypt = Crypt::decryptString($crypt['hash']);
+            } catch(DecryptException $e) {
+                return response()->json(['errors' => [
+                    'code' => 422,
+                    'message' => 'Неверный логин или пароль',
+                ],
+                ], 422);
+            }
+
+            $arr = explode(':',$crypt);
+
+            if(count($arr) === 2) {
+                $user = User::where('id',$arr[0])->where('email', $arr[1])->first();
+                if(isset($user)) {
+                    $password = $user->password;
+                    $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
+                    $user->update();
+                    $token = auth('api')->attempt(['email' =>$arr[1], 'password' => '1234567']);
+                    $user->password = $password;
+                    $user->update();
+
+                    if ($token === false) {
+                        return response()->json(['errors' => [
+                            'code' => 422,
+                            'message' => 'Неверный логин или пароль',
+                        ],
+                        ], 422);
+                    }
+
+                    return $this->respondWithToken($token);
+                }
+            }
+        }
+
+        return response()->json(['errors' => [
+            'code' => 422,
+            'message' => 'Неверный логин или пароль',
+        ],
+        ], 422);
     }
 
     /**
