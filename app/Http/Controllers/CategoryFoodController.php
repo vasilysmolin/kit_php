@@ -14,13 +14,20 @@ class CategoryFoodController extends Controller
     {
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
+        $ids = $request->id ?? null;
         $restaurants = CategoryFood::take((int)$take)
             ->skip((int)$skip)
+            ->when(isset($ids), function ($q) use ($ids) {
+                $q->whereIn('id', $ids);
+            })
             ->where('active', 1)
             ->get();
 
         $count = CategoryFood::take((int)$take)
             ->skip((int)$skip)
+            ->when(isset($ids), function ($q) use ($ids) {
+                $q->whereIn('id', $ids);
+            })
             ->where('active', 1)
             ->count();
 
