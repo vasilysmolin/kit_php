@@ -27,15 +27,22 @@ class RestaurantController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
         $user = auth('api')->user();
+        $categoryRestaurantID = $request->categoryRestaurantID;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
             $cabinet = false;
         }
+
         $restaurants = Restaurant::take((int) $take)
             ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
+            })
+            ->when(isset($categoryRestaurantID), function ($q) use ($categoryRestaurantID) {
+                $q->whereHas('categoriesRestaurant', function ($q) use ($categoryRestaurantID) {
+                    $q->whereIn('category_id', $categoryRestaurantID);
+                });
             })
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
@@ -61,6 +68,11 @@ class RestaurantController extends Controller
             ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
+            })
+            ->when(isset($categoryRestaurantID), function ($q) use ($categoryRestaurantID) {
+                $q->whereHas('categoriesRestaurant', function ($q) use ($categoryRestaurantID) {
+                    $q->whereIn('category_id', $categoryRestaurantID);
+                });
             })
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
