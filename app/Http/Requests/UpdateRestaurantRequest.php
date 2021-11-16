@@ -25,7 +25,7 @@ class UpdateRestaurantRequest extends FormRequest
     {
         return [
             'name' => 'string|max:255',
-//            'files' => 'file:1,20000|image',
+            'files.*' => 'nullable|file:1,20000|image',
             'alias' => [
                 'unique:restaurants,alias',
                 'string',

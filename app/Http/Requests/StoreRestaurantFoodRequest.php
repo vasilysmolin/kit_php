@@ -25,7 +25,7 @@ class StoreRestaurantFoodRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-//            'files' => 'nullable|file:1,20000|image',
+            'files.*' => 'nullable|file:1,20000|image',
             'price' => 'required|integer|max:9999999',
             'salePrice' => 'integer|max:9999999',
             'popular' => 'boolean',
