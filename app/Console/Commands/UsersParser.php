@@ -47,7 +47,7 @@ class UsersParser extends Command
 //        DB::transaction(function () use ($contents) {
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
-            if(isset($userDB)) {
+            if (isset($userDB)) {
                 $user = $userDB;
                 $user->id = $item['id'];
                 $user->email = $item['email'];
@@ -70,7 +70,6 @@ class UsersParser extends Command
                     $user->save();
                 }
             }
-
         }
 //        },2);
 

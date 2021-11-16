@@ -53,10 +53,10 @@ class AuthController extends Controller
 //        $str = '794:black_info@bk.ru';
 //        $crypt = Crypt::encryptString($str);
         $crypt = request(['hash']);
-        if(isset($crypt['hash'])) {
-            try{
+        if (isset($crypt['hash'])) {
+            try {
                 $crypt = Crypt::decryptString($crypt['hash']);
-            } catch(DecryptException $e) {
+            } catch (DecryptException $e) {
                 return response()->json(['errors' => [
                     'code' => 422,
                     'message' => 'Неверный логин или пароль',
@@ -64,15 +64,15 @@ class AuthController extends Controller
                 ], 422);
             }
 
-            $arr = explode(':',$crypt);
+            $arr = explode(':', $crypt);
 
-            if(count($arr) === 2) {
-                $user = User::where('id',$arr[0])->where('email', $arr[1])->first();
-                if(isset($user)) {
+            if (count($arr) === 2) {
+                $user = User::where('id', $arr[0])->where('email', $arr[1])->first();
+                if (isset($user)) {
                     $password = $user->password;
                     $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
                     $user->update();
-                    $token = auth('api')->attempt(['email' =>$arr[1], 'password' => '1234567']);
+                    $token = auth('api')->attempt(['email' => $arr[1], 'password' => '1234567']);
                     $user->password = $password;
                     $user->update();
 
