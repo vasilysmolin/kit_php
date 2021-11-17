@@ -64,8 +64,8 @@ class Restaurant extends Model
         'work_time' => 'array',
         'delivery_time' => 'array',
         'min_delivery_price' => 'int',
-//        'isDelivery' => 'bool',
-//        'isPickup' => 'bool',
+        'isDelivery' => 'bool',
+        'isPickup' => 'bool',
     ];
 
     public function categoriesRestaurant()

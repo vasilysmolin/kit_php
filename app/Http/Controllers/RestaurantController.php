@@ -100,15 +100,6 @@ class RestaurantController extends Controller
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = true;
 
-        // @TODO сделать по-честному в валидаторе бы.
-        $formData['isDelivery'] = is_bool($formData['isDelivery']) ? $formData['isDelivery'] : (
-            $formData['isDelivery'] === 'true'
-        );
-        $formData['isPickup'] = is_bool($formData['isPickup']) ? $formData['isPickup'] : (
-            $formData['isPickup'] === 'true'
-        );
-        var_dump($formData);die;
-
         if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
             $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
             $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
