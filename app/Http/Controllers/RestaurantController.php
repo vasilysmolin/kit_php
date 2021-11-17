@@ -100,6 +100,7 @@ class RestaurantController extends Controller
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
         $formData['active'] = true;
 
+        // @TODO сделать по-честному в валидаторе бы.
         $formData['isDelivery'] = is_bool($formData['isDelivery']) ? $formData['isDelivery'] : (
             $formData['isDelivery'] === 'true'
         );
