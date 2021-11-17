@@ -164,7 +164,7 @@ class RestaurantController extends Controller
         $restaurant->categoryRestaurantID = $restaurant->categoriesRestaurant->pluck('id');
         $restaurant->restaurantFoodID = $restaurant->restaurantFood->pluck('id');
         $restaurant->makeHidden('categoriesRestaurant');
-        $restaurant->makeHidden('restaurantFood');
+//        $restaurant->makeHidden('restaurantFood');
 
         return response()->json($restaurant);
     }
