@@ -146,7 +146,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant = Restaurant::where('id', $id)
-            ->with('image', 'categoriesRestaurant:id', 'restaurantFood:id')
+            ->with('image', 'categoriesRestaurant:id', 'restaurantFood:id', 'restaurantFood')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -164,7 +164,7 @@ class RestaurantController extends Controller
         $restaurant->categoryRestaurantID = $restaurant->categoriesRestaurant->pluck('id');
         $restaurant->restaurantFoodID = $restaurant->restaurantFood->pluck('id');
         $restaurant->makeHidden('categoriesRestaurant');
-        $restaurant->makeHidden('restaurantFood');
+//        $restaurant->makeHidden('restaurantFood');
 
         return response()->json($restaurant);
     }
