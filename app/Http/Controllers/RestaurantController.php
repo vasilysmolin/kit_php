@@ -107,6 +107,7 @@ class RestaurantController extends Controller
         $formData['isPickup'] = is_bool($formData['isPickup']) ? $formData['isPickup'] : (
             $formData['isPickup'] === 'true'
         );
+        var_dump($formData);die;
 
         if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
             $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
