@@ -11,6 +11,11 @@ class OrderRestaurant extends Model
 
     public function orderFood()
     {
-        return $this->hasMany(OrderFood::class, 'restaurant_food_id', 'id');
+        return $this->hasMany(OrderFood::class, 'order_restaurant_id', 'id');
+    }
+
+    public function restaurant(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne(Restaurant::class, 'id', 'restaurant_id');
     }
 }

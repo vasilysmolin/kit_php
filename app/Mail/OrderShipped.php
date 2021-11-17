@@ -38,11 +38,12 @@ class OrderShipped extends Mailable implements ShouldQueue
      */
     public function build()
     {
-        return $this->view('emails.order')
-//            ->with([
-//                'orderName' => $this->order->name,
-//                'orderPrice' => $this->order->price,
-//            ])
-            ;
+        return $this
+            ->from('welcome@tapigo.ru', 'Новый заказ №' . $this->order->id)
+            ->markdown('emails.orders.shipped')
+            ->subject('Новый заказ')
+            ->with([
+                'order' => $this->order,
+            ]);
     }
 }
