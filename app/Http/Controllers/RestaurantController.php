@@ -157,7 +157,7 @@ class RestaurantController extends Controller
         $files = resolve(Files::class);
         if (isset($restaurant->image)) {
             $restaurant->photo = $files->getFilePath($restaurant->image);
-//            $restaurant->makeHidden('image');
+            $restaurant->makeHidden('image');
         }
 
         abort_unless($restaurant, 404);
