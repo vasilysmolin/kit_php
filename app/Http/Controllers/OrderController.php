@@ -55,6 +55,7 @@ class OrderController extends Controller
                 $orderRestaurant->restaurant_id = $key;
                 $orderRestaurant->order_id = $order->getKey();
                 $orderRestaurant->save();
+                $sum = 0;
                 foreach ($val as $k => $v) {
                     $food = RestaurantFood::find($k);
                     $orderFood = new OrderFood();
@@ -64,8 +65,9 @@ class OrderController extends Controller
                     $orderFood->price = $food->price;
                     $orderFood->salePrice = $food->salePrice;
                     $orderFood->save();
+                    $sum = $sum + $orderFood->salePrice * $orderFood->quantity;
                 }
-
+                $order->sum = $sum;
                 $restaurant = Restaurant::find($key);
                 if (isset($restaurant) && isset($restaurant->user)) {
                     Mail::to($restaurant->user->email)->queue(new OrderShipped($order));
