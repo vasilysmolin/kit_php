@@ -146,7 +146,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant = Restaurant::where('id', $id)
-            ->with('image', 'categoriesRestaurant:id', 'restaurantFood:id')
+            ->with('image', 'categoriesRestaurant:id', 'restaurantFood:id', 'categoriesRestaurant')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('user', function ($q) use ($user) {
                     $q->where('id', $user->id);
