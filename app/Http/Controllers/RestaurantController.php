@@ -119,9 +119,6 @@ class RestaurantController extends Controller
         if (isset($request['categoryRestaurantID'])) {
             $restaurant->categoriesRestaurant()->sync($request['categoryRestaurantID']);
         }
-        var_dump($request['files']);
-        var_dump($files);
-        die;
 
         if (isset($request['files']) && count($request['files']) > 0) {
             foreach ($request['files'] as $file) {
