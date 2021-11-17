@@ -12,8 +12,16 @@
 - Email: {{$order->email}}
 
 @component('mail::table')
-    @php($sum = 0)
+    @php
+        $sum = 0;
+    @endphp
     @foreach($order->orderRestaurant as $rest)
+
+        @foreach($rest->orderFood as $orFood)
+            @php
+              $sum = $sum + $orFood->salePrice * $orFood->quantity;
+            @endphp
+        @endforeach
 
      Название ресторана: **{{$rest->restaurant->name}}**
 
@@ -22,13 +30,13 @@
         @foreach($rest->orderFood as $orFood)
  | {{$orFood->food->name}} - {{$orFood->salePrice}} руб/шт  | {{$orFood->quantity}} | {{$orFood->salePrice * $orFood->quantity}} |
         @endforeach
-{{-- | Итого | {{$rest->orderFood->pluck('quantity')->sum() }} | {{ $sum }} |--}}
+ | **Итого** | **{{$rest->orderFood->pluck('quantity')->sum() }}** | **{{ $sum }}** |
     @endforeach
 
 @endcomponent
 
 
-@component('mail::button', ['url' => config('app.url')])
+@component('mail::button', ['url' => 'https://user.tapigo.ru'])
 В личный кабинет
 @endcomponent
 
