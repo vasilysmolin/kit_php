@@ -171,7 +171,7 @@ class RestaurantController extends Controller
 
     public function update(UpdateRestaurantRequest $request, $id)
     {
-        $formData = json_decode($request->getContent(), true);
+        $formData = $request->all();
         $user = auth('api')->user();
         $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
 

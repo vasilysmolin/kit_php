@@ -255,7 +255,7 @@ class FoodController extends Controller
 
     public function update(UpdateRestaurantFoodRequest $request, $id)
     {
-        $formData = json_decode($request->getContent(), true);
+        $formData = $request->all();
         $user = auth('api')->user();
         $formData['active'] = 1;
         if (isset($formData['name'])) {
