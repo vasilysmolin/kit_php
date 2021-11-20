@@ -11,6 +11,12 @@ jobs:
   app-make-lint:
     name: CI
     runs-on: ubuntu-latest
+    env:
+      DB_HOST: localhost
+      POSTGRES_HOST: localhost
+      POSTGRES_PORT: 5432
+      DB_CONNECTION: pgsql
+      REDIS_PORT: 6379
 
     # Service containers to run with `container-job`
     services:
@@ -56,19 +62,6 @@ jobs:
 
       - name: Setup project
         run: make setup
-        env:
-          # The hostname used to communicate with the PostgreSQL service container
-          DB_HOST: localhost
-          # The default PostgreSQL port
-          DB_PORT: 5432
-          # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: localhost
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
-          # The hostname used to communicate with the Redis service container
-          REDIS_HOST: localhost
-          # The default Redis port
-          REDIS_PORT: 6379
 
       - name: Check lint
         run: make lint
@@ -77,25 +70,15 @@ jobs:
         run: make phpstan
 
       - name: Run tests
-        run: make test
-        env:
-          # The hostname used to communicate with the PostgreSQL service container
-          DB_HOST: localhost
-          # The default PostgreSQL port
-          DB_PORT: 5432
-          # The hostname used to communicate with the PostgreSQL service container
-          POSTGRES_HOST: localhost
-          # The default PostgreSQL port
-          POSTGRES_PORT: 5432
+        run: make test-coverage
 
-#      - uses: paambaati/codeclimate-action@v2.2.4
+#      - name: Run tests covarage
+#        uses: paambaati/codeclimate-action@v2.6.0
 #        env:
-#          CC_TEST_REPORTER_ID: bc32a559ee6cffcb36f99ab566144554e35dcb439c70986e28c14ba002a113a0
-#          DB_HOST: localhost
-#          DB_PORT: 5432
-#          POSTGRES_HOST: localhost
-#          POSTGRES_PORT: 5432
+#          CC_TEST_REPORTER_ID: ${{ secrets.CLIMAT_ID }}
 #        with:
 #          coverageCommand: make test-coverage
+#          coverageLocations: ${{github.workplace}}/build/logs/clover.xml:clover
+#          debug: true
 
 
