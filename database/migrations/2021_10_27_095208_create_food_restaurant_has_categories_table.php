@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRestaurantHasCategoriesTable extends Migration
+class CreateFoodRestaurantHasCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,20 +13,20 @@ class CreateRestaurantHasCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('restaurant_has_categories', function (Blueprint $table) {
+        Schema::create('food_restaurant_has_categories', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('category_id');
             $table->foreign('category_id', 'FK_category_has_id')
                 ->references('id')
-                ->on('category_restaurants')
+                ->on('food_category_restaurants')
                 ->onUpdate('RESTRICT')
-                ->onDelete('RESTRICT');
+                ->onDelete('CASCADE');
             $table->unsignedBigInteger('restaurant_id');
             $table->foreign('restaurant_id', 'FK_restaurants_has_id')
                 ->references('id')
-                ->on('restaurants')
+                ->on('food_restaurants')
                 ->onUpdate('RESTRICT')
-                ->onDelete('RESTRICT');
+                ->onDelete('CASCADE');
             $table->timestamps();
         });
     }

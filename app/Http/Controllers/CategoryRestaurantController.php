@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\CategoryRestaurant;
+use App\Models\FoodCategoryRestaurant;
 use Illuminate\Http\Request;
 
 class CategoryRestaurantController extends Controller
@@ -13,7 +13,7 @@ class CategoryRestaurantController extends Controller
         $skip = $request->skip ?? 0;
         $ids = $request->id ?? null;
 
-        $restaurants = CategoryRestaurant::take((int)$take)
+        $restaurants = FoodCategoryRestaurant::take((int)$take)
             ->skip((int)$skip)
             ->when(isset($ids), function ($q) use ($ids) {
                 $q->whereIn('id', $ids);
@@ -21,7 +21,7 @@ class CategoryRestaurantController extends Controller
             ->where('active', 1)
             ->get();
 
-        $count = CategoryRestaurant::take((int)$take)
+        $count = FoodCategoryRestaurant::take((int)$take)
             ->skip((int)$skip)
             ->when(isset($ids), function ($q) use ($ids) {
                 $q->whereIn('id', $ids);

@@ -1,6 +1,12 @@
 test:
 	docker-compose exec php php artisan test
 
+migrate:
+	docker-compose exec php php artisan migrate
+
+autoload:
+	docker-compose exec php composer install
+
 test-coverage:
 	composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
 

@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Mail\OrderShipped;
-use App\Models\Order;
-use App\Models\OrderFood;
-use App\Models\OrderRestaurant;
-use App\Models\Restaurant;
-use App\Models\RestaurantFood;
+use App\Models\FoodOrder;
+use App\Models\FoodOrderDishes;
+use App\Models\FoodOrderRestaurant;
+use App\Models\FoodRestaurant;
+use App\Models\FoodRestaurantDishes;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -29,7 +29,7 @@ class OrderController extends Controller
         $content = json_decode($request->getContent(), true);
         $user = auth('api')->user();
         DB::transaction(function () use ($content, $user) {
-            $order = new Order();
+            $order = new FoodOrder();
             $order->name = $content['name'];
             $order->user_id = isset($user) ? $user->getAuthIdentifier() : null;
             $order->surname = $content['surname'] ?? null;
@@ -51,14 +51,14 @@ class OrderController extends Controller
             $order->save();
 
             foreach ($content['order'] as $key => $val) {
-                $orderRestaurant = new OrderRestaurant();
+                $orderRestaurant = new FoodOrderRestaurant();
                 $orderRestaurant->restaurant_id = $key;
                 $orderRestaurant->order_id = $order->getKey();
                 $orderRestaurant->save();
                 $sum = 0;
                 foreach ($val as $k => $v) {
-                    $food = RestaurantFood::find($k);
-                    $orderFood = new OrderFood();
+                    $food = FoodRestaurantDishes::find($k);
+                    $orderFood = new FoodOrderDishes();
                     $orderFood->order_restaurant_id = $orderRestaurant->getKey();
                     $orderFood->restaurant_food_id = $k;
                     $orderFood->quantity = $v;
@@ -68,7 +68,7 @@ class OrderController extends Controller
                     $sum = $sum + $orderFood->salePrice * $orderFood->quantity;
                 }
                 $order->sum = $sum;
-                $restaurant = Restaurant::find($key);
+                $restaurant = FoodRestaurant::find($key);
                 if (isset($restaurant) && isset($restaurant->user)) {
                     Mail::to($restaurant->user->email)->queue(new OrderShipped($order));
                 }

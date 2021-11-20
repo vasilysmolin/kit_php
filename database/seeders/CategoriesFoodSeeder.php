@@ -2,8 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\CategoryFood;
-use App\Models\CategoryRestaurant;
+use App\Models\FoodCategoryDishes;
+use App\Models\FoodCategoryRestaurant;
 use Illuminate\Database\Seeder;
 
 class CategoriesFoodSeeder extends Seeder
@@ -15,43 +15,43 @@ class CategoriesFoodSeeder extends Seeder
      */
     public function run()
     {
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'meat',
         ])->update([
             'name'=>'Мясо',
         ]);
 
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'fish',
         ])->update([
             'name'=>'Рыба',
         ]);
 
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'salads',
         ])->update([
             'name'=>'Салаты',
         ]);
 
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'beverages',
         ])->update([
             'name'=>'Напитки',
         ]);
 
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'cooking',
         ])->update([
             'name'=>'Кулинария',
         ]);
 
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'bread',
         ])->update([
             'name'=>'Хлеб',
         ]);
 
-        CategoryFood::firstOrCreate([
+        FoodCategoryDishes::firstOrCreate([
             'alias'=>'stock',
         ])->update([
             'name'=>'Акция',

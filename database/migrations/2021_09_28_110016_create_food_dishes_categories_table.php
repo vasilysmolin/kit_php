@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCountriesTable extends Migration
+class CreateFoodDishesCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,15 @@ class CreateCountriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
+        Schema::create('food_dishes_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->string('name', 255)->nullable();
             $table->string('alias', 255)->unique();
-            $table->integer('sort')->unsigned()->nullable();
-            $table->integer('active')->unsigned()->default(1);
+            $table->string('description', 255)->nullable();
+            $table->integer('sort')->nullable()->default(1);
+            $table->boolean('active')->default(1);
+            $table->boolean('isModeration')->default(0);
             $table->timestamps();
-            $table->softDeletes();
         });
     }
 
@@ -31,6 +32,6 @@ class CreateCountriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::dropIfExists('category_food');
     }
 }

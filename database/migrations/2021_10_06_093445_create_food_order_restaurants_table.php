@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateOrderRestaurantsTable extends Migration
+class CreateFoodOrderRestaurantsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateOrderRestaurantsTable extends Migration
      */
     public function up()
     {
-        Schema::create('order_restaurants', function (Blueprint $table) {
+        Schema::create('food_order_restaurants', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('order_id');
             $table->unsignedBigInteger('restaurant_id');
             $table->integer('status')->default(1);
             $table->integer('delivery_price')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

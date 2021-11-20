@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryFoodRequest;
-use App\Models\CategoryFood;
-use App\Models\RestaurantFood;
+use App\Models\FoodCategoryDishes;
+use App\Models\FoodRestaurantDishes;
 use App\Objects\Files;
 use Illuminate\Http\Request;
 
@@ -15,7 +15,7 @@ class CategoryFoodController extends Controller
         $take = $request->take ?? 25;
         $skip = $request->skip ?? 0;
         $ids = $request->id ?? null;
-        $restaurants = CategoryFood::take((int)$take)
+        $restaurants = FoodCategoryDishes::take((int)$take)
             ->skip((int)$skip)
             ->when(isset($ids), function ($q) use ($ids) {
                 $q->whereIn('id', $ids);
@@ -23,7 +23,7 @@ class CategoryFoodController extends Controller
             ->where('active', 1)
             ->get();
 
-        $count = CategoryFood::take((int)$take)
+        $count = FoodCategoryDishes::take((int)$take)
             ->skip((int)$skip)
             ->when(isset($ids), function ($q) use ($ids) {
                 $q->whereIn('id', $ids);
@@ -61,7 +61,7 @@ class CategoryFoodController extends Controller
     {
         $formData = $request->all();
         $formData['active'] = true;
-        $restaurantFood = new CategoryFood();
+        $restaurantFood = new FoodCategoryDishes();
         $restaurantFood->fill($formData);
         $restaurantFood->save();
 
@@ -86,7 +86,7 @@ class CategoryFoodController extends Controller
 
     public function show($alias): \Illuminate\Http\JsonResponse
     {
-        $categoryFoods = CategoryFood::where('active', 1)
+        $categoryFoods = FoodCategoryDishes::where('active', 1)
             ->where('alias', $alias)
             ->first();
 
@@ -110,7 +110,7 @@ class CategoryFoodController extends Controller
     {
         $formData = json_decode($request->getContent(), true);
         $formData['active'] = 1;
-        $restaurant = CategoryFood::find($id);
+        $restaurant = FoodCategoryDishes::find($id);
         $restaurant->fill($formData);
         $restaurant->update();
 

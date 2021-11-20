@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddForeignKeyRestaurant extends Migration
+class CreateProfilesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,16 @@ class AddForeignKeyRestaurant extends Migration
      */
     public function up()
     {
-        Schema::table('restaurants', function (Blueprint $table) {
-            $table->foreign('category_id', 'FK_category_restaurants_id')
+        Schema::create('profiles', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->boolean('entity')->default(0);
+            $table->timestamps();
+            $table->foreign('user_id', 'FK_userst')
                 ->references('id')
-                ->on('category_restaurants')
+                ->on('users')
                 ->onUpdate('RESTRICT')
-                ->onDelete('RESTRICT');
+                ->onDelete('CASCADE');
         });
     }
 
@@ -29,8 +33,6 @@ class AddForeignKeyRestaurant extends Migration
      */
     public function down()
     {
-        Schema::table('restaurants', function (Blueprint $table) {
-            $table->dropForeign('FK_category_restaurants_id');
-        });
+        Schema::dropIfExists('users');
     }
 }

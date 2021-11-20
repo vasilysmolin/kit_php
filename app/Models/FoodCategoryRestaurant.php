@@ -5,19 +5,12 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CategoryFood extends Model
+class FoodCategoryRestaurant extends Model
 {
     use HasFactory;
 
     protected $casts = [
         'active' => 'bool',
-    ];
-
-    protected $fillable = [
-        'name',
-        'alias',
-        'active',
-        'sort',
     ];
 
     protected $hidden = [
@@ -26,9 +19,9 @@ class CategoryFood extends Model
         'created_at',
     ];
 
-    public function restaurantFood()
+    public function restaurants()
     {
-        return $this->hasMany(RestaurantFood::class, 'category_id', 'id');
+        return $this->hasMany(FoodRestaurant::class, 'category_id', 'id');
     }
 
     public function images()

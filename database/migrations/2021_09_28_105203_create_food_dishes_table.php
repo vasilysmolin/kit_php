@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateRestaurantFoodTable extends Migration
+class CreateFoodDishesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,27 +13,28 @@ class CreateRestaurantFoodTable extends Migration
      */
     public function up()
     {
-        Schema::create('restaurant_foods', function (Blueprint $table) {
+        Schema::create('food_dishes', function (Blueprint $table) {
             $table->id();
-            $table->string('name',255)->nullable();
+            $table->string('name', 255)->nullable();
             $table->unsignedBigInteger('restaurant_id');
-            $table->string('alias',255)->unique();
-            $table->string('description',255)->nullable();
-            $table->float('price',10,2)->default(0);
-            $table->float('salePrice',10,2)->default(0);
-            $table->float('weight',10,2)->default(0);
+            $table->string('alias', 255)->unique();
+            $table->string('description', 255)->nullable();
+            $table->float('price', 10, 2)->default(0);
+            $table->float('salePrice', 10, 2)->default(0);
+            $table->float('weight', 10, 2)->default(0);
             $table->integer('quantity')->default(0);
             $table->integer('sort')->nullable();
             $table->boolean('active')->default(0);
             $table->boolean('popular')->default(0);
             $table->boolean('sale')->default(0);
             $table->boolean('novetly')->default(0);
-            $table->foreign('restaurant_id','FK_user_restaurant_food')
+            $table->foreign('restaurant_id', 'FK_user_restaurant_food')
                 ->references('id')
-                ->on('restaurants')
+                ->on('food_restaurants')
                 ->onUpdate('RESTRICT')
-                ->onDelete('RESTRICT');
+                ->onDelete('CASCADE');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

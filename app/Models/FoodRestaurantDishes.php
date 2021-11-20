@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RestaurantFood extends Model
+class FoodRestaurantDishes extends Model
 {
     use HasFactory;
 
@@ -50,9 +50,9 @@ class RestaurantFood extends Model
         'created_at',
     ];
 
-    public function categoriesRestaurantFood()
+    public function categories()
     {
-        return $this->belongsToMany(CategoryFood::class, 'restaurant_food_has_categories', 'restaurant_food_id', 'category_id');
+        return $this->belongsToMany(FoodCategoryDishes::class, 'restaurant_food_has_categories', 'restaurant_food_id', 'category_id');
     }
 
     /**
@@ -60,7 +60,7 @@ class RestaurantFood extends Model
      */
     public function restaurant()
     {
-        return $this->belongsTo(Restaurant::class, 'restaurant_id', 'id');
+        return $this->belongsTo(FoodRestaurant::class, 'restaurant_id', 'id');
     }
 
     /**

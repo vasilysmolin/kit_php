@@ -5,17 +5,17 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class OrderRestaurant extends Model
+class FoodOrderRestaurant extends Model
 {
     use HasFactory;
 
-    public function orderFood()
+    public function orderDishes()
     {
-        return $this->hasMany(OrderFood::class, 'order_restaurant_id', 'id');
+        return $this->hasMany(FoodOrderDishes::class, 'order_restaurant_id', 'id');
     }
 
     public function restaurant(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(Restaurant::class, 'id', 'restaurant_id');
+        return $this->hasOne(FoodRestaurant::class, 'id', 'restaurant_id');
     }
 }

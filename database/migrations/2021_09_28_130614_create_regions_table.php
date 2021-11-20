@@ -21,11 +21,12 @@ class CreateRegionsTable extends Migration
             $table->integer('sort')->unsigned()->nullable();
             $table->integer('active')->unsigned()->default(1);
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('country_id', 'FK_country_id_regions')
                 ->references('id')
                 ->on('countries')
                 ->onUpdate('RESTRICT')
-                ->onDelete('RESTRICT');
+                ->onDelete('CASCADE');
         });
     }
 

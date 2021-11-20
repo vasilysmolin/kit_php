@@ -29,11 +29,12 @@ class CreateCitiesTable extends Migration
             $table->text('text')->nullable();
             $table->integer('active')->unsigned()->default(1);
             $table->timestamps();
+            $table->softDeletes();
             $table->foreign('region_id', 'FK_region_id_cities')
                 ->references('id')
                 ->on('regions')
                 ->onUpdate('RESTRICT')
-                ->onDelete('RESTRICT');
+                ->onDelete('CASCADE');
         });
     }
 

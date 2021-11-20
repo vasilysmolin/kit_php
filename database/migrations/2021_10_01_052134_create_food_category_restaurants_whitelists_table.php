@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class ChangeOrdersColumnTable extends Migration
+class CreateFoodCategoryRestaurantsWhitelistsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class ChangeOrdersColumnTable extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->string('city_id')->unsigned()->nullable()->change();
+        Schema::create('food_category_restaurants_whitelists', function (Blueprint $table) {
+            $table->id();
+            $table->string('name', 255)->nullable();
+            $table->timestamps();
         });
     }
 
@@ -25,6 +27,6 @@ class ChangeOrdersColumnTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('category_restaurants');
     }
 }

@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Restaurant extends Model
+class FoodRestaurant extends Model
 {
     use HasFactory;
 
@@ -68,14 +68,14 @@ class Restaurant extends Model
         'isPickup' => 'bool',
     ];
 
-    public function categoriesRestaurant()
+    public function categories()
     {
-        return $this->belongsToMany(CategoryRestaurant::class, 'restaurant_has_categories', 'restaurant_id', 'category_id');
+        return $this->belongsToMany(FoodCategoryRestaurant::class, 'restaurant_has_categories', 'restaurant_id', 'category_id');
     }
 
-    public function restaurantFood()
+    public function dishes()
     {
-        return $this->hasMany(RestaurantFood::class, 'restaurant_id', 'id');
+        return $this->hasMany(FoodRestaurantDishes::class, 'restaurant_id', 'id');
     }
 
     public function user()

@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Import;
 
-use App\Models\RestaurantFood;
+use App\Models\FoodRestaurantDishes;
 use Maatwebsite\Excel\Concerns\ToModel;
 use Maatwebsite\Excel\Concerns\WithStartRow;
 
@@ -17,12 +17,12 @@ class FoodImport implements ToModel, WithStartRow
 
     /**
      * @param array $row
-     * @return RestaurantFood
+     * @return FoodRestaurantDishes
      */
-    public function model(array $row): RestaurantFood
+    public function model(array $row): FoodRestaurantDishes
     {
 
-        return new RestaurantFood([
+        return new FoodRestaurantDishes([
             'name'     => $row[0],
             'alias'    => $row[1],
             'restaurant_id' => $row[2],

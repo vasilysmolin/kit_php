@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
-use App\Models\CategoryFood;
-use App\Models\CategoryRestaurant;
-use App\Models\Restaurant;
+use App\Models\FoodCategoryDishes;
+use App\Models\FoodCategoryRestaurant;
+use App\Models\FoodRestaurant;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -15,7 +15,7 @@ class RestaurantFactory extends Factory
      *
      * @var string
      */
-    protected $model = Restaurant::class;
+    protected $model = FoodRestaurant::class;
 
     /**
      * Define the model's default state.

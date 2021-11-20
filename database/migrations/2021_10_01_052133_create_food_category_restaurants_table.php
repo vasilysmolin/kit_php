@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCategoryFoodTable extends Migration
+class CreateFoodCategoryRestaurantsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,16 @@ class CreateCategoryFoodTable extends Migration
      */
     public function up()
     {
-        Schema::create('category_food', function (Blueprint $table) {
+        Schema::create('food_category_restaurants', function (Blueprint $table) {
             $table->id();
-            $table->string('name',255)->nullable();
-            $table->string('alias',255)->unique();
-            $table->string('description',255)->nullable();
+            $table->string('name', 255)->nullable();
+            $table->string('alias', 255)->unique();
+            $table->string('description', 255)->nullable();
             $table->integer('sort')->nullable()->default(1);
             $table->boolean('active')->default(1);
+            $table->boolean('isModeration')->default(0);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
@@ -31,6 +33,6 @@ class CreateCategoryFoodTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_food');
+        Schema::dropIfExists('category_restaurants');
     }
 }

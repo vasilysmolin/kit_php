@@ -2,7 +2,7 @@
 
 namespace App\Mail;
 
-use App\Models\Order;
+use App\Models\FoodOrder;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -16,17 +16,17 @@ class OrderShipped extends Mailable implements ShouldQueue
     /**
      * The order instance.
      *
-     * @var \App\Models\Order
+     * @var \App\Models\FoodOrder
      */
     protected $order;
 
     /**
      * Create a new message instance.
      *
-     * @param  \App\Models\Order  $order
+     * @param  \App\Models\FoodOrder  $order
      * @return void
      */
-    public function __construct(Order $order)
+    public function __construct(FoodOrder $order)
     {
         $this->order = $order;
     }

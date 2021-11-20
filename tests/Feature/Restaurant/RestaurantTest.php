@@ -2,8 +2,8 @@
 
 namespace Tests\Feature\Restaurant;
 
-use App\Models\CategoryRestaurant;
-use App\Models\Restaurant;
+use App\Models\FoodCategoryRestaurant;
+use App\Models\FoodRestaurant;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Response;
@@ -28,7 +28,7 @@ class RestaurantTestTest extends TestCase
 
     public function testRestaurantShow()
     {
-        $restaurant = Restaurant::factory()->create();
+        $restaurant = FoodRestaurant::factory()->create();
 
         $response = $this->get(route('restaurants.show', $restaurant->id ));
         $response->assertStatus(200);
@@ -36,7 +36,7 @@ class RestaurantTestTest extends TestCase
 
     public function testRestaurantShow404()
     {
-        $restaurant = Restaurant::factory()->create();
+        $restaurant = FoodRestaurant::factory()->create();
 
         $response = $this->get(route('restaurants.show', $restaurant->id . $restaurant->id ));
         $response->assertStatus(404);
@@ -45,7 +45,7 @@ class RestaurantTestTest extends TestCase
 
     public function testStoreRestaurant()
     {
-        $category = CategoryRestaurant::factory()->create();
+        $category = FoodCategoryRestaurant::factory()->create();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
 
@@ -69,7 +69,7 @@ class RestaurantTestTest extends TestCase
      * */
     public function testDestroyRestaurant()
     {
-        $restaraunt = Restaurant::factory()->create();
+        $restaraunt = FoodRestaurant::factory()->create();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
 
@@ -77,7 +77,7 @@ class RestaurantTestTest extends TestCase
             ->withToken($access_token)
             ->json('DELETE', route('restaurants.destroy',[$restaraunt->id]), []);
 
-        $this->assertNull(Restaurant::find($restaraunt->id));
+        $this->assertNull(FoodRestaurant::find($restaraunt->id));
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 }

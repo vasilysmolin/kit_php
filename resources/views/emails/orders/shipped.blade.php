@@ -17,7 +17,7 @@
     @endphp
     @foreach($order->orderRestaurant as $rest)
 
-        @foreach($rest->orderFood as $orFood)
+        @foreach($rest->orderDishes as $orFood)
             @php
               $sum = $sum + $orFood->salePrice * $orFood->quantity;
             @endphp
@@ -27,10 +27,10 @@
 
  | Товар         | Кол-во        | Цена     |
  | ------------- |:-------------:| --------:|
-        @foreach($rest->orderFood as $orFood)
- | {{$orFood->food->name}} - {{$orFood->salePrice}} руб/шт  | {{$orFood->quantity}} | {{$orFood->salePrice * $orFood->quantity}} |
+        @foreach($rest->orderDishes as $orFood)
+ | {{$orFood->dishes->name}} - {{$orFood->salePrice}} руб/шт  | {{$orFood->quantity}} | {{$orFood->salePrice * $orFood->quantity}} |
         @endforeach
- | **Итого** | **{{$rest->orderFood->pluck('quantity')->sum() }}** | **{{ $sum }}** |
+ | **Итого** | **{{$rest->orderDishes->pluck('quantity')->sum() }}** | **{{ $sum }}** |
     @endforeach
 
 @endcomponent
