@@ -45,7 +45,7 @@ class RestaurantController extends Controller
                 });
             })
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('user', function ($q) use ($user) {
+                $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -75,7 +75,7 @@ class RestaurantController extends Controller
                 });
             })
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('user', function ($q) use ($user) {
+                $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -97,7 +97,7 @@ class RestaurantController extends Controller
     public function store(StoreRestaurantRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
+        $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
         if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
@@ -173,7 +173,7 @@ class RestaurantController extends Controller
     {
         $formData = $request->all();
         $user = auth('api')->user();
-        $formData['user_id'] = auth('api')->user()->getAuthIdentifier();
+        $formData['profile_id'] = auth('api')->user()->profile->id;
 
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
@@ -189,7 +189,7 @@ class RestaurantController extends Controller
         }
         unset($formData['categoryRestaurantID']);
         $restaurant = FoodRestaurant::where('id', $id)
-            ->whereHas('user', function ($q) use ($user) {
+            ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })->first();
 
@@ -198,6 +198,7 @@ class RestaurantController extends Controller
         }
 
         $restaurant->fill($formData);
+        dd($restaurant);
         $restaurant->update();
 
         $files = resolve(Files::class);

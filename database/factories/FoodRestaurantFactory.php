@@ -2,13 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\FoodCategoryDishes;
+use App\Models\FoodDishesCategory;
 use App\Models\FoodCategoryRestaurant;
 use App\Models\FoodRestaurant;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class RestaurantFactory extends Factory
+class FoodRestaurantFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
@@ -29,7 +30,7 @@ class RestaurantFactory extends Factory
             'description' => $this->faker->text(),
             'active' => 1,
             'alias' => $this->faker->slug(6),
-            'user_id' => User::factory(),
+            'profile_id' => Profile::factory(),
             'min_delivery_price' => $this->faker->numberBetween(0,1500),
             'address' => $this->faker->streetAddress(),
             'house' => $this->faker->streetAddress(),

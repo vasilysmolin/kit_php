@@ -57,7 +57,9 @@ class UsersParser extends Command
                 $user->name = $item['profile'] ? $item['profile']['name'] : null;
                 $user->update();
             } else {
-                $count = User::where('email', $item['email'])->get();
+                $count = User::where('email', $item['email'])
+                    ->orWhere('phone', $item['phone'])
+                    ->get();
 
                 if ($count->count() === 0) {
                     $user = new User();
@@ -68,6 +70,7 @@ class UsersParser extends Command
                     $user->email_verified_at = $item['email_verified_at'];
                     $user->name = $item['profile'] ? $item['profile']['name'] : null;
                     $user->save();
+                    $user->profile()->create();
                 }
             }
         }

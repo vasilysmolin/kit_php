@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\City;
 use App\Models\Country;
+use App\Models\Profile;
 use App\Models\Region;
 use App\Models\FoodRestaurant;
 use App\Models\FoodRestaurantDishes;
@@ -21,17 +22,14 @@ class DatabaseSeeder extends Seeder
     {
 
         User::factory(1)
-            ->has(FoodRestaurant::factory(50)
-                ->has(FoodRestaurantDishes::factory(10)
-                )
-            )
+            ->has(Profile::factory(1)
+                ->has(FoodRestaurant::factory(1)
+                    ->has(FoodRestaurantDishes::factory(5))))
             ->create();
 
         Country::factory(1)
-            ->has(Region::factory(5)
-                ->has(City::factory(10)
-                )
-            )
+            ->has(Region::factory(1)
+                ->has(City::factory(2)))
             ->create();
     }
 }

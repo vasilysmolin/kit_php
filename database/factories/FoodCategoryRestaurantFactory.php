@@ -2,17 +2,17 @@
 
 namespace Database\Factories;
 
-use App\Models\FoodCategoryDishes;
+use App\Models\FoodCategoryRestaurant;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class CategoryFoodFactory extends Factory
+class FoodCategoryRestaurantFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = FoodCategoryDishes::class;
+    protected $model = FoodCategoryRestaurant::class;
 
     /**
      * Define the model's default state.

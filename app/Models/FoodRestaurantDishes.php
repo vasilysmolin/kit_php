@@ -9,7 +9,7 @@ class FoodRestaurantDishes extends Model
 {
     use HasFactory;
 
-    protected $table = 'restaurant_foods';
+    protected $table = 'food_dishes';
 
     /**
      * The attributes that are mass assignable.
@@ -52,7 +52,7 @@ class FoodRestaurantDishes extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(FoodCategoryDishes::class, 'restaurant_food_has_categories', 'restaurant_food_id', 'category_id');
+        return $this->belongsToMany(FoodDishesCategory::class, 'food_restaurant_food_has_categories', 'restaurant_food_id', 'category_id');
     }
 
     /**

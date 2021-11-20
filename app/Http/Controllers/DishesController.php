@@ -13,7 +13,7 @@ use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 use Maatwebsite\Excel\Facades\Excel;
 
-class FoodController extends Controller
+class DishesController extends Controller
 {
 
     public function __construct()
@@ -23,6 +23,7 @@ class FoodController extends Controller
 
     public function index(Request $request, $idRes)
     {
+
         $cabinet = false;
         $user = auth('api')->user();
         if (isset($user) && $request->from === 'cabinet') {
@@ -44,7 +45,7 @@ class FoodController extends Controller
                 });
             })
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                $q->whereHas('restaurant.profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -70,7 +71,7 @@ class FoodController extends Controller
                 $query->whereIn('id', $id);
             })
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                $q->whereHas('restaurant.profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -113,7 +114,7 @@ class FoodController extends Controller
                 });
             })
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                $q->whereHas('restaurant.profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -138,7 +139,7 @@ class FoodController extends Controller
                 $query->whereIn('id', $id);
             })
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                $q->whereHas('restaurant.profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -170,7 +171,7 @@ class FoodController extends Controller
     {
         $formData = $request->all();
         $formData['active'] = 1;
-        $formData['restaurant_id'] = $id;
+        $formData['restaurant_id'] = (int) $id;
         $restaurantFood = new FoodRestaurantDishes();
         unset($formData['categoryDishesID']);
         if (isset($formData['name'])) {
@@ -213,7 +214,7 @@ class FoodController extends Controller
         $food = FoodRestaurantDishes::
             where('active', 1)
             ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('restaurant.user', function ($q) use ($user) {
+                $q->whereHas('restaurant.profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
             })
@@ -263,7 +264,7 @@ class FoodController extends Controller
         }
 
         $food = FoodRestaurantDishes::where('id', $id)
-            ->whereHas('restaurant.user', function ($q) use ($user) {
+            ->whereHas('restaurant.profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })->first();
 

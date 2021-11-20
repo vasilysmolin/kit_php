@@ -49,8 +49,12 @@ build-docker:
 	docker-compose exec php php artisan optimize
 
 seeder:
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\CategoriesFoodSeeder"
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\CategoriesRestaurantSeeder"
+	docker-compose exec php php artisan db:seed --class="Database\Seeders\FoodDishesCategorySeeder"
+	docker-compose exec php php artisan db:seed --class="Database\Seeders\FoodCategoryRestaurantSeeder"
+
+seeder-dev:
+	docker-compose exec php php artisan db:seed
+
 
 heroku-build:
 	php artisan migrate --force

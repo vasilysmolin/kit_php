@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\FoodCategoryRestaurant;
 use Illuminate\Database\Seeder;
 
-class CategoriesRestaurantSeeder extends Seeder
+class FoodCategoryRestaurantSeeder extends Seeder
 {
     /**
      * Run the database seeds.

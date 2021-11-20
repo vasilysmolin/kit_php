@@ -25,7 +25,7 @@ class FoodRestaurant extends Model
         'longitude',
         'delivery_time',
         'work_time',
-        'user_id',
+        'profile_id',
         'title',
         'description',
         'min_delivery_price',
@@ -70,7 +70,7 @@ class FoodRestaurant extends Model
 
     public function categories()
     {
-        return $this->belongsToMany(FoodCategoryRestaurant::class, 'restaurant_has_categories', 'restaurant_id', 'category_id');
+        return $this->belongsToMany(FoodCategoryRestaurant::class, 'food_restaurant_has_categories', 'restaurant_id', 'category_id');
     }
 
     public function dishes()
@@ -101,5 +101,10 @@ class FoodRestaurant extends Model
     public function oldestImage()
     {
         return $this->morphOne(Image::class, 'imageable')->oldestOfMany();
+    }
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 }
