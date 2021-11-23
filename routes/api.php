@@ -9,7 +9,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::group([
     'middleware' => 'auth:api',
-    'prefix' => 'auth'
+    'namespace' => 'Auth',
+    'prefix' => 'auth',
 ], function ($router) {
 
     Route::post('login', 'AuthController@login')->withoutMiddleware('auth:api');
@@ -20,13 +21,16 @@ Route::group([
     Route::get('user', 'AuthController@user');
 });
 
-Route::apiResource('restaurants', 'RestaurantController');
-Route::apiResource('category-restaurants', 'CategoryRestaurantController');
-Route::apiResource('restaurants.foods', 'DishesController')->scoped([
-    'dishes' => 'alias',
-])->shallow();
-Route::get('foods', 'DishesController@foods');
-
-Route::apiResource('orders', 'OrderController');
-Route::post('import','DishesController@import');
-Route::apiResource('categories', 'CategoryFoodController');
+Route::group([
+    'namespace' => 'Food',
+], function ($router) {
+    Route::apiResource('restaurants', 'RestaurantController');
+    Route::apiResource('category-restaurants', 'CategoryRestaurantController');
+    Route::apiResource('restaurants.dishes', 'DishesController')->scoped([
+        'dishes' => 'alias',
+    ])->shallow();
+    Route::get('dishes', 'DishesController@foods')->name('dishes.foods');
+    Route::apiResource('orders', 'OrderController');
+    Route::post('import', 'DishesController@import');
+    Route::apiResource('categories', 'CategoryFoodController');
+});

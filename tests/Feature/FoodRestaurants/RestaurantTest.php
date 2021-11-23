@@ -1,9 +1,10 @@
 <?php
 
-namespace Tests\Feature\Restaurant;
+namespace Tests\Feature\FoodRestaurants;
 
 use App\Models\FoodCategoryRestaurant;
 use App\Models\FoodRestaurant;
+use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Http\Response;
@@ -14,7 +15,7 @@ use Tymon\JWTAuth\Facades\JWTAuth;
  * @group restaurant
  * @group ci
  * */
-class RestaurantTestTest extends TestCase
+class RestaurantTest extends TestCase
 {
     use DatabaseTransactions;
 
@@ -42,23 +43,21 @@ class RestaurantTestTest extends TestCase
         $response->assertStatus(404);
     }
 
-
     public function testStoreRestaurant()
     {
         $category = FoodCategoryRestaurant::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this
             ->withToken($access_token)
             ->json('POST', route('restaurants.store'), [
                 'name' => 'test',
-                'alias' => 'test',
                 'categoryRestaurantID' => [$category->id],
             ]);
 
         $id = explode('/restaurants/', $response->baseResponse->headers->get('Location'));
-        $this->assertDatabaseHas('restaurants', [ 'id' => $id[1] ]);
+        $this->assertDatabaseHas('food_restaurants', [ 'id' => $id[1] ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }

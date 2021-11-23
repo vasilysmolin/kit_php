@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Food;
 
+use App\Http\Controllers\Controller;
 use App\Mail\OrderShipped;
 use App\Models\FoodOrder;
 use App\Models\FoodOrderDishes;

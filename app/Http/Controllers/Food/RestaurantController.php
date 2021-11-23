@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Food;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\FoodRestaurant;
@@ -97,6 +98,7 @@ class RestaurantController extends Controller
     public function store(StoreRestaurantRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
+
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
@@ -109,10 +111,12 @@ class RestaurantController extends Controller
         } else {
             $formData['address'] = '';
         }
+
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         unset($formData['categoryRestaurantID']);
         $restaurant = new FoodRestaurant();
         $restaurant->fill($formData);
+
         $restaurant->save();
         $files = resolve(Files::class);
 

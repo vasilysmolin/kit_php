@@ -42,6 +42,11 @@ class Profile extends Model
         return $this->hasMany(FoodRestaurant::class, 'profile_id', 'id');
     }
 
+    public function foodRestaurant()
+    {
+        return $this->hasMany(FoodRestaurant::class, 'profile_id', 'id');
+    }
+
     public function orders()
     {
         return $this->hasMany(FoodOrder::class, 'profile_id', 'id');

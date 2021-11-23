@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Food;
 
+use App\Http\Controllers\Controller;
 use App\Models\FoodCategoryRestaurant;
 use Illuminate\Http\Request;
 

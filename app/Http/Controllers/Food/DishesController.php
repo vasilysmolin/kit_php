@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Food;
 
+use App\Http\Controllers\Controller;
 use App\Http\Controllers\Import\FoodImport;
 use App\Http\Requests\StoreRestaurantFoodRequest;
 use App\Http\Requests\UpdateRestaurantFoodRequest;
+use App\Models\FoodRestaurant;
 use App\Models\FoodRestaurantDishes;
 use App\Objects\Files;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -172,16 +174,16 @@ class DishesController extends Controller
         $formData = $request->all();
         $formData['active'] = 1;
         $formData['restaurant_id'] = (int) $id;
-        $restaurantFood = new FoodRestaurantDishes();
+        $dishes = new FoodRestaurantDishes();
         unset($formData['categoryDishesID']);
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
-        $restaurantFood->fill($formData);
-        $restaurantFood->save();
+        $dishes->fill($formData);
+        $dishes->save();
 
         if (isset($request['categoryDishesID'])) {
-            $restaurantFood->categories()->sync($request['categoryDishesID']);
+            $dishes->categories()->sync($request['categoryDishesID']);
         }
 
         $files = resolve(Files::class);
@@ -189,7 +191,7 @@ class DishesController extends Controller
         if (isset($request['files']) && count($request['files']) > 0) {
             foreach ($request['files'] as $file) {
                 $dataFile = $files->preparationFileS3($file);
-                $restaurantFood->image()->create([
+                $dishes->image()->create([
                     'mimeType' => $dataFile['mineType'],
                     'extension' => $dataFile['extension'],
                     'name' => $dataFile['name'],
@@ -199,7 +201,7 @@ class DishesController extends Controller
             }
         }
 
-        return response()->json([], 201);
+        return response()->json([], 201,['Location' => "/dishes/$dishes->id"]);
     }
 
     public function show(Request $request, $id)
@@ -300,9 +302,12 @@ class DishesController extends Controller
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse
      */
     public function destroy($id)
     {
+
+        FoodRestaurantDishes::destroy($id);
+        return response()->json([], 204);
     }
 }

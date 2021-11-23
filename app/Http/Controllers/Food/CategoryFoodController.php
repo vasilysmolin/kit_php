@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Food;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryFoodRequest;
 use App\Models\FoodDishesCategory;
-use App\Models\FoodRestaurantDishes;
 use App\Objects\Files;
 use Illuminate\Http\Request;
 
