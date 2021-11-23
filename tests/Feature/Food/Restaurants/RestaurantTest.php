@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\FoodRestaurants;
+namespace Tests\Feature\Food\Restaurants;
 
 use App\Models\FoodCategoryRestaurant;
 use App\Models\FoodRestaurant;

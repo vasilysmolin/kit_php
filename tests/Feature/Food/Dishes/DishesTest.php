@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature\FoodDishes;
+namespace Tests\Feature\Food\Dishes;
 
 use App\Models\FoodRestaurant;
 use App\Models\FoodRestaurantDishes;
