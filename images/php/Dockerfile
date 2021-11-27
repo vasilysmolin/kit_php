@@ -12,6 +12,7 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 RUN set -xe \
     && apk add --no-cache \
     $PHPIZE_DEPS \
+    postgresql-client \
     ffmpeg \
     libavif-dev \
     libwebp-dev \
@@ -30,6 +31,7 @@ RUN set -xe \
     && docker-php-ext-configure zip \
     && docker-php-ext-configure gmp \
     && docker-php-ext-configure pdo_mysql \
+    && docker-php-ext-configure pdo_pgsql \
     && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install -j$(nproc) zip \
     && docker-php-ext-install -j$(nproc) exif \

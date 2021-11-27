@@ -74,6 +74,13 @@ return [
             'prefix' => '',
             'schema' => 'public',
             'sslmode' => 'prefer',
+            'dump' => [
+                // only the path, so without `mysqldump` or `pg_dump`
+                'dump_binary_path' => '/usr/bin',
+                'use_single_transaction',
+                // 5 minute timeout
+                'timeout' => 60 * 5,
+            ],
         ],
 
         'sqlsrv' => [
@@ -121,7 +128,7 @@ return [
 
         'options' => [
             'cluster' => env('REDIS_CLUSTER', 'redis'),
-            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_').'_database_'),
+            'prefix' => env('REDIS_PREFIX', Str::slug(env('APP_NAME', 'laravel'), '_') . '_database_'),
         ],
 
         'default' => [

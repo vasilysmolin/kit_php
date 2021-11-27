@@ -42,6 +42,7 @@
         "pusher/pusher-php-server": "^4.1",
         "slevomat/coding-standard": "^7.0",
         "spatie/enum": "3.*",
+        "spatie/laravel-backup": "^6.16",
         "spatie/laravel-cookie-consent": "^2.12",
         "spatie/laravel-permission": "^5.1",
         "spiti/smsclient": "1.1.0",
