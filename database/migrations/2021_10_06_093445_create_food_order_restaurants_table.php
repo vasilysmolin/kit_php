@@ -31,6 +31,6 @@ class CreateFoodOrderRestaurantsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('order_restaurants');
+        Schema::dropIfExists('food_order_restaurants');
     }
 }

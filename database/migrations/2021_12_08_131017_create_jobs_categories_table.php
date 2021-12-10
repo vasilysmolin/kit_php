@@ -18,8 +18,8 @@ class CreateJobsCategoriesTable extends Migration
             $table->string('name', 255);
             $table->string('alias', 255)->unique();
             $table->string('description', 255)->nullable();
-            $table->integer('sort')->nullable()->default(1);
             $table->integer('parent_id')->nullable();
+            $table->integer('sort')->nullable()->default(1);
             $table->boolean('active')->default(1);
             $table->timestamps();
         });

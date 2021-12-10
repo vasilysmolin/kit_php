@@ -38,6 +38,6 @@ class CreateFoodRestaurantFoodHasCategories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('restaurant_food_has_categories');
+        Schema::dropIfExists('food_restaurant_food_has_categories');
     }
 }

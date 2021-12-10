@@ -18,7 +18,7 @@ class CreateProfilesTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->boolean('isPerson')->default(0);
             $table->timestamps();
-            $table->foreign('user_id', 'FK_userst')
+            $table->foreign('user_id', 'FK_users')
                 ->references('id')
                 ->on('users')
                 ->onUpdate('RESTRICT')
@@ -33,6 +33,6 @@ class CreateProfilesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('profiles');
     }
 }

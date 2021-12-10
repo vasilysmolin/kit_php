@@ -31,6 +31,6 @@ class CreateFoodCategoryRestaurantsRecommendedTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('category_restaurants');
+        Schema::dropIfExists('food_category_restaurants_recommended');
     }
 }
