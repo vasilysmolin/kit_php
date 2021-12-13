@@ -76,6 +76,10 @@ class UsersParser extends Command
         }
 //        },2);
 
+//        $response = $client->get('https://user.tapigo.ru/all-resume-json', ['verify' => false]);
+//        $contents = $response->getBody()->getContents();
+//        $contents = json_decode($contents, true);
+//        dd($contents);
         return 1;
     }
 }

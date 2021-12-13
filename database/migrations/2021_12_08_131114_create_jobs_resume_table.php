@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJobsVacanciesTable extends Migration
+class CreateJobsResumeTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateJobsVacanciesTable extends Migration
      */
     public function up()
     {
-        Schema::create('jobs_vacancies', function (Blueprint $table) {
+        Schema::create('jobs_resume', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
             $table->string('title', 255)->nullable();
@@ -39,7 +39,7 @@ class CreateJobsVacanciesTable extends Migration
             $table->softDeletes();
             $table->foreign('category_id', 'FK_jobs_vacancy_category_id')
                 ->references('id')
-                ->on('jobs_vacancy_categories')
+                ->on('jobs_resume_categories')
                 ->onUpdate('RESTRICT')
                 ->onDelete('CASCADE');
         });
