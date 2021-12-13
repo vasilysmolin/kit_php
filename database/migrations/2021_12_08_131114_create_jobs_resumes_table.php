@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateJobsResumeTable extends Migration
+class CreateJobsResumesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,11 @@ class CreateJobsResumeTable extends Migration
      */
     public function up()
     {
-        Schema::create('jobs_resume', function (Blueprint $table) {
+        Schema::create('jobs_resumes', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
             $table->string('title', 255)->nullable();
-            $table->string('description', 255)->nullable();
+            $table->string('description', 1000)->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('address', 255)->nullable();
             $table->string('phone', 255)->nullable();
@@ -39,7 +39,7 @@ class CreateJobsResumeTable extends Migration
             $table->softDeletes();
             $table->foreign('category_id', 'FK_jobs_vacancy_category_id')
                 ->references('id')
-                ->on('jobs_resume_categories')
+                ->on('jobs_resumes_categories')
                 ->onUpdate('RESTRICT')
                 ->onDelete('CASCADE');
         });
@@ -52,6 +52,6 @@ class CreateJobsResumeTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jobs_vacancies');
+        Schema::dropIfExists('jobs_resumes');
     }
 }
