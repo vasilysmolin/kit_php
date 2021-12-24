@@ -2,18 +2,18 @@
 
 namespace Database\Factories;
 
-use App\Models\Profile;
-use App\Models\User;
+use App\Models\FoodCategoryRestaurant;
+use App\Models\JobsResumeCategory;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
-class ProfileFactory extends Factory
+class JobsResumeCategoryFactory extends Factory
 {
     /**
      * The name of the factory's corresponding model.
      *
      * @var string
      */
-    protected $model = Profile::class;
+    protected $model = JobsResumeCategory::class;
 
     /**
      * Define the model's default state.
@@ -23,9 +23,9 @@ class ProfileFactory extends Factory
     public function definition()
     {
         return [
-            'isPerson' => $this->faker->boolean(1),
-            'user_id' => User::factory(),
+            'name' => $this->faker->name(),
+            'alias' => $this->faker->slug(6),
+            'active' => 1,
         ];
     }
-
 }

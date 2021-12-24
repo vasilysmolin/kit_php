@@ -34,3 +34,12 @@ Route::group([
     Route::post('import', 'DishesController@import');
     Route::apiResource('categories', 'CategoryFoodController');
 });
+
+Route::group([
+    'namespace' => 'Job',
+], function ($router) {
+    Route::apiResource('vacancies', 'VacancyController');
+    Route::apiResource('category-vacancies', 'CategoryVacancyController');
+    Route::apiResource('resume', 'ResumeController');
+    Route::apiResource('category-resume', 'CategoryResumeController');
+});
