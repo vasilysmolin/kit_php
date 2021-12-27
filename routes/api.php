@@ -43,3 +43,10 @@ Route::group([
     Route::apiResource('resume', 'ResumeController');
     Route::apiResource('category-resume', 'CategoryResumeController');
 });
+
+Route::group([
+    'namespace' => 'Service',
+], function ($router) {
+    Route::apiResource('services', 'ServiceController');
+    Route::apiResource('category-services', 'CategoryServiceController');
+});
