@@ -65,5 +65,4 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(FoodOrder::class, 'user_id', 'id');
     }
-
 }

@@ -19,12 +19,6 @@ class CategoryResumeController extends Controller
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
-        $user = auth('api')->user();
-        if (isset($user) && $request->from === 'cabinet') {
-            $cabinet = true;
-        } else {
-            $cabinet = false;
-        }
 
         $resumeCategory = JobsResumeCategory::take((int) $take)
             ->skip((int) $skip)
@@ -96,7 +90,7 @@ class CategoryResumeController extends Controller
 
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
-        $user = auth('api')->user();
+        auth('api')->user();
 
         $resumeCategory = JobsResumeCategory::where('id', $id)
             ->with('image')
@@ -115,7 +109,6 @@ class CategoryResumeController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $user = auth('api')->user();
         $formData['profile_id'] = auth('api')->user()->profile->id;
 
         if (isset($formData['name'])) {

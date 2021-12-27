@@ -15,7 +15,7 @@ class Profile extends Model
      * @var array
      */
     protected $fillable = [
-        'entity'
+        'entity',
     ];
 
     /**
@@ -66,5 +66,4 @@ class Profile extends Model
     {
         return $this->hasMany(FoodOrder::class, 'profile_id', 'id');
     }
-
 }

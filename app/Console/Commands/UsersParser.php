@@ -85,7 +85,7 @@ class UsersParser extends Command
             if (isset($item['posts']) && !empty($item['posts'])) {
                 foreach ($item['posts'] as $post) {
                     if (isset($post['property']) && !empty($post['property'])) {
-                        if ($post['property_type'] == "App\\Models\\Jobs\\Resume\\JobsPostResumeProperty") {
+                        if ($post['property_type'] === "App\\Models\\Jobs\\Resume\\JobsPostResumeProperty") {
                                 $property = $post['property'];
                                 $resume = JobsResume::find($property['id']);
                                 $slug = Str::slug($property['title'] .  ' ' . Str::random(5), '-');
@@ -108,7 +108,7 @@ class UsersParser extends Command
                                 $model->save();
                             }
                         }
-                        if ($post['property_type'] == "App\\Models\\Jobs\\Vacancy\\JobsPostVacancyProperty") {
+                        if ($post['property_type'] === "App\\Models\\Jobs\\Vacancy\\JobsPostVacancyProperty") {
                             $property = $post['property'];
                             $resume = JobsVacancy::find($property['id']);
                             $slug = Str::slug($property['title'] .  ' ' . Str::random(5), '-');
@@ -141,7 +141,6 @@ class UsersParser extends Command
                                 $model->save();
                             }
                         }
-
                     }
                 }
             }

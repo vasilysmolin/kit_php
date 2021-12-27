@@ -36,7 +36,6 @@ class JobsVacancy extends Model
         'max_price',
     ];
 
-
     public function categories(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
         return $this->hasOne(JobsVacancyCategory::class, 'id', 'category_id');

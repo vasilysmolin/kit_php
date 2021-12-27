@@ -37,5 +37,4 @@ class JobsResumeCategory extends Model
     {
         return $this->morphOne(Image::class, 'imageable')->oldestOfMany();
     }
-
 }

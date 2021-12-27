@@ -201,7 +201,7 @@ class DishesController extends Controller
             }
         }
 
-        return response()->json([], 201,['Location' => "/dishes/$dishes->id"]);
+        return response()->json([], 201, ['Location' => "/dishes/$dishes->id"]);
     }
 
     public function show(Request $request, $id)
