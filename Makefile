@@ -51,6 +51,9 @@ build-docker:
 seeder:
 	docker-compose exec php php artisan db:seed --class="Database\Seeders\FoodDishesCategorySeeder"
 	docker-compose exec php php artisan db:seed --class="Database\Seeders\FoodCategoryRestaurantSeeder"
+	docker-compose exec php php artisan db:seed --class="Database\Seeders\JobsCategoryResumeSeeder"
+	docker-compose exec php php artisan db:seed --class="Database\Seeders\JobsCategoryVacancySeeder"
+	docker-compose exec php php artisan db:seed --class="Database\Seeders\ServiceCategorySeeder"
 
 seeder-dev:
 	docker-compose exec php php artisan db:seed

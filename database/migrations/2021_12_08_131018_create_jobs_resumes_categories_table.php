@@ -15,7 +15,7 @@ class CreateJobsResumesCategoriesTable extends Migration
     {
         Schema::create('jobs_resumes_categories', function (Blueprint $table) {
             $table->id();
-            $table->string('name', 255);
+            $table->string('name', 255)->nullable();
             $table->string('alias', 255)->unique();
             $table->string('description', 255)->nullable();
             $table->integer('parent_id')->nullable();

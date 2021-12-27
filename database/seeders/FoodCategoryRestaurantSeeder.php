@@ -15,111 +15,111 @@ class FoodCategoryRestaurantSeeder extends Seeder
     public function run()
     {
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'sushi',
+            'alias' => 'sushi',
         ])->update([
-            'name'=>'Суши',
+            'name' => 'Суши',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'burgers',
+            'alias' => 'burgers',
         ])->update([
-            'name'=>'Бургеры',
+            'name' => 'Бургеры',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'pizza',
+            'alias' => 'pizza',
         ])->update([
-            'name'=>'Пицца',
+            'name' => 'Пицца',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'fast-food',
+            'alias' => 'fast-food',
         ])->update([
-            'name'=>'Фастфуд',
+            'name' => 'Фастфуд',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'caucasian',
+            'alias' => 'caucasian',
         ])->update([
-            'name'=>'Кавказская',
+            'name' => 'Кавказская',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'asian',
+            'alias' => 'asian',
         ])->update([
-            'name'=>'Азиатская',
+            'name' => 'Азиатская',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'breakfast',
+            'alias' => 'breakfast',
         ])->update([
-            'name'=>'Завтрак',
+            'name' => 'Завтрак',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'dinner',
+            'alias' => 'dinner',
         ])->update([
-            'name'=>'Обед',
+            'name' => 'Обед',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'baby',
+            'alias' => 'baby',
         ])->update([
-            'name'=>'Детское',
+            'name' => 'Детское',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'desserts',
+            'alias' => 'desserts',
         ])->update([
-            'name'=>'Десерты',
+            'name' => 'Десерты',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'on-coals',
+            'alias' => 'on-coals',
         ])->update([
-            'name'=>'На углях',
+            'name' => 'На углях',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'bakery',
+            'alias' => 'bakery',
         ])->update([
-            'name'=>'Выпечка',
+            'name' => 'Выпечка',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'shawarma',
+            'alias' => 'shawarma',
         ])->update([
-            'name'=>'Шаурма',
+            'name' => 'Шаурма',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'healthy',
+            'alias' => 'healthy',
         ])->update([
-            'name'=>'Здоровая',
+            'name' => 'Здоровая',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'seafood',
+            'alias' => 'seafood',
         ])->update([
-            'name'=>'Морепродукты',
+            'name' => 'Морепродукты',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'russian',
+            'alias' => 'russian',
         ])->update([
-            'name'=>'Русская',
+            'name' => 'Русская',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'italian',
+            'alias' => 'italian',
         ])->update([
-            'name'=>'Итальянская',
+            'name' => 'Итальянская',
         ]);
 
         FoodCategoryRestaurant::firstOrCreate([
-            'alias'=>'american',
+            'alias' => 'american',
         ])->update([
-            'name'=>'Американская',
+            'name' => 'Американская',
         ]);
     }
 }

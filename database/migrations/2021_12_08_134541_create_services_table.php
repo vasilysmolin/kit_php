@@ -21,7 +21,7 @@ class CreateServicesTable extends Migration
             $table->string('address', 255)->nullable();
             $table->string('name', 255)->nullable();
             $table->string('alias', 255)->unique();
-            $table->boolean('active')->default(0);
+            $table->boolean('active')->default(1);
             $table->boolean('contract')->default(0);
             $table->boolean('guarantee')->default(0);
             $table->boolean('hourly_payment')->default(0);
