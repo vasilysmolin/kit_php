@@ -44,38 +44,38 @@ class UsersParser extends Command
     {
 
         $client = new Client();
-//        $response = $client->get('https://user.tapigo.ru/all-users-json', ['verify' => false]);
-//        $contents = $response->getBody()->getContents();
-//        $contents = json_decode($contents, true);
-//        foreach ($contents as $item) {
-//            $userDB = User::find($item['id']);
-//            if (isset($userDB)) {
-//                $user = $userDB;
-//                $user->id = $item['id'];
-//                $user->email = $item['email'];
-//                $user->password = $item['password'];
-//                $user->phone = $item['phone'];
-//                $user->email_verified_at = $item['email_verified_at'];
-//                $user->name = $item['profile'] ? $item['profile']['name'] : null;
-//                $user->update();
-//            } else {
-//                $count = User::where('email', $item['email'])
-//                    ->orWhere('phone', $item['phone'])
-//                    ->get();
-//
-//                if ($count->count() === 0) {
-//                    $user = new User();
-//                    $user->id = $item['id'];
-//                    $user->email = $item['email'];
-//                    $user->password = $item['password'];
-//                    $user->phone = $item['phone'];
-//                    $user->email_verified_at = $item['email_verified_at'];
-//                    $user->name = $item['profile'] ? $item['profile']['name'] : null;
-//                    $user->save();
-//                    $user->profile()->create(['id' => $item['profile']['id']]);
-//                }
-//            }
-//        }
+        $response = $client->get('https://user.tapigo.ru/all-users-json', ['verify' => false]);
+        $contents = $response->getBody()->getContents();
+        $contents = json_decode($contents, true);
+        foreach ($contents as $item) {
+            $userDB = User::find($item['id']);
+            if (isset($userDB)) {
+                $user = $userDB;
+                $user->id = $item['id'];
+                $user->email = $item['email'];
+                $user->password = $item['password'];
+                $user->phone = $item['phone'];
+                $user->email_verified_at = $item['email_verified_at'];
+                $user->name = $item['profile'] ? $item['profile']['name'] : null;
+                $user->update();
+            } else {
+                $count = User::where('email', $item['email'])
+                    ->orWhere('phone', $item['phone'])
+                    ->get();
+
+                if ($count->count() === 0) {
+                    $user = new User();
+                    $user->id = $item['id'];
+                    $user->email = $item['email'];
+                    $user->password = $item['password'];
+                    $user->phone = $item['phone'];
+                    $user->email_verified_at = $item['email_verified_at'];
+                    $user->name = $item['profile'] ? $item['profile']['name'] : null;
+                    $user->save();
+                    $user->profile()->create(['id' => $item['profile']['id']]);
+                }
+            }
+        }
 
         $response = $client->get('https://catalog.tapigo.ru/all-resume-json', ['verify' => false]);
         $contents = $response->getBody()->getContents();
