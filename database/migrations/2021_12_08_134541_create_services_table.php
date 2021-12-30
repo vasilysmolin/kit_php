@@ -18,11 +18,11 @@ class CreateServicesTable extends Migration
             $table->unsignedBigInteger('profile_id');
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
-            $table->string('title', 255)->nullable();
-            $table->string('description', 255)->nullable();
+            $table->string('title', 1000)->nullable();
+            $table->string('description', 2000)->nullable();
             $table->string('address', 255)->nullable();
             $table->string('name', 255)->nullable();
-            $table->string('alias', 255)->unique();
+            $table->string('alias', 1000)->unique();
             $table->boolean('active')->default(1);
             $table->boolean('contract')->default(0);
             $table->boolean('guarantee')->default(0);
