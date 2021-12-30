@@ -17,6 +17,7 @@ class CreateFoodRestaurantsTable extends Migration
             $table->id();
             $table->string('title', 255)->nullable();
             $table->unsignedBigInteger('profile_id');
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->string('description', 255)->nullable();
             $table->string('name', 255)->nullable();
             $table->json('work_time')->default(json_encode([30,60]));
@@ -39,6 +40,11 @@ class CreateFoodRestaurantsTable extends Migration
             $table->foreign('profile_id', 'FK_profile_restaurant')
                 ->references('id')
                 ->on('profiles')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('city_id', 'FK_city_restaurant')
+                ->references('id')
+                ->on('cities')
                 ->onUpdate('RESTRICT')
                 ->onDelete('CASCADE');
         });

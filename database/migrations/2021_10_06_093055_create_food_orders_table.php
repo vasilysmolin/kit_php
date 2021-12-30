@@ -15,14 +15,14 @@ class CreateFoodOrdersTable extends Migration
     {
         Schema::create('food_orders', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id')->unsigned()->nullable();
-            $table->unsignedBigInteger('profile_id')->unsigned()->nullable();
+            $table->unsignedBigInteger('user_id')->nullable();
+            $table->unsignedBigInteger('profile_id')->nullable();
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->string('name');
             $table->string('surname')->nullable();
             $table->string('patronymic')->nullable();
             $table->string('phone')->nullable();
             $table->string('email')->nullable();
-            $table->string('city_id')->unsigned()->nullable();
             $table->string('zip')->nullable();
             $table->string('address')->nullable();
             $table->float('latitude', 10, 0)->nullable();
@@ -31,6 +31,21 @@ class CreateFoodOrdersTable extends Migration
             $table->integer('status')->default(1);
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('city_id', 'FK_city_orders')
+                ->references('id')
+                ->on('cities')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('profile_id', 'FK_profile_orders')
+                ->references('id')
+                ->on('profiles')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('user_id', 'FK_user_orders')
+                ->references('id')
+                ->on('users')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
         });
     }
 

@@ -21,6 +21,16 @@ class CreateFoodOrderRestaurantsTable extends Migration
             $table->integer('delivery_price')->default(0);
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('order_id', 'FK_food_order_restaurants_orders')
+                ->references('id')
+                ->on('food_orders')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('restaurant_id', 'FK_food_order_restaurants_restaurant')
+                ->references('id')
+                ->on('food_restaurants')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
         });
     }
 

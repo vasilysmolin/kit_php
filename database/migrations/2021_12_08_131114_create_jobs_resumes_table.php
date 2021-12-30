@@ -19,6 +19,7 @@ class CreateJobsResumesTable extends Migration
             $table->string('title', 255)->nullable();
             $table->string('description', 1000)->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->string('address', 255)->nullable();
             $table->string('phone', 255)->nullable();
             $table->string('name', 255)->nullable();
@@ -40,6 +41,16 @@ class CreateJobsResumesTable extends Migration
             $table->foreign('category_id', 'FK_jobs_vacancy_category_id')
                 ->references('id')
                 ->on('jobs_resumes_categories')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('city_id', 'FK_city_resume')
+                ->references('id')
+                ->on('cities')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('profile_id', 'FK_profile_resume')
+                ->references('id')
+                ->on('profiles')
                 ->onUpdate('RESTRICT')
                 ->onDelete('CASCADE');
         });

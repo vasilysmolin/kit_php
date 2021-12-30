@@ -16,6 +16,8 @@ class CreateServicesTable extends Migration
         Schema::create('services', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
+            $table->unsignedBigInteger('category_id')->nullable();
+            $table->unsignedBigInteger('city_id')->nullable();
             $table->string('title', 255)->nullable();
             $table->string('description', 255)->nullable();
             $table->string('address', 255)->nullable();
@@ -34,6 +36,21 @@ class CreateServicesTable extends Migration
             $table->integer('price')->default(0);
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('category_id', 'FK_jobs_services_category_id')
+                ->references('id')
+                ->on('service_categories')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('city_id', 'FK_city_service')
+                ->references('id')
+                ->on('cities')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
+            $table->foreign('profile_id', 'FK_profile_service')
+                ->references('id')
+                ->on('profiles')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
         });
     }
 
