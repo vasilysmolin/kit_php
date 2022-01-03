@@ -22,6 +22,13 @@ Route::group([
 });
 
 Route::group([
+    'namespace' => 'Common',
+    'prefix' => 'select',
+], function ($router) {
+    Route::get('experience', 'Select\SelectController@experience');
+});
+
+Route::group([
     'namespace' => 'Food',
 ], function ($router) {
     Route::apiResource('restaurants', 'RestaurantController');
