@@ -22,7 +22,7 @@ class VacancyCategoryTest extends TestCase
     {
         $response = $this->get(route('category-vacancies.index'));
         $response->assertStatus(200)->assertJsonStructure([
-            'category_vacancies',
+            'jobs_vacancy_categories',
         ]);
     }
 

@@ -22,7 +22,7 @@ class ResumeTest extends TestCase
     {
         $response = $this->get(route('resume.index'));
         $response->assertStatus(200)->assertJsonStructure([
-            'resume',
+            'jobs_resumes',
         ]);
     }
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
+use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -73,14 +74,7 @@ class ServiceController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'services' => $service,
-        ];
+        $data = (new JsonHelper())->getIndexStructure(new Service(), $service, $count, (int) $skip);
 
         return response()->json($data);
     }

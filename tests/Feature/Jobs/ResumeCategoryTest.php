@@ -22,7 +22,7 @@ class ResumeCategoryTest extends TestCase
     {
         $response = $this->get(route('category-resume.index'));
         $response->assertStatus(200)->assertJsonStructure([
-            'resume_category',
+            'jobs_resumes_categories',
         ]);
     }
 

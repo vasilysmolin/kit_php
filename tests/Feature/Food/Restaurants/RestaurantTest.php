@@ -23,7 +23,7 @@ class RestaurantTest extends TestCase
     {
         $response = $this->get(route('restaurants.index'));
         $response->assertStatus(200)->assertJsonStructure([
-            'restaurants'
+            'food_restaurants'
         ]);
     }
 

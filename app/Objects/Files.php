@@ -3,6 +3,7 @@
 namespace App\Objects;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
 class Files
@@ -39,8 +40,9 @@ class Files
         return $url;
     }
 
-    public function save($model, object $files): void
+    public function save($model, ?array $files): void
     {
+
         if (isset($files) && count($files) > 0) {
             foreach ($files as $file) {
                 $dataFile = $this->preparationFileS3($file);

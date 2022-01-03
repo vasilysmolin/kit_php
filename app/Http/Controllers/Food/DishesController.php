@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateRestaurantFoodRequest;
 use App\Models\FoodRestaurant;
 use App\Models\FoodRestaurantDishes;
 use App\Objects\Files;
+use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -81,14 +82,7 @@ class DishesController extends Controller
             ->where('restaurant_id', $idRes)
             ->count();
 
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'dishes' => $foods,
-        ];
+        $data = (new JsonHelper())->getIndexStructure(new FoodRestaurantDishes, $foods, $count, (int) $skip);
 
         return response()->json($data);
     }
@@ -148,14 +142,7 @@ class DishesController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'dishes' => $foods,
-        ];
+        $data = (new JsonHelper())->getIndexStructure(new FoodRestaurantDishes(), $foods, $count, (int) $skip);
 
         return response()->json($data);
     }

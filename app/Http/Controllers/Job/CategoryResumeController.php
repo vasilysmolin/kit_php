@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Job;
 use App\Http\Controllers\Controller;
 use App\Models\JobsResumeCategory;
 use App\Objects\Files;
+use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -45,14 +46,7 @@ class CategoryResumeController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'resume_category' => $resumeCategory,
-        ];
+        $data = (new JsonHelper())->getIndexStructure(new JobsResumeCategory, $resumeCategory, $count, (int) $skip);
 
         return response()->json($data);
     }

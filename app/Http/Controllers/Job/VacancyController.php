@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\JobsVacancy;
 use App\Models\JobsVacancyCategory;
 use App\Objects\Files;
+use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -73,14 +74,7 @@ class VacancyController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'vacancy' => $vacancy,
-        ];
+        $data = (new JsonHelper())->getIndexStructure(new JobsVacancy(), $vacancy, $count, (int) $skip);
 
         return response()->json($data);
     }

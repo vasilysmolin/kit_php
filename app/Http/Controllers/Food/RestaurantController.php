@@ -7,6 +7,7 @@ use App\Http\Requests\StoreRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\FoodRestaurant;
 use App\Objects\Files;
+use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -82,16 +83,7 @@ class RestaurantController extends Controller
             })
             ->where('active', 1)
             ->count();
-
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'restaurants' => $restaurants,
-        ];
-
+        $data = (new JsonHelper())->getIndexStructure(new FoodRestaurant(), $restaurants, $count, (int) $skip);
         return response()->json($data);
     }
 

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Food;
 
 use App\Http\Controllers\Controller;
 use App\Models\FoodCategoryRestaurant;
+use App\Objects\JsonHelper;
 use Illuminate\Http\Request;
 
 class CategoryRestaurantController extends Controller
@@ -30,14 +31,7 @@ class CategoryRestaurantController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = [
-            'meta' => [
-                'skip' => (int) $skip ?? 0,
-                'limit' => 25,
-                'total' => $count ?? 0,
-            ],
-            'categories_restaurant' => $restaurants,
-        ];
+        $data = (new JsonHelper())->getIndexStructure(new FoodCategoryRestaurant, $restaurants, $count, (int) $skip);
 
         return response()->json($data);
     }

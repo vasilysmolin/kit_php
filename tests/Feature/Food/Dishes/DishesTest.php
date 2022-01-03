@@ -24,7 +24,7 @@ class DishesTest extends TestCase
         $restaurant = FoodRestaurant::factory()->create();
         $response = $this->get(route('restaurants.dishes.index', $restaurant->id));
         $response->assertStatus(200)->assertJsonStructure([
-            'dishes'
+            'food_dishes'
         ]);
     }
 
