@@ -25,10 +25,10 @@ Route::group([
     'namespace' => 'Common',
     'prefix' => 'select',
 ], function ($router) {
-    Route::get('experience', 'Select\SelectController@experience');
-    Route::get('educations', 'Select\SelectController@educations');
-    Route::get('schedules', 'Select\SelectController@schedules');
-    Route::get('salary', 'Select\SelectController@salary');
+    Route::get('experience', 'Select\SelectController@experience')->name('select.experience');
+    Route::get('educations', 'Select\SelectController@educations')->name('select.educations');
+    Route::get('schedules', 'Select\SelectController@schedules')->name('select.schedules');
+    Route::get('salary', 'Select\SelectController@salary')->name('select.salary');
 });
 
 Route::group([
