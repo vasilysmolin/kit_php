@@ -6,6 +6,7 @@ use App\Models\JobsResume;
 use App\Models\JobsVacancy;
 use App\Models\Service;
 use App\Models\User;
+use App\Objects\Education\Constants\Education;
 use App\Objects\Time\Constants\TimeArray;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -107,6 +108,7 @@ class UsersParser extends Command
                             $model->description = $property['desc'];
                             $model->title = $property['title'];
                             $model->experience = (new TimeArray($property['experience_years'], null))->parce();
+                            $model->education = (new Education($property['education'], null))->parce();
                             $model->alias = $slug;
                             $model->active = true;
                             $model->profile_id = $profileID;
@@ -137,6 +139,7 @@ class UsersParser extends Command
                         $model->demands = $property['demands'];
                         $model->additionally = $property['additionally'];
                         $model->experience = (new TimeArray($property['experience_years'], null))->parce();
+                        $model->education = (new Education($property['education'], null))->parce();
                         $model->alias = $slug;
                         $model->active = true;
                         $model->profile_id = $profileID;

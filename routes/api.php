@@ -26,6 +26,7 @@ Route::group([
     'prefix' => 'select',
 ], function ($router) {
     Route::get('experience', 'Select\SelectController@experience');
+    Route::get('educations', 'Select\SelectController@educations');
 });
 
 Route::group([
