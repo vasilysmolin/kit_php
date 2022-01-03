@@ -34,7 +34,7 @@ class DishesController extends Controller
         }
 
         $files = resolve(Files::class);
-        $take = $request->take ?? 25;
+        $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
 
         $id = isset($request->id) ? explode(',', $request->id) : null;
@@ -96,7 +96,7 @@ class DishesController extends Controller
             $cabinet = true;
         }
 
-        $take = $request->take ?? 25;
+        $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $category = $request->category;

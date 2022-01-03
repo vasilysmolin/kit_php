@@ -24,7 +24,7 @@ class RestaurantController extends Controller
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
 
-        $take = $request->take ?? 25;
+        $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
