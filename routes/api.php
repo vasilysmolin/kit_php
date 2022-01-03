@@ -27,6 +27,8 @@ Route::group([
 ], function ($router) {
     Route::get('experience', 'Select\SelectController@experience');
     Route::get('educations', 'Select\SelectController@educations');
+    Route::get('schedules', 'Select\SelectController@schedules');
+    Route::get('salary', 'Select\SelectController@salary');
 });
 
 Route::group([

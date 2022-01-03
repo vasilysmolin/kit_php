@@ -7,6 +7,7 @@ use App\Models\JobsVacancy;
 use App\Models\Service;
 use App\Models\User;
 use App\Objects\Education\Constants\Education;
+use App\Objects\SalaryType\Constants\SalaryType;
 use App\Objects\Time\Constants\TimeArray;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -109,6 +110,8 @@ class UsersParser extends Command
                             $model->title = $property['title'];
                             $model->experience = (new TimeArray($property['experience_years'], null))->parce();
                             $model->education = (new Education($property['education'], null))->parce();
+                            $model->schedule = (new Education($property['schedule'], null))->parce();
+                            $model->salary_type = (new SalaryType($property['salary_type'] ?? null, null))->parce();
                             $model->alias = $slug;
                             $model->active = true;
                             $model->profile_id = $profileID;
@@ -140,6 +143,8 @@ class UsersParser extends Command
                         $model->additionally = $property['additionally'];
                         $model->experience = (new TimeArray($property['experience_years'], null))->parce();
                         $model->education = (new Education($property['education'], null))->parce();
+                        $model->schedule = (new Education($property['schedule'], null))->parce();
+                        $model->salary_type = (new SalaryType($property['salary_type'] ?? null, null))->parce();
                         $model->alias = $slug;
                         $model->active = true;
                         $model->profile_id = $profileID;

@@ -26,7 +26,7 @@ class Education implements EducationInterface
 
     public function getById(): ?string
     {
-        if (array_key_exists($this->key . '_years', $this->educations)) {
+        if (array_key_exists($this->key, $this->educations)) {
             return $this->educations[$this->key];
         } else {
             return null;

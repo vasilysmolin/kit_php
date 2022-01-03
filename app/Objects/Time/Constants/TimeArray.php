@@ -36,12 +36,12 @@ class TimeArray implements TimeInterface
         $this->value = $value;
     }
 
-    public function arrTimes(): array
+    public function get(): array
     {
         return $this->arrTimes;
     }
 
-    public function getTime(): ?string
+    public function getById(): ?string
     {
         if (array_key_exists($this->key . '_years', $this->arrTimes)) {
             return $this->arrTimes[$this->key];

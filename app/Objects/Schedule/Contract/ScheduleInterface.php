@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Objects\Time\Contract;
+namespace App\Objects\Schedule\Contract;
 
-interface TimeInterface
+interface ScheduleInterface
 {
     public function get(): array;
     public function getById(): ?string;

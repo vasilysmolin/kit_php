@@ -29,6 +29,7 @@ class CreateJobsResumesTable extends Migration
             $table->string('education')->nullable();
             $table->string('experience')->nullable();
             $table->string('schedule')->nullable();
+            $table->string('salary_type')->nullable();
             $table->string('alias', 255)->unique();
             $table->boolean('active')->default(0);
             $table->boolean('sort')->nullable();

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Objects\Time\Contract;
+namespace App\Objects\SalaryType\Contract;
 
-interface TimeInterface
+interface SalaryTypeInterface
 {
     public function get(): array;
     public function getById(): ?string;
