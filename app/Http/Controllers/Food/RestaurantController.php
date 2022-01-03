@@ -123,19 +123,7 @@ class RestaurantController extends Controller
         if (isset($request['categoryRestaurantID'])) {
             $restaurant->categories()->sync($request['categoryRestaurantID']);
         }
-
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $restaurant->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+        $files->save($restaurant, $request['files']);
 
         return response()->json([], 201, ['Location' => "/restaurants/$restaurant->id"]);
     }
@@ -211,19 +199,7 @@ class RestaurantController extends Controller
             $restaurant->categories()->sync($request['categoryRestaurantID']);
         }
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $restaurant->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
-
+        $files->save($restaurant, $request['files']);
 
         return response()->json([], 204);
     }

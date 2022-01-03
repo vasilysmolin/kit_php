@@ -67,18 +67,7 @@ class CategoryFoodController extends Controller
 
         $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $restaurantFood->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+        $files->save($restaurantFood, $request['files']);
 
         return response()->json([], 201);
     }
@@ -110,9 +99,12 @@ class CategoryFoodController extends Controller
     {
         $formData = json_decode($request->getContent(), true);
         $formData['active'] = 1;
-        $restaurant = FoodDishesCategory::find($id);
-        $restaurant->fill($formData);
-        $restaurant->update();
+        $restaurantFood = FoodDishesCategory::find($id);
+        $restaurantFood->fill($formData);
+        $restaurantFood->update();
+
+        $files = resolve(Files::class);
+        $files->save($restaurantFood, $request['files']);
 
         return response()->json([], 204);
     }

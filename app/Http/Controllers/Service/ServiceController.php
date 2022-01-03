@@ -111,18 +111,7 @@ class ServiceController extends Controller
             }
         }
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $service->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+        $files->save($service, $request['files']);
 
         return response()->json([], 201, ['Location' => "/services/$service->id"]);
     }
@@ -189,19 +178,7 @@ class ServiceController extends Controller
             }
         }
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $service->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
-
+        $files->save($service, $request['files']);
 
         return response()->json([], 204);
     }

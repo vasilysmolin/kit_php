@@ -72,18 +72,7 @@ class CategoryVacancyController extends Controller
         $vacancyCategory->save();
         $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $vacancyCategory->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+        $files->save($vacancyCategory, $request['files']);
 
         return response()->json([], 201, ['Location' => "/category-vacancies/$vacancyCategory->id"]);
     }
@@ -127,19 +116,7 @@ class CategoryVacancyController extends Controller
 
         $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $vacancyCategory->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
-
+        $files->save($vacancyCategory, $request['files']);
 
         return response()->json([], 204);
     }

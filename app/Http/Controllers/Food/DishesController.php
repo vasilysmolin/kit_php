@@ -188,18 +188,7 @@ class DishesController extends Controller
 
         $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $dishes->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+        $files->save($dishes, $request['files']);
 
         return response()->json([], 201, ['Location' => "/dishes/$dishes->id"]);
     }
@@ -265,35 +254,24 @@ class DishesController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
 
-        $food = FoodRestaurantDishes::where('id', $id)
+        $dishes = FoodRestaurantDishes::where('id', $id)
             ->whereHas('restaurant.profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })->first();
 
-        if (!isset($food)) {
+        if (!isset($dishes)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
-        $food->fill($formData);
-        $food->update();
+        $dishes->fill($formData);
+        $dishes->update();
 
         if (isset($request['categoryDishesID'])) {
-            $food->categories()->sync($request['categoryDishesID']);
+            $dishes->categories()->sync($request['categoryDishesID']);
         }
 
         $files = resolve(Files::class);
 
-        if (isset($request['files']) && count($request['files']) > 0) {
-            foreach ($request['files'] as $file) {
-                $dataFile = $files->preparationFileS3($file);
-                $food->image()->create([
-                    'mimeType' => $dataFile['mineType'],
-                    'extension' => $dataFile['extension'],
-                    'name' => $dataFile['name'],
-                    'uniqueValue' => $dataFile['name'],
-                    'size' => $dataFile['size'],
-                ]);
-            }
-        }
+        $files->save($dishes, $request['files']);
 
         return response()->json([], 204);
     }
