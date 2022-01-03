@@ -23,6 +23,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+//        \DB::listen(function ($query) {
+//            var_dump([$query->sql, $query->time / 1000 . ' ms']);
+//        });
         URL::forceScheme('https');
     }
 }

@@ -57,6 +57,11 @@ class Profile extends Model
         return $this->hasOne(Person::class, 'profile_id', 'id');
     }
 
+    public function isPerson()
+    {
+        return $this->isPerson === true;
+    }
+
     public function foodRestaurant()
     {
         return $this->hasMany(FoodRestaurant::class, 'profile_id', 'id');

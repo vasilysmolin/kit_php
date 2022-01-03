@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
 
 class AuthController extends Controller
@@ -99,7 +100,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register()
+    public function register(Request $request)
     {
         $credentials = request(['email', 'password']);
 
@@ -111,6 +112,15 @@ class AuthController extends Controller
             $user->email = request('email');
             $user->password = bcrypt(request('password'));
             $user->save();
+            $user->profile()->create();
+            if (isset($request->inn) && !empty($request->inn)) {
+                $user->profile->isPerson = true;
+                $user->profile->update();
+                $user->profile->person()->create([
+                    'inn' => $request->inn,
+                    'name' => $request->inn,
+                ]);
+            }
             $token = auth('api')->attempt($credentials);
 
             if ($token === false) {
