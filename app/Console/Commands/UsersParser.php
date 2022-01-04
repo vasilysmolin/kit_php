@@ -2,8 +2,12 @@
 
 namespace App\Console\Commands;
 
+use App\Models\CatalogAd;
+use App\Models\CatalogAdCategory;
+use App\Models\CatalogMeta;
 use App\Models\JobsResume;
 use App\Models\JobsVacancy;
+use App\Models\Profile;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\User;
@@ -66,7 +70,6 @@ class UsersParser extends Command
                 $count = User::where('email', $item['email'])
                     ->orWhere('phone', $item['phone'])
                     ->get();
-
                 if ($count->count() === 0) {
                     $user = new User();
                     $user->id = $item['id'];
@@ -76,8 +79,98 @@ class UsersParser extends Command
                     $user->email_verified_at = $item['email_verified_at'];
                     $user->name = $item['profile'] ? $item['profile']['name'] : null;
                     $user->save();
-                    $user->profile()->create(['id' => $item['profile']['id']]);
                 }
+            }
+            if (isset($user) && empty($user->profile)) {
+                $profileID = $item['profile'] ? $item['profile']['id'] : null;
+                if ($profileID !== null) {
+                    $profile = new Profile();
+                    $profile->id = $profileID;
+                    $profile->user_id = $user->getKey();
+                    $profile->save();
+                }
+            }
+        }
+
+        $client = new Client();
+        $response = $client->get('https://catalog.tapigo.ru/all-category-ads-json', ['verify' => false]);
+        $contents = $response->getBody()->getContents();
+        $contents = json_decode($contents, true);
+        $i = 1;
+        foreach ($contents as $item) {
+            if ($item['parent_id'] === 0 || $item['parent_id'] === 1) {
+                $isModel = CatalogMeta::find($item['id']);
+                $meta = $isModel ?? new CatalogMeta();
+                $meta->id = $item['id'];
+                $meta->name = $item['title'];
+                $meta->sort = $i;
+                $meta->alias = $item['slug'] . '_' . Str::random(5);
+                $meta->active = 1;
+                $isModel ? $meta->update() : $meta->save();
+                $i++;
+            } else {
+                $isModelMeta = CatalogMeta::find($item['parent_id']);
+                $isModel = CatalogAdCategory::find($item['id']);
+                $meta = $isModel ?? new CatalogAdCategory();
+                $meta->id = $item['id'];
+                $meta->name = $item['title'];
+                $meta->parent_id = $isModelMeta ? null :  $item['parent_id'];
+                $meta->meta_id = $isModelMeta ? $isModelMeta->getKey() : null;
+                $meta->alias = $item['slug']  . '_' . Str::random(5);
+                $meta->active = 1;
+                $isModel ? $meta->update() : $meta->save();
+            }
+        }
+
+        $client = new Client();
+        $response = $client->get('https://catalog.tapigo.ru/all-ads-json', ['verify' => false]);
+        $contents = $response->getBody()->getContents();
+        $contents = json_decode($contents, true);
+        foreach ($contents as $item) {
+            $userDB = User::find($item['id']);
+            if (isset($userDB)) {
+                foreach ($item['ads'] as $relation) {
+                    if($relation['property'] === null || !isset($relation['property']['title'])) {
+                        continue;
+                    }
+                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
+                    $isModel = CatalogAd::find($relation['property']['id']);
+                    if (isset($relation['category'])) {
+                        $cats = CatalogAdCategory::find($relation['category']['id']);
+                    } else {
+                        $cats = null;
+                    }
+                    $model = $isModel ?? new CatalogAd();
+                    $model->id = $relation['property']['id'];
+                    $model->profile_id = $userDB->profile->getKey();
+                    $model->name = $relation['property']['title'];
+                    $model->description = trim($relation['property']['desc']);
+                    $model->category_id = isset($cats) ? $cats->id : null;
+                    $model->alias = $alias;
+                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
+                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
+                    $isModel ? $model->update() : $model->save();
+                }
+            }
+        }
+
+        $client = new Client();
+        $response = $client->get('https://user.tapigo.ru/all-up', ['verify' => false]);
+        $contents = $response->getBody()->getContents();
+        $contents = json_decode($contents, true);
+        foreach ($contents as $item) {
+            if ($item['user'] === null) {
+                continue;
+            }
+            $profileDB = Profile::find($item['id']);
+            if (isset($profileDB)) {
+                $profile = $profileDB;
+                $profile->isPerson = true;
+                $profile->update();
+                $profile->person()->create([
+                    'inn' => $item['inn'],
+                    'name' => $item['name'],
+                ]);
             }
         }
 
@@ -88,7 +181,7 @@ class UsersParser extends Command
 
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
-            if(!isset($userDB)) {
+            if (!isset($userDB)) {
                 continue;
             }
             $profileID = $userDB->profile->getKey();
