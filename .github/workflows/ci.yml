@@ -62,6 +62,19 @@ jobs:
 
       - name: Setup project
         run: make setup
+        env:
+          # The hostname used to communicate with the PostgreSQL service container
+          DB_HOST: localhost
+          # The default PostgreSQL port
+          DB_PORT: 5432
+          # The hostname used to communicate with the PostgreSQL service container
+          POSTGRES_HOST: localhost
+          # The default PostgreSQL port
+          POSTGRES_PORT: 5432
+          # The hostname used to communicate with the Redis service container
+          REDIS_HOST: localhost
+          # The default Redis port
+          REDIS_PORT: 6379
 
       - name: Check lint
         run: make lint
