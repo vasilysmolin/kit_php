@@ -22,7 +22,7 @@ class ServiceController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
         $user = auth('api')->user();
-        $categoryID = $request->categoryID;
+        $categoryID = $request->category_id;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -34,7 +34,7 @@ class ServiceController extends Controller
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->when(isset($categoryRestaurantID), function ($q) use ($categoryID) {
+            ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
                 });
@@ -91,17 +91,18 @@ class ServiceController extends Controller
 //            $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
 //        }
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-        unset($formData['categoryID']);
+        unset($formData['category_id']);
         $service = new Service();
         $service->fill($formData);
 //        dd($service);
         $service->save();
         $files = resolve(Files::class);
 
-        if (isset($request['categoryID'])) {
-            $category = ServiceCategory::find($request['categoryID']);
+        if (isset($request['category_id'])) {
+            $category = ServiceCategory::find($request['category_id']);
             if (isset($category)) {
-                $service->categories()->save($category);
+                $service->category_id = $request['category_id'];
+                $service->update();
             }
         }
 
@@ -120,7 +121,7 @@ class ServiceController extends Controller
         }
 
         $service = Service::where('id', $id)
-            ->with('image', 'categories:id')
+            ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -148,7 +149,7 @@ class ServiceController extends Controller
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
-        unset($formData['categoryID']);
+        unset($formData['category_id']);
         $service = Service::where('id', $id)
             ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
@@ -165,10 +166,11 @@ class ServiceController extends Controller
 
         $files = resolve(Files::class);
 
-        if (isset($request['categoryID'])) {
-            $category = ServiceCategory::find($request['categoryID']);
+        if (isset($request['category_id'])) {
+            $category = ServiceCategory::find($request['category_id']);
             if (isset($category)) {
-                $service->categories()->save($category);
+                $service->category_id = $request['category_id'];
+                $service->update();
             }
         }
 

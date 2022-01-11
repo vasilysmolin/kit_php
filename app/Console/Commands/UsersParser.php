@@ -6,6 +6,7 @@ use App\Models\CatalogAd;
 use App\Models\CatalogAdCategory;
 use App\Models\CatalogMeta;
 use App\Models\JobsResume;
+use App\Models\JobsResumeCategory;
 use App\Models\JobsVacancy;
 use App\Models\Profile;
 use App\Models\Service;
@@ -187,6 +188,11 @@ class UsersParser extends Command
             $profileID = $userDB->profile->getKey();
             if (isset($item['posts']) && !empty($item['posts'])) {
                 foreach ($item['posts'] as $post) {
+                    if (isset($post['category'])) {
+                        $cats = JobsResumeCategory::where('name', $post['category']['title'])->first();
+                    } else {
+                        $cats = null;
+                    }
                     if (isset($post['property']) && !empty($post['property'])) {
                         if ($post['property_type'] === "App\\Models\\Jobs\\Resume\\JobsPostResumeProperty") {
                             $property = $post['property'];
@@ -201,6 +207,7 @@ class UsersParser extends Command
                             $model->price = $property['price'];
                             $model->description = $property['desc'];
                             $model->title = $property['title'];
+                            $model->category_id = isset($cats) ? $cats->id : null;
                             $model->experience = (new TimeArray($property['experience_years'], null))->parce();
                             $model->education = (new Education($property['education'], null))->parce();
                             $model->schedule = (new Education($property['schedule'], null))->parce();
@@ -226,6 +233,7 @@ class UsersParser extends Command
                             $model = new JobsVacancy();
                         }
                         $model->id = $property['id'];
+                        $model->category_id = isset($cats) ? $cats->id : null;
                         $model->min_price = $property['price'];
                         $model->max_price = $property['price_max'];
                         $model->description = $property['desc'];

@@ -22,7 +22,7 @@ class ResumeController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
         $user = auth('api')->user();
-        $categoryID = $request->categoryID;
+        $categoryID = $request->category_id;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -34,7 +34,7 @@ class ResumeController extends Controller
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->when(isset($categoryRestaurantID), function ($q) use ($categoryID) {
+            ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
                 });
@@ -91,17 +91,18 @@ class ResumeController extends Controller
 //            $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
 //        }
         $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-        unset($formData['categoryID']);
+        unset($formData['category_id']);
         $resume = new JobsResume();
         $resume->fill($formData);
 //        dd($resume);
         $resume->save();
         $files = resolve(Files::class);
 
-        if (isset($request['categoryID'])) {
-            $category = JobsResumeCategory::find($request['categoryID']);
+        if (isset($request['category_id'])) {
+            $category = JobsResumeCategory::find($request['category_id']);
             if (isset($category)) {
-                $resume->categories()->save($category);
+                $resume->category_id = $request['category_id'];
+                $resume->update();
             }
         }
 
@@ -120,7 +121,7 @@ class ResumeController extends Controller
         }
 
         $resume = JobsResume::where('id', $id)
-            ->with('image', 'categories:id')
+            ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -148,16 +149,16 @@ class ResumeController extends Controller
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
-        unset($formData['categoryID']);
+        unset($formData['category_id']);
         $resume = JobsResume::where('id', $id)
-            ->whereHas('profile.user', function ($q) use ($user) {
-                $q->where('id', $user->id);
-            })
+//            ->whereHas('profile.user', function ($q) use ($user) {
+//                $q->where('id', $user->id);
+//            })
             ->first();
 
-        if (!isset($resume)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
-        }
+//        if (!isset($resume)) {
+//            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+//        }
 
         $resume->fill($formData);
 
@@ -165,10 +166,11 @@ class ResumeController extends Controller
 
         $files = resolve(Files::class);
 
-        if (isset($request['categoryID'])) {
-            $category = JobsResumeCategory::find($request['categoryID']);
+        if (isset($request['category_id'])) {
+            $category = JobsResumeCategory::find($request['category_id']);
             if (isset($category)) {
-                $resume->categories()->save($category);
+                $resume->category_id = $request['category_id'];
+                $resume->update();
             }
         }
 
