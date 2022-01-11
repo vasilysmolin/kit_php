@@ -108,7 +108,7 @@ class UsersParser extends Command
                 $meta->alias = $item['slug'] . '_' . Str::random(5);
                 $meta->active = 1;
                 $isModel ? $meta->update() : $meta->save();
-                $i++;
+                $i += 1;
             } else {
                 $isModelMeta = CatalogMeta::find($item['parent_id']);
                 $isModel = CatalogAdCategory::find($item['id']);
@@ -131,7 +131,7 @@ class UsersParser extends Command
             $userDB = User::find($item['id']);
             if (isset($userDB)) {
                 foreach ($item['ads'] as $relation) {
-                    if($relation['property'] === null || !isset($relation['property']['title'])) {
+                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
                         continue;
                     }
                     $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');

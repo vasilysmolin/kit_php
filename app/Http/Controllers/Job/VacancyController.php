@@ -121,7 +121,7 @@ class VacancyController extends Controller
         }
 
         $vacancy = JobsVacancy::where('id', $id)
-            ->with('image',)
+            ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);

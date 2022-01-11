@@ -6,7 +6,7 @@ use App\Objects\SalaryType\Contract\SalaryTypeInterface;
 
 class SalaryType implements SalaryTypeInterface
 {
-    private array $salaryType= [
+    private array $salaryType = [
         'salary' => 'Оклад',
         'salary_and_percent' => 'Оклад и проценты',
         'percent' => 'Только проценты',

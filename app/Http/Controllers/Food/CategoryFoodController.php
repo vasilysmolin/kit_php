@@ -32,7 +32,7 @@ class CategoryFoodController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = (new JsonHelper())->getIndexStructure(new FoodDishesCategory, $restaurants, $count, (int) $skip);
+        $data = (new JsonHelper())->getIndexStructure(new FoodDishesCategory(), $restaurants, $count, (int) $skip);
 
         return response()->json($data);
     }

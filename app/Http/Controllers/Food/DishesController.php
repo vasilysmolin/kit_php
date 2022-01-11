@@ -82,7 +82,7 @@ class DishesController extends Controller
             ->where('restaurant_id', $idRes)
             ->count();
 
-        $data = (new JsonHelper())->getIndexStructure(new FoodRestaurantDishes, $foods, $count, (int) $skip);
+        $data = (new JsonHelper())->getIndexStructure(new FoodRestaurantDishes(), $foods, $count, (int) $skip);
 
         return response()->json($data);
     }

@@ -46,7 +46,7 @@ class CategoryResumeController extends Controller
             ->where('active', 1)
             ->count();
 
-        $data = (new JsonHelper())->getIndexStructure(new JobsResumeCategory, $resumeCategory, $count, (int) $skip);
+        $data = (new JsonHelper())->getIndexStructure(new JobsResumeCategory(), $resumeCategory, $count, (int) $skip);
 
         return response()->json($data);
     }

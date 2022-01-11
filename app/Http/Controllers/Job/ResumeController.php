@@ -143,7 +143,7 @@ class ResumeController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $user = auth('api')->user();
+//        $user = auth('api')->user();
         $formData['profile_id'] = auth('api')->user()->profile->id;
 
         if (isset($formData['name'])) {

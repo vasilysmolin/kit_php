@@ -44,7 +44,6 @@ class Education implements EducationInterface
                 return 'secondary';
             case 4:
                 return 'incomplete_secondary';
-
         }
     }
 }

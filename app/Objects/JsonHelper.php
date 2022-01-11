@@ -19,5 +19,4 @@ class JsonHelper
             $model->getTable() => $collection,
         ];
     }
-
 }

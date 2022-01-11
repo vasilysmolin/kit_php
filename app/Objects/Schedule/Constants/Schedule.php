@@ -50,7 +50,6 @@ class Schedule implements ScheduleInterface
                 return 'free_schedule';
             case 6:
                 return 'shift_work';
-
         }
     }
 }
