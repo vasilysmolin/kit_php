@@ -78,8 +78,8 @@ services:
     container_name: database
     restart: always
     environment:
-      POSTGRES_PASSWORD: secret
-      POSTGRES_DB: laravel_docker
+      POSTGRES_PASSWORD: Un9ToHyELed75kBGtdq3
+      POSTGRES_DB: tapigo-database
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
