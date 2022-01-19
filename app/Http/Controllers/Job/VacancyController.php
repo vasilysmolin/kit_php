@@ -45,7 +45,7 @@ class VacancyController extends Controller
                 });
             })
             ->with('image')
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('id', 'DESC')
             ->where('active', 1)
             ->get();
 

@@ -44,7 +44,7 @@ class ResumeController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('id', 'DESC')
             ->with('categories')
             ->where('active', 1)
             ->get();
