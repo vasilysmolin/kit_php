@@ -44,6 +44,7 @@ class ServiceController extends Controller
                     $q->where('id', $user->id);
                 });
             })
+            ->orderBy('created_at', 'DESC')
             ->with('image', 'categories')
             ->where('active', 1)
             ->get();

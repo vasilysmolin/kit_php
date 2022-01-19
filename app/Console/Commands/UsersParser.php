@@ -84,12 +84,16 @@ class UsersParser extends Command
             }
             if (isset($user) && empty($user->profile)) {
                 $profileID = $item['profile'] ? $item['profile']['id'] : null;
-                if ($profileID !== null) {
-                    $profile = new Profile();
-                    $profile->id = $profileID;
-                    $profile->user_id = $user->getKey();
-                    $profile->save();
+                $isProfile = Profile::find($profileID);
+                if(!isset($isProfile)) {
+                    if ($profileID !== null) {
+                        $profile = new Profile();
+                        $profile->id = $profileID;
+                        $profile->user_id = $user->getKey();
+                        $profile->save();
+                    }
                 }
+
             }
         }
 
