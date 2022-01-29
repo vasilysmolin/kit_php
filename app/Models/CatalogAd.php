@@ -9,6 +9,24 @@ class CatalogAd extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'id',
+        'title',
+        'name',
+        'price',
+        'sale_price',
+        'description',
+        'sort',
+        'alias',
+        'address',
+        'profile_id',
+        'category_id',
+    ];
+
+    public function categories()
+    {
+        return $this->hasOne(CatalogAdCategory::class, 'id', 'category_id');
+    }
 
     public function images()
     {

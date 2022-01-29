@@ -60,3 +60,10 @@ Route::group([
     Route::apiResource('services', 'ServiceController');
     Route::apiResource('category-services', 'CategoryServiceController');
 });
+
+Route::group([
+    'namespace' => 'Ad',
+], function ($router) {
+    Route::apiResource('ads', 'AdController');
+    Route::apiResource('category-ads', 'CategoryAdController');
+});
