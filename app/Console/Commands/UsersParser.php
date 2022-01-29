@@ -13,11 +13,13 @@ use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\User;
 use App\Objects\Education\Constants\Education;
+use App\Objects\Files;
 use App\Objects\SalaryType\Constants\SalaryType;
 use App\Objects\Time\Constants\TimeArray;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class UsersParser extends Command
 {
@@ -52,79 +54,79 @@ class UsersParser extends Command
      */
     public function handle()
     {
-        $client = new Client();
-        $response = $client->get('https://user.tapigo.ru/all-users-json', ['verify' => false]);
-        $contents = $response->getBody()->getContents();
-        $contents = json_decode($contents, true);
-        foreach ($contents as $item) {
-            $userDB = User::find($item['id']);
-            if (isset($userDB)) {
-                $user = $userDB;
-                $user->id = $item['id'];
-                $user->email = $item['email'];
-                $user->password = $item['password'];
-                $user->phone = $item['phone'];
-                $user->email_verified_at = $item['email_verified_at'];
-                $user->name = $item['profile'] ? $item['profile']['name'] : null;
-                $user->update();
-            } else {
-                $count = User::where('email', $item['email'])
-                    ->orWhere('phone', $item['phone'])
-                    ->get();
-                if ($count->count() === 0) {
-                    $user = new User();
-                    $user->id = $item['id'];
-                    $user->email = $item['email'];
-                    $user->password = $item['password'];
-                    $user->phone = $item['phone'];
-                    $user->email_verified_at = $item['email_verified_at'];
-                    $user->name = $item['profile'] ? $item['profile']['name'] : null;
-                    $user->save();
-                }
-            }
-            if (isset($user) && empty($user->profile)) {
-                $profileID = $item['profile'] ? $item['profile']['id'] : null;
-                $isProfile = Profile::find($profileID);
-                if (!isset($isProfile)) {
-                    if ($profileID !== null) {
-                        $profile = new Profile();
-                        $profile->id = $profileID;
-                        $profile->user_id = $user->getKey();
-                        $profile->save();
-                    }
-                }
-            }
-        }
-
-        $client = new Client();
-        $response = $client->get('https://catalog.tapigo.ru/all-category-ads-json', ['verify' => false]);
-        $contents = $response->getBody()->getContents();
-        $contents = json_decode($contents, true);
-        $i = 1;
-        foreach ($contents as $item) {
-            if ($item['parent_id'] === 0 || $item['parent_id'] === 1) {
-                $isModel = CatalogMeta::find($item['id']);
-                $meta = $isModel ?? new CatalogMeta();
-                $meta->id = $item['id'];
-                $meta->name = $item['title'];
-                $meta->sort = $i;
-                $meta->alias = $item['slug'] . '_' . Str::random(5);
-                $meta->active = 1;
-                $isModel ? $meta->update() : $meta->save();
-                $i += 1;
-            } else {
-                $isModelMeta = CatalogMeta::find($item['parent_id']);
-                $isModel = CatalogAdCategory::find($item['id']);
-                $meta = $isModel ?? new CatalogAdCategory();
-                $meta->id = $item['id'];
-                $meta->name = $item['title'];
-                $meta->parent_id = $isModelMeta ? null :  $item['parent_id'];
-                $meta->meta_id = $isModelMeta ? $isModelMeta->getKey() : null;
-                $meta->alias = $item['slug']  . '_' . Str::random(5);
-                $meta->active = 1;
-                $isModel ? $meta->update() : $meta->save();
-            }
-        }
+//        $client = new Client();
+//        $response = $client->get('https://user.tapigo.ru/all-users-json', ['verify' => false]);
+//        $contents = $response->getBody()->getContents();
+//        $contents = json_decode($contents, true);
+//        foreach ($contents as $item) {
+//            $userDB = User::find($item['id']);
+//            if (isset($userDB)) {
+//                $user = $userDB;
+//                $user->id = $item['id'];
+//                $user->email = $item['email'];
+//                $user->password = $item['password'];
+//                $user->phone = $item['phone'];
+//                $user->email_verified_at = $item['email_verified_at'];
+//                $user->name = $item['profile'] ? $item['profile']['name'] : null;
+//                $user->update();
+//            } else {
+//                $count = User::where('email', $item['email'])
+//                    ->orWhere('phone', $item['phone'])
+//                    ->get();
+//                if ($count->count() === 0) {
+//                    $user = new User();
+//                    $user->id = $item['id'];
+//                    $user->email = $item['email'];
+//                    $user->password = $item['password'];
+//                    $user->phone = $item['phone'];
+//                    $user->email_verified_at = $item['email_verified_at'];
+//                    $user->name = $item['profile'] ? $item['profile']['name'] : null;
+//                    $user->save();
+//                }
+//            }
+//            if (isset($user) && empty($user->profile)) {
+//                $profileID = $item['profile'] ? $item['profile']['id'] : null;
+//                $isProfile = Profile::find($profileID);
+//                if (!isset($isProfile)) {
+//                    if ($profileID !== null) {
+//                        $profile = new Profile();
+//                        $profile->id = $profileID;
+//                        $profile->user_id = $user->getKey();
+//                        $profile->save();
+//                    }
+//                }
+//            }
+//        }
+//
+//        $client = new Client();
+//        $response = $client->get('https://catalog.tapigo.ru/all-category-ads-json', ['verify' => false]);
+//        $contents = $response->getBody()->getContents();
+//        $contents = json_decode($contents, true);
+//        $i = 1;
+//        foreach ($contents as $item) {
+//            if ($item['parent_id'] === 0 || $item['parent_id'] === 1) {
+//                $isModel = CatalogMeta::find($item['id']);
+//                $meta = $isModel ?? new CatalogMeta();
+//                $meta->id = $item['id'];
+//                $meta->name = $item['title'];
+//                $meta->sort = $i;
+//                $meta->alias = $item['slug'] . '_' . Str::random(5);
+//                $meta->active = 1;
+//                $isModel ? $meta->update() : $meta->save();
+//                $i += 1;
+//            } else {
+//                $isModelMeta = CatalogMeta::find($item['parent_id']);
+//                $isModel = CatalogAdCategory::find($item['id']);
+//                $meta = $isModel ?? new CatalogAdCategory();
+//                $meta->id = $item['id'];
+//                $meta->name = $item['title'];
+//                $meta->parent_id = $isModelMeta ? null :  $item['parent_id'];
+//                $meta->meta_id = $isModelMeta ? $isModelMeta->getKey() : null;
+//                $meta->alias = $item['slug']  . '_' . Str::random(5);
+//                $meta->active = 1;
+//                $isModel ? $meta->update() : $meta->save();
+//            }
+//        }
 
         $client = new Client();
         $response = $client->get('https://catalog.tapigo.ru/all-ads-json', ['verify' => false]);
@@ -154,6 +156,15 @@ class UsersParser extends Command
                     $model->price = (int) str_replace(' ', '', $relation['property']['price']);
                     $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
                     $isModel ? $model->update() : $model->save();
+
+
+                    if (!empty($relation['images'])) {
+                        foreach ($relation['images'] as $image) {
+                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, $url);
+                        }
+                    }
                 }
             }
         }
