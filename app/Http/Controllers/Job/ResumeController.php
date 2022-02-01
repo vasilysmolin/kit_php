@@ -45,7 +45,7 @@ class ResumeController extends Controller
                 });
             })
             ->orderBy('id', 'DESC')
-            ->with('categories')
+            ->with('categories', 'image')
             ->where('active', 1)
             ->get();
 
