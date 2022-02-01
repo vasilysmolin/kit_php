@@ -153,7 +153,7 @@ class VacancyController extends Controller
         unset($formData['category_id']);
         $vacancy = JobsVacancy::where('id', $id)
             ->whereHas('profile.user', function ($q) use ($user) {
-                $q->where('id', $user->id);
+//                $q->where('id', $user->id);
             })
             ->first();
 
