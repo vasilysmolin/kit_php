@@ -25,6 +25,7 @@ class JobsVacancy extends Model
         'schedule',
         'work_experience',
         'alias',
+        'active',
         'address',
         'profile_id',
         'category_id',
