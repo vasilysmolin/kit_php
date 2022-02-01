@@ -84,7 +84,7 @@ class VacancyController extends Controller
     {
         $formData = $request->all();
 
-        $formData['profile_id'] = auth('api')->user()->profile->id;
+        $formData['profile_id'] = auth('api')->user() ? auth('api')->user()->profile->id : $request->profileID;
         $formData['active'] = true;
 
 //        if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
@@ -145,7 +145,7 @@ class VacancyController extends Controller
     {
         $formData = $request->all();
         $user = auth('api')->user();
-        $formData['profile_id'] = auth('api')->user()->profile->id;
+        $formData['profile_id'] = auth('api')->user() ? auth('api')->user()->profile->id : $request->profileID;
 
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
