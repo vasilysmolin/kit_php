@@ -121,7 +121,9 @@ class VacancyController extends Controller
             $cabinet = false;
         }
 
-        $vacancy = JobsVacancy::where('id', $id)
+        $vacancy = JobsVacancy::
+            where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -144,15 +146,16 @@ class VacancyController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $user = auth('api')->user();
+//        $user = auth('api')->user();
         $formData['profile_id'] = auth('api')->user() ? auth('api')->user()->profile->id : $request->profileID;
 
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
         unset($formData['category_id']);
-        $vacancy = JobsVacancy::where('id', $id)
-            ->whereHas('profile.user', function ($q) use ($user) {
+        $vacancy = JobsVacancy::where('alias', $id)
+            ->orWhere('id', (int) $id)
+            ->whereHas('profile.user', function ($q) {
 //                $q->where('id', $user->id);
             })
             ->first();
@@ -183,7 +186,8 @@ class VacancyController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        JobsVacancy::destroy($id);
+        JobsVacancy::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete($id);
         return response()->json([], 204);
     }
 }

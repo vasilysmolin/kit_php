@@ -7,9 +7,7 @@ use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class ResumeController extends Controller
@@ -122,7 +120,8 @@ class ResumeController extends Controller
             $cabinet = false;
         }
 
-        $resume = JobsResume::where('id', $id)
+        $resume = JobsResume::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -153,7 +152,8 @@ class ResumeController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
         unset($formData['category_id']);
-        $resume = JobsResume::where('id', $id)
+        $resume = JobsResume::where('alias', $id)
+            ->orWhere('id', (int) $id)
 //            ->whereHas('profile.user', function ($q) use ($user) {
 //                $q->where('id', $user->id);
 //            })
@@ -185,7 +185,8 @@ class ResumeController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        JobsResume::destroy($id);
+        JobsResume::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

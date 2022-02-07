@@ -197,7 +197,8 @@ class DishesController extends Controller
                 });
             })
             ->with(['categories','restaurant'])
-            ->where('id', $id)
+            ->where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->first();
 
         $files = resolve(Files::class);
@@ -241,7 +242,8 @@ class DishesController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
 
-        $dishes = FoodRestaurantDishes::where('id', $id)
+        $dishes = FoodRestaurantDishes::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->whereHas('restaurant.profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })->first();
@@ -272,7 +274,8 @@ class DishesController extends Controller
     public function destroy($id)
     {
 
-        FoodRestaurantDishes::destroy($id);
+        FoodRestaurantDishes::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

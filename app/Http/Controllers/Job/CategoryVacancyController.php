@@ -74,7 +74,8 @@ class CategoryVacancyController extends Controller
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
 
-        $vacancyCategory = JobsVacancyCategory::where('id', $id)
+        $vacancyCategory = JobsVacancyCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->first();
 
@@ -97,7 +98,8 @@ class CategoryVacancyController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
 
-        $vacancyCategory = JobsVacancyCategory::where('id', $id)
+        $vacancyCategory = JobsVacancyCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->first();
 
         if (!isset($vacancyCategory)) {
@@ -117,7 +119,8 @@ class CategoryVacancyController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        JobsVacancyCategory::destroy($id);
+        JobsVacancyCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

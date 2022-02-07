@@ -74,7 +74,8 @@ class CategoryServiceController extends Controller
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
 
-        $serviceCategory = ServiceCategory::where('id', $id)
+        $serviceCategory = ServiceCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->first();
 
@@ -97,7 +98,8 @@ class CategoryServiceController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
 
-        $serviceCategory = ServiceCategory::where('id', $id)
+        $serviceCategory = ServiceCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->first();
 
         if (!isset($serviceCategory)) {
@@ -118,7 +120,8 @@ class CategoryServiceController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        ServiceCategory::destroy($id);
+        ServiceCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

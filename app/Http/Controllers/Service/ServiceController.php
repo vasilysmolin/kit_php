@@ -121,7 +121,8 @@ class ServiceController extends Controller
             $cabinet = false;
         }
 
-        $service = Service::where('id', $id)
+        $service = Service::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -151,7 +152,8 @@ class ServiceController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
         unset($formData['category_id']);
-        $service = Service::where('id', $id)
+        $service = Service::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })
@@ -182,7 +184,8 @@ class ServiceController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        Service::destroy($id);
+        Service::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

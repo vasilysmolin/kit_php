@@ -59,7 +59,7 @@ class AdController extends Controller
 
         $count = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
-            })
+        })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
@@ -120,7 +120,8 @@ class AdController extends Controller
             $cabinet = false;
         }
 
-        $catalogAd = CatalogAd::where('id', $id)
+        $catalogAd = CatalogAd::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -150,7 +151,8 @@ class AdController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
         unset($formData['category_id']);
-        $catalogAd = CatalogAd::where('id', $id)
+        $catalogAd = CatalogAd::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })
@@ -181,7 +183,8 @@ class AdController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        CatalogAd::destroy($id);
+        CatalogAd::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

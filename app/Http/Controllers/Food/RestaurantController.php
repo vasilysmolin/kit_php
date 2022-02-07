@@ -129,7 +129,8 @@ class RestaurantController extends Controller
             $cabinet = false;
         }
 
-        $restaurant = FoodRestaurant::where('id', $id)
+        $restaurant = FoodRestaurant::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image', 'categories:id', 'dishes:id', 'dishes')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -172,7 +173,8 @@ class RestaurantController extends Controller
             $formData['address'] = $formData['address']['text'];
         }
         unset($formData['categoryRestaurantID']);
-        $restaurant = FoodRestaurant::where('id', $id)
+        $restaurant = FoodRestaurant::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })->first();
@@ -198,7 +200,8 @@ class RestaurantController extends Controller
 
     public function destroy($id)
     {
-        FoodRestaurant::destroy($id);
+        FoodRestaurant::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

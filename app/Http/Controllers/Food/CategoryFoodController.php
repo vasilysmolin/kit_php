@@ -67,10 +67,11 @@ class CategoryFoodController extends Controller
     }
 
 
-    public function show($alias): \Illuminate\Http\JsonResponse
+    public function show($id): \Illuminate\Http\JsonResponse
     {
         $categoryFoods = FoodDishesCategory::where('active', 1)
-            ->where('alias', $alias)
+            ->where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->first();
 
         abort_unless($categoryFoods, 404);
@@ -93,7 +94,10 @@ class CategoryFoodController extends Controller
     {
         $formData = json_decode($request->getContent(), true);
         $formData['active'] = 1;
-        $restaurantFood = FoodDishesCategory::find($id);
+        $restaurantFood = FoodDishesCategory::
+            where('alias', $id)
+            ->orWhere('id', (int) $id)
+            ->first();
         $restaurantFood->fill($formData);
         $restaurantFood->update();
 

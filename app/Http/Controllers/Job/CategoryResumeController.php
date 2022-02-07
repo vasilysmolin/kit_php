@@ -75,7 +75,8 @@ class CategoryResumeController extends Controller
     {
         auth('api')->user();
 
-        $resumeCategory = JobsResumeCategory::where('id', $id)
+        $resumeCategory = JobsResumeCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->first();
 
@@ -98,7 +99,8 @@ class CategoryResumeController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
         unset($formData['categoryID']);
-        $resumeCategory = JobsResumeCategory::where('id', $id)
+        $resumeCategory = JobsResumeCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->first();
 
         if (!isset($resumeCategory)) {
@@ -118,7 +120,8 @@ class CategoryResumeController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        JobsResumeCategory::destroy($id);
+        JobsResumeCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }

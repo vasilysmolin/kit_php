@@ -74,7 +74,8 @@ class CategoryAdController extends Controller
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
 
-        $category = CatalogAdCategory::where('id', $id)
+        $category = CatalogAdCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->with('image')
             ->first();
 
@@ -97,7 +98,8 @@ class CategoryAdController extends Controller
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         }
 
-        $category = CatalogAdCategory::where('id', $id)
+        $category = CatalogAdCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)
             ->first();
 
         if (!isset($category)) {
@@ -118,7 +120,8 @@ class CategoryAdController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        CatalogAdCategory::destroy($id);
+        CatalogAdCategory::where('alias', $id)
+            ->orWhere('id', (int) $id)->delete();
         return response()->json([], 204);
     }
 }
