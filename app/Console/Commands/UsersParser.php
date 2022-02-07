@@ -221,6 +221,7 @@ class UsersParser extends Command
                             $model->price = $property['price'];
                             $model->description = $property['desc'];
                             $model->title = $property['title'];
+                            $model->name = $property['title'];
                             $model->category_id = isset($cats) ? $cats->id : null;
                             $model->experience = (new TimeArray($property['experience_years'], null))->parce();
                             $model->education = (new Education($property['education'], null))->parce();
@@ -252,6 +253,7 @@ class UsersParser extends Command
                         $model->max_price = $property['price_max'];
                         $model->description = $property['desc'];
                         $model->title = $property['title'];
+                        $model->name = $property['title'];
                         $model->phone = $property['telefon'];
                         $model->duties = $property['duties'];
                         $model->demands = $property['demands'];

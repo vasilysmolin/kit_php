@@ -15,16 +15,16 @@ class JobsCategoryResumeSeeder extends Seeder
      */
     public function run()
     {
-        JobsResumeCategory::firstOrCreate([
-            'alias' => 'resume',
-        ])->update([
-            'name' => 'Резюме',
-        ]);
-        JobsResumeCategory::firstOrCreate([
-            'alias' => 'vacancies',
-        ])->update([
-            'name' => 'Вакансии',
-        ]);
+//        JobsResumeCategory::firstOrCreate([
+//            'alias' => 'resume',
+//        ])->update([
+//            'name' => 'Резюме',
+//        ]);
+//        JobsResumeCategory::firstOrCreate([
+//            'alias' => 'vacancies',
+//        ])->update([
+//            'name' => 'Вакансии',
+//        ]);
         JobsResumeCategory::firstOrCreate([
             'alias' => 'carbusiness-carservice',
         ])->update([

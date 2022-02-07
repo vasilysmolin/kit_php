@@ -19,9 +19,31 @@ api from tapigo
 * make >= 4
 
 ## Install and start project
-host write 127.0.0.1 tapigol.ru
+* `host write 127.0.0.1 tapigol.ru`
+
+* `добавить сертификаты в nginx`
+
+* `проверить env файл`
 
 * `docker-compose up -d --build`
+
+* Парсер пользователей `docker-compose exec php sh and php artisan user-parse`
+
+* Сбросить ключи в postgress `docker-compose exec database sh`
+
+  SELECT setval(pg_get_serial_sequence('jobs_vacancies', 'id'), coalesce(max(id)+1, 1), false) FROM jobs_vacancies;
+
+  SELECT setval(pg_get_serial_sequence('users', 'id'), coalesce(max(id)+1, 1), false) FROM users;
+
+  SELECT setval(pg_get_serial_sequence('jobs_resumes', 'id'), coalesce(max(id)+1, 1), false) FROM jobs_resumes;
+
+  SELECT setval(pg_get_serial_sequence('services', 'id'), coalesce(max(id)+1, 1), false) FROM services;
+
+  SELECT setval(pg_get_serial_sequence('service_categories', 'id'), coalesce(max(id)+1, 1), false) FROM service_categories;
+
+  SELECT setval(pg_get_serial_sequence('profiles', 'id'), coalesce(max(id)+1, 1), false) FROM profiles;
+
+
 
 ## Tests and lint
 
