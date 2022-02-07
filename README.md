@@ -27,6 +27,8 @@ api from tapigo
 
 * `docker-compose up -d --build`
 
+* Заседировать данные `make seeder`
+
 * Парсер пользователей `docker-compose exec php sh and php artisan user-parse`
 
 * Сбросить ключи в postgress `docker-compose exec database sh`
