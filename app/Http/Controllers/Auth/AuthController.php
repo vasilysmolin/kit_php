@@ -29,7 +29,6 @@ class AuthController extends Controller
     {
         $credentials = request(['email', 'password']);
 
-
         $token = auth('api')->attempt($credentials);
         if ($token === false) {
             return response()->json(['errors' => [
