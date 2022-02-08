@@ -82,7 +82,7 @@ class ResumeController extends Controller
     {
         $formData = $request->all();
 
-        $formData['profile_id'] = auth('api')->user() ? auth('api')->user()->profile->id : $request->profileID;
+        $formData['profile_id'] = auth('api')->user()->profile->id;
 
         $formData['active'] = true;
 
