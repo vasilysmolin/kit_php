@@ -27,6 +27,7 @@ class AuthController extends Controller
      */
     public function login()
     {
+        return response()->json([]);
         $credentials = request(['email', 'password']);
 
         $token = auth('api')->attempt($credentials);
