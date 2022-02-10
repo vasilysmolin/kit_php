@@ -5,8 +5,7 @@ ARG ENV
 ARG BACK_DIR
 ARG LOCAL_DIR
 
-COPY /${ENV}.conf /etc/nginx/conf.d/
-#COPY /phpmyadmin.conf /etc/nginx/conf.d/
+COPY /production.conf /etc/nginx/conf.d/
 
 ENV DOMAIN=${DOMAIN}
 ENV BACK_DIR=${BACK_DIR}
@@ -25,7 +24,7 @@ RUN mkdir -p /var/lib/nginx/cache \
     && chmod 700 /var/lib/nginx/cache
 
 COPY /nginx.conf /etc/nginx/
-COPY /ssl/${ENV} /etc/nginx/ssl/
+COPY /ssl /etc/nginx/ssl/
 COPY /nginx-entrypoint.sh /nginx-entrypoint.sh
 
 RUN chmod +x /nginx-entrypoint.sh
