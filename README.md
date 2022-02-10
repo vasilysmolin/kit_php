@@ -48,6 +48,11 @@ api from tapigo
   SELECT setval(pg_get_serial_sequence('profiles', 'id'), coalesce(max(id)+1, 1), false) FROM profiles;
 
 
+#basic auth from dev
+
+ktotam
+eto_tapigo
+
 
 ## Tests and lint
 
