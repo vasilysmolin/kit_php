@@ -19,9 +19,15 @@ api from tapigo
 * make >= 4
 
 ## Install and start project
-* `host write 127.0.0.1 tapigol.ru`
+* `host write 127.0.0.1 tapigol.ru api.tapigol.ru hub.tapigol.ru jobs.tapigol.ru catalog.tapigol.ru`
 
-* `добавить сертификаты в nginx`
+##№ для продакшена
+* `сертификаты в image/nginx/ssl закинуть`
+* `выставить среду production`
+
+##№ для локальной разработки
+* `выставить среду local`
+* `сертификаты сделаются самоподписанные при сборке докера`
 
 * `проверить env файл`
 - uid пользователя должен соответствовать uid текущего пользователя в системе
