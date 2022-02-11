@@ -8,7 +8,7 @@ services:
       context: images/php
       dockerfile: Dockerfile
       args:
-        - ENV=${DOCKER_ENV}
+        - ENV=${ENV}
         - USER=${USER}
         - UID=${UID}
     container_name: ${BB_PHP_WORKDIR}
@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile
       args:
         - DOMAIN=${DOMAIN}
-        - ENV=${DOCKER_ENV}
+        - ENV=${ENV}
         - BACK_DIR=${BB_PHP_WORKDIR}
         - LOCAL_DIR=${BB_NGINX_WORKDIR}
     container_name: ${BB_NGINX_WORKDIR}
@@ -40,24 +40,7 @@ services:
       - .:/var/www/${BB_NGINX_WORKDIR}
     depends_on:
       - php
-  # MySQL -------------------------------------------------
-#  mysql:
-#    image: mysql:5.7.4
-#    container_name: ${BB_MYSQL_WORKDIR}
-#    restart: always
-#    tty: true
-#    ports:
-#      - "${PORT_MYSQL}:3306"
-#    volumes:
-#      - ./dump:/var/lib/mysql
-#      - ./images/mysql/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
-#      - ./images/mysql/mysqldump.cnf:/etc/mysql/conf.d/mysqldump.cnf
-#      - ./images/mysql/optimize.cnf:/etc/mysql/conf.d/optimize.cnf
-#    environment:
-#        - MYSQL_DATABASE=${MYSQL_DATABASE}
-#        - MYSQL_USER=${MYSQL_USER}
-#        - MYSQL_PASSWORD=${MYSQL_PASSWORD}
-#        - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+
 
   # Redis -------------------------------------------------
   redis:
