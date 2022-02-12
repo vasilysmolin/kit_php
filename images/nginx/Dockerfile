@@ -19,7 +19,7 @@ RUN if [ "$ENV" = "local" ]; \
         -subj '/C=CA/ST=QC/O=Company, Inc./CN=${DOMAIN}' \
         -addext 'subjectAltName=DNS:'${DOMAIN} \
         -newkey rsa:4096 \
-        -keyout /etc/nginx/ssl/ssl.key -out /etc/nginx/ssl/ssl.cer \
+        -keyout /etc/nginx/ssl/ssl.key -out /etc/nginx/ssl/ssl.crt \
     fi
 
 RUN mkdir -p /var/lib/nginx/cache \
