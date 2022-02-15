@@ -35,7 +35,7 @@ class AuthController extends Controller
         $user->update();
         $credentials = [
             'email' => $request->email,
-            'password' => '1234567',
+            'password' => $request->password,
         ];
         $auth = auth('api');
         $token = $auth->attempt($credentials);
