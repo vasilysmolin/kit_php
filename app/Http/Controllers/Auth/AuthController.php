@@ -165,8 +165,10 @@ class AuthController extends Controller
     public function user()
     {
         $user = auth('api')->user();
-        $user->profile()->create();
-        return response()->json($user->load('profile.restaurant'));
+        if (!isset($user->profile)) {
+            $user->profile()->create();
+        }
+        return response()->json($user->load(['profile.restaurant', 'profile.person']));
     }
 
     /**
