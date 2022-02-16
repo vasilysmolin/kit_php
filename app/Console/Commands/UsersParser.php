@@ -162,13 +162,13 @@ class UsersParser extends Command
                     $isModel ? $model->update() : $model->save();
 
 
-                    if (!empty($relation['images'])) {
-                        foreach ($relation['images'] as $image) {
-                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
-                            $files = resolve(Files::class);
-                            $files->saveParser($model, $url);
-                        }
-                    }
+//                    if (!empty($relation['images'])) {
+//                        foreach ($relation['images'] as $image) {
+//                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+//                            $files = resolve(Files::class);
+//                            $files->saveParser($model, $url);
+//                        }
+//                    }
                 }
             }
         }

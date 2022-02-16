@@ -59,7 +59,7 @@ return [
             'secret' => env('AWS_ACCESS_SECRET'),
             'endpoint' => env('AWS_ENDPOINT'),
             'region' => env('AWS_REGION'),
-            'bucket' => env('AWS_BUCKET_BACKUPS', 'backups'),
+            'bucket' => env('AWS_BUCKET_BACKUPS', 'backups-new'),
         ],
 
     ],
