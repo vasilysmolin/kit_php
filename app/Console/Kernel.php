@@ -27,9 +27,9 @@ class Kernel extends ConsoleKernel
 
         if (config('app.env') === 'production') {
             // Backups pgsql
-//            $schedule->command('backup:run', ['--only-db'])->everyFourHours();
-//            $schedule->command('backup:clean')->daily()->at('08:00');
-//            $schedule->command('backup:monitor')->daily()->at('10:00');
+            $schedule->command('backup:run', ['--only-db'])->everyFourHours();
+            $schedule->command('backup:clean')->daily()->at('08:00');
+            $schedule->command('backup:monitor')->daily()->at('10:00');
         }
     }
 
