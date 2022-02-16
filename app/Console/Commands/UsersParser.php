@@ -18,6 +18,7 @@ use App\Objects\SalaryType\Constants\SalaryType;
 use App\Objects\Time\Constants\TimeArray;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 
@@ -57,6 +58,7 @@ class UsersParser extends Command
         $client = new Client();
         $response = $client->get('https://user.tapigo.ru/all-users-json', ['verify' => false]);
         $contents = $response->getBody()->getContents();
+        Storage::disk('local')->put('all-users-json.txt', $contents);
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
@@ -101,6 +103,7 @@ class UsersParser extends Command
         $client = new Client();
         $response = $client->get('https://catalog.tapigo.ru/all-category-ads-json', ['verify' => false]);
         $contents = $response->getBody()->getContents();
+        Storage::disk('local')->put('all-category-ads-json.txt', $contents);
         $contents = json_decode($contents, true);
         $i = 1;
         foreach ($contents as $item) {
@@ -131,6 +134,7 @@ class UsersParser extends Command
         $client = new Client();
         $response = $client->get('https://catalog.tapigo.ru/all-ads-json', ['verify' => false]);
         $contents = $response->getBody()->getContents();
+        Storage::disk('local')->put('all-ads-json.txt', $contents);
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
@@ -158,13 +162,13 @@ class UsersParser extends Command
                     $isModel ? $model->update() : $model->save();
 
 
-//                    if (!empty($relation['images'])) {
-//                        foreach ($relation['images'] as $image) {
-//                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
-//                            $files = resolve(Files::class);
-//                            $files->saveParser($model, $url);
-//                        }
-//                    }
+                    if (!empty($relation['images'])) {
+                        foreach ($relation['images'] as $image) {
+                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, $url);
+                        }
+                    }
                 }
             }
         }
@@ -172,6 +176,7 @@ class UsersParser extends Command
         $client = new Client();
         $response = $client->get('https://user.tapigo.ru/all-up', ['verify' => false]);
         $contents = $response->getBody()->getContents();
+        Storage::disk('local')->put('all-up.txt', $contents);
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             if ($item['user'] === null) {
@@ -192,6 +197,7 @@ class UsersParser extends Command
         $client = new Client();
         $response = $client->get('https://catalog.tapigo.ru/all-resume-json', ['verify' => false]);
         $contents = $response->getBody()->getContents();
+        Storage::disk('local')->put('all-resume-json.txt', $contents);
         $contents = json_decode($contents, true);
 
         foreach ($contents as $item) {
@@ -280,6 +286,7 @@ class UsersParser extends Command
         $client = new Client();
         $response = $client->get('https://catalog.tapigo.ru/all-uslugi-json2', ['verify' => false]);
         $contents = $response->getBody()->getContents();
+        Storage::disk('local')->put('all-uslugi-json2.txt', $contents);
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);

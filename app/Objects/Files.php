@@ -68,29 +68,30 @@ class Files
             ),
         );
         $contents = file_get_contents($url, false, stream_context_create($arrContextOptions));
-        $name = Str::random(40);
-        $mineType = 'image/jpeg';
-        $extension = 'jpg';
-        $size = 999;
-        $path = $this->getPathS3($name);
+        if ($contents !== false) {
+            $name = Str::random(40);
+            $mineType = 'image/jpeg';
+            $extension = 'jpg';
+            $size = 999;
+            $path = $this->getPathS3($name);
 
-        foreach (self::$CROP as $resolution) {
-            $image = \Intervention\Image\Facades\Image::make($contents);
-            $filteredImage = $image
-                ->fit($resolution['width'], $resolution['height'])
-                ->encode('jpg', 100);
-            var_dump($path . '_'
-                . $resolution['width'] . 'x'
-                . $resolution['height'] . '.' .
-                'jpg');
-            Storage::put(
-                $path . '_'
-                . $resolution['width'] . 'x'
-                . $resolution['height'] . '.' .
-                'jpg',
-                $filteredImage
-            );
-        }
+            foreach (self::$CROP as $resolution) {
+                $image = \Intervention\Image\Facades\Image::make($contents);
+                $filteredImage = $image
+                    ->fit($resolution['width'], $resolution['height'])
+                    ->encode('jpg', 100);
+                var_dump($path . '_'
+                    . $resolution['width'] . 'x'
+                    . $resolution['height'] . '.' .
+                    'jpg');
+                Storage::put(
+                    $path . '_'
+                    . $resolution['width'] . 'x'
+                    . $resolution['height'] . '.' .
+                    'jpg',
+                    $filteredImage
+                );
+            }
 
             $model->image()->create([
                 'mimeType' => $mineType,
@@ -98,6 +99,7 @@ class Files
                 'name' => $name,
                 'size' => $size,
             ]);
+        }
     }
 
     protected function getFileType(string $nameWithType): string
