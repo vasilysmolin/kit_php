@@ -93,7 +93,7 @@ class Files
                     $filteredImage
                 );
             }
-            if ($model->images->count < 1) {
+            if ($model->images->count() < 1) {
                 $model->image()->create([
                     'mimeType' => $mineType,
                     'extension' => $extension,
