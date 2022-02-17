@@ -62,6 +62,7 @@ class UsersParser extends Command
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
+
             if (isset($userDB)) {
                 $user = $userDB;
                 $user->id = $item['id'];
@@ -73,8 +74,12 @@ class UsersParser extends Command
                 $user->update();
             } else {
                 $count = User::where('email', $item['email'])
-                    ->orWhere('phone', $item['phone'])
+//                    ->orWhere('phone', $item['phone'])
                     ->get();
+//                if($item['id'] == 3109) {
+//                    var_dump($user);
+//                    dd(1);
+//                }
                 if ($count->count() === 0) {
                     $user = new User();
                     $user->id = $item['id'];
