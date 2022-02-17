@@ -27,22 +27,22 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-//        $credentials = request(['email', 'password']);
+        $credentials = request(['email', 'password']);
 
-        $user = User::where('email', $request->email)->first();
-        $oldPassword = $user->password;
-        $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
-        $user->update();
-        $credentials = [
-            'email' => $request->email,
-            'password' => $request->password,
-        ];
-        $auth = auth('api');
-        $token = $auth->attempt($credentials);
-        $user->password = $oldPassword;
-        $user->update();
+//        $user = User::where('email', $request->email)->first();
+//        $oldPassword = $user->password;
+//        $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
+//        $user->update();
+//        $credentials = [
+//            'email' => $request->email,
+//            'password' => $request->password,
+//        ];
+//        $auth = auth('api');
+//        $token = $auth->attempt($credentials);
+//        $user->password = $oldPassword;
+//        $user->update();
 
-//        $token = auth('api')->attempt($credentials);
+        $token = auth('api')->attempt($credentials);
         if ($token === false) {
             return response()->json(['errors' => [
                 'code' => 422,
