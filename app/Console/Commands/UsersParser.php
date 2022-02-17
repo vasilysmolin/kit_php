@@ -62,7 +62,6 @@ class UsersParser extends Command
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
-
             if (isset($userDB)) {
                 $user = $userDB;
                 $user->id = $item['id'];
@@ -91,6 +90,12 @@ class UsersParser extends Command
                     $user->save();
                 }
             }
+//              if($item['id'] == 3109) {
+//                  $profileID = $item['profile'] ? $item['profile']['id'] : null;
+//                    var_dump(isset($user) && empty($user->profile));
+//                  $isProfile = Profile::find($profileID);
+//                    dd($isProfile);
+//                }
             if (isset($user) && empty($user->profile)) {
                 $profileID = $item['profile'] ? $item['profile']['id'] : null;
                 $isProfile = Profile::find($profileID);
@@ -143,7 +148,7 @@ class UsersParser extends Command
         $contents = json_decode($contents, true);
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
-            if (isset($userDB)) {
+            if (isset($userDB)  || isset($userDB->profile)) {
                 foreach ($item['ads'] as $relation) {
                     if ($relation['property'] === null || !isset($relation['property']['title'])) {
                         continue;
@@ -207,7 +212,7 @@ class UsersParser extends Command
 
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
-            if (!isset($userDB)) {
+            if (!isset($userDB) || !isset($userDB->profile)) {
                 continue;
             }
             $profileID = $userDB->profile->getKey();
