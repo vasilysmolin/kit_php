@@ -10,17 +10,16 @@ COPY /production.conf /etc/nginx/conf.d/
 ENV DOMAIN=${DOMAIN}
 ENV BACK_DIR=${BACK_DIR}
 ENV LOCAL_DIR=${LOCAL_DIR}
+ENV ENV=${ENV}
 
-#RUN if [ "$ENV" = "local" ]; \
-#    apk update \
-#    && apk add openssl \
-#    && mkdir /etc/nginx/ssl \
-#    && openssl req -x509 -nodes -days 365 \
-#        -subj '/C=CA/ST=QC/O=Company, Inc./CN=${DOMAIN}' \
-#        -addext 'subjectAltName=DNS:'${DOMAIN} \
-#        -newkey rsa:4096 \
-#        -keyout /etc/nginx/ssl/ssl.key -out /etc/nginx/ssl/ssl.crt \
-#    fi
+RUN apk update \
+    && apk add openssl \
+    && mkdir /etc/nginx/ssl \
+    && openssl req -x509 -nodes -days 365 \
+        -subj '/C=CA/ST=QC/O=Company, Inc./CN=${DOMAIN}' \
+        -addext 'subjectAltName=DNS:'${DOMAIN} \
+        -newkey rsa:4096 \
+        -keyout /etc/nginx/ssl/${ENV}.key -out /etc/nginx/ssl/${ENV}.crt
 
 RUN mkdir -p /var/lib/nginx/cache \
     && chmod 700 /var/lib/nginx/cache
