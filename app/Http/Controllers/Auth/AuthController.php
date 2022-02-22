@@ -168,6 +168,7 @@ class AuthController extends Controller
         if (!isset($user->profile)) {
             $user->profile()->create();
         }
+        $user->setAttribute('role', $user->getRoleNames()->first());
         return response()->json($user->load(['profile.restaurant', 'profile.person']));
     }
 
