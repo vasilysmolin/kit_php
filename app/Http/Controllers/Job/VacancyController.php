@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Job;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Job\VacancyStoreRequest;
+use App\Http\Requests\Job\VacancyUpdateRequest;
 use App\Models\JobsVacancy;
 use App\Models\JobsVacancyCategory;
 use App\Objects\Files;
@@ -80,7 +82,7 @@ class VacancyController extends Controller
         return response()->json($data);
     }
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(VacancyStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
 
@@ -143,7 +145,7 @@ class VacancyController extends Controller
         return response()->json($vacancy);
     }
 
-    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
 //        $user = auth('api')->user();
