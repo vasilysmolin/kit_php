@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -27,8 +28,13 @@ class AuthController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = request(['email', 'password']);
+//        $credentials = request(['email', 'password']);
 
+        $email = Str::lower($request->email);
+        $credentials = [
+            'email' => $email,
+            'password' => $request->password,
+        ];
 //        $user = User::where('email', $request->email)->first();
 //        $oldPassword = $user->password;
 //        $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
@@ -114,14 +120,20 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        $credentials = request(['email', 'password']);
+//        $credentials = request(['email', 'password']);
 
-        $model = User::where('email', request('email'))->first();
+        $email = Str::lower($request->email);
+        $credentials = [
+            'email' => $email,
+            'password' => $request->password,
+        ];
+
+        $model = User::where('email', $email)->first();
 
 
         if (!isset($model)) {
             $user = new User();
-            $user->email = request('email');
+            $user->email = $email;
             $user->password = bcrypt(request('password'));
             $user->save();
             $user->profile()->create();

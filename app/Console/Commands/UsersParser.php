@@ -65,7 +65,7 @@ class UsersParser extends Command
             if (isset($userDB)) {
                 $user = $userDB;
                 $user->id = $item['id'];
-                $user->email = $item['email'];
+                $user->email = Str::lower($item['email']);
                 $user->password = $item['password'];
                 $user->phone = $item['phone'];
                 $user->email_verified_at = $item['email_verified_at'];
