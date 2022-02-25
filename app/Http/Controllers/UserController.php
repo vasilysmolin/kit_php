@@ -37,6 +37,7 @@ class UserController extends Controller
             ->with(['profile.restaurant', 'profile.person'])
             ->when($status === 'block', function ($q) {
                 $q->whereNotNull('deleted_at');
+                $q->withTrashed();
             })
             ->when($type === 'physical', function ($q) {
                 $q->whereHas('profile', function ($q) {
@@ -48,7 +49,7 @@ class UserController extends Controller
                     $q->where('isPerson', true);
                 });
             })
-//            ->withTrashed()
+
 //            ->where('active', $request->active ?? 1)
             ->get();
 
