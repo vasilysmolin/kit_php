@@ -37,13 +37,8 @@ ide-helper:
 	php artisan ide-helper:meta
 	php artisan ide-helper:mod -n
 
-build:
-	composer install --no-interaction --ansi --no-suggest
-	php artisan migrate --force
-	php artisan db:seed --force
-	php artisan optimize
-
-build-docker:
+update:
+	git pull
 	docker-compose exec php composer install --no-interaction --ansi --no-suggest
 	docker-compose exec php php artisan migrate --force
 	docker-compose exec php php artisan optimize
