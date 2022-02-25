@@ -1,11 +1,7 @@
 <?php
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user()->load('profile.restaurant');
-});
 
 Route::group([
     'middleware' => 'auth:api',
@@ -20,6 +16,13 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::get('user', 'AuthController@user');
 });
+
+Route::group([
+    'middleware' => 'auth:api',
+], function ($router) {
+    Route::apiResource('users', 'UserController');
+});
+
 
 Route::group([
     'namespace' => 'Common',

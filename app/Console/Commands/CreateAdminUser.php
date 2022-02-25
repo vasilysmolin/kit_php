@@ -37,7 +37,7 @@ class CreateAdminUser extends Command
      *
      * @var string
      */
-    protected $description = 'user-parse';
+    protected $description = 'create-admin';
 
     /**
      * Create a new command instance.
@@ -56,11 +56,18 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
+        $users = User::get();
+        $users->map(function ($user) {
+            $user->email = Str::lower($user->email);
+            var_dump($user->email);
+            $user->update();
+        });
+
         $role = Role::where('name', 'admin')->first();
         if (!isset($role)) {
             Role::create(['name' => 'admin']);
         }
-        User::where('email', 'info@za-pravkin.ru')->first()->assignRole('admin');
+        User::where('email', 'tapigo@mail.ru')->first()->assignRole('admin');
 
         return 1;
     }
