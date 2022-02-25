@@ -52,6 +52,8 @@ class VacancyTest extends TestCase
             ->withToken($access_token)
             ->json('POST', route('vacancies.store'), [
                 'name' => 'test',
+                'max_price' => 1000,
+                'min_price' => 100,
 //                'categoryID' => [$category->id],
             ]);
 
