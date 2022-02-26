@@ -106,9 +106,8 @@ class UserController extends Controller
 
         $user = User::find($id);
 
-        return view('admin.users.usersEdit', [
-            'user' => $user->load('restaurant'),
-        ]);
+        $user->setAttribute('role', $user->getRoleNames()->first());
+        return response()->json($user->load(['profile.restaurant', 'profile.person']));
     }
 
     /**
