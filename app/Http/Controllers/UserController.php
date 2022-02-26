@@ -35,9 +35,8 @@ class UserController extends Controller
             })
             ->orderBy('id', 'DESC')
             ->with(['profile.restaurant', 'profile.person'])
-            ->when($status === 'block', function ($q) {
-                $q->whereNotNull('deleted_at');
-                $q->withTrashed();
+            ->when($status !== null, function ($q) use ($status) {
+                $q->where('state', $status);
             })
             ->when($type === 'physical', function ($q) {
                 $q->whereHas('profile', function ($q) {
@@ -49,8 +48,6 @@ class UserController extends Controller
                     $q->where('isPerson', true);
                 });
             })
-
-//            ->where('active', $request->active ?? 1)
             ->get();
 
         $count = User::take((int) $take)
@@ -63,8 +60,8 @@ class UserController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->when($status === 'block', function ($q) {
-                $q->whereNotNull('deleted_at');
+            ->when($status !== null, function ($q) use ($status) {
+                $q->where('state', $status);
             })
             ->when($type === 'physical', function ($q) {
                 $q->whereHas('profile', function ($q) {
