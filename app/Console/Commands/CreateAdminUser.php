@@ -59,8 +59,32 @@ class CreateAdminUser extends Command
         $users = User::get();
         $users->map(function ($user) {
             $user->email = Str::lower($user->email);
-            var_dump($user->email);
+//            var_dump($user->email);
             $user->update();
+        });
+
+        $items = JobsVacancy::get();
+        $items->map(function ($item) {
+            $item->state = 'active';
+            $item->update();
+        });
+
+        $items = JobsResume::get();
+        $items->map(function ($item) {
+            $item->state = 'active';
+            $item->update();
+        });
+
+        $items = Service::get();
+        $items->map(function ($item) {
+            $item->state = 'active';
+            $item->update();
+        });
+
+        $items = CatalogAd::get();
+        $items->map(function ($item) {
+            $item->state = 'active';
+            $item->update();
         });
 
         $role = Role::where('name', 'admin')->first();
