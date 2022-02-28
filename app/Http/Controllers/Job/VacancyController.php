@@ -25,13 +25,13 @@ class VacancyController extends Controller
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
-        $userID = $request->user_id;
+        $userID = (int) $request->user_id;
+        $status = $request->status;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
             $cabinet = false;
         }
-
         $vacancy = JobsVacancy::take((int) $take)
             ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
@@ -42,7 +42,10 @@ class VacancyController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(isset($userID), function ($q) use ($userID) {
+            ->when($status !== null, function ($q) use ($status) {
+                $q->where('state', $status);
+            })
+            ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {
                     $q->where('id', $userID);
                 });
@@ -64,7 +67,6 @@ class VacancyController extends Controller
                 $item->makeHidden('image');
             }
         });
-
         $count = JobsVacancy::take((int) $take)
             ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
@@ -75,7 +77,10 @@ class VacancyController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(isset($userID), function ($q) use ($userID) {
+            ->when($status !== null, function ($q) use ($status) {
+                $q->where('state', $status);
+            })
+            ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {
                     $q->where('id', $userID);
                 });

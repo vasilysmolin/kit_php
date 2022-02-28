@@ -21,7 +21,8 @@ class ResumeController extends Controller
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
-        $userID = $request->user_id;
+        $userID = (int) $request->user_id;
+        $status = $request->status;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -38,7 +39,10 @@ class ResumeController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(isset($userID), function ($q) use ($userID) {
+            ->when($status !== null, function ($q) use ($status) {
+                $q->where('state', $status);
+            })
+            ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {
                     $q->where('id', $userID);
                 });
@@ -71,7 +75,10 @@ class ResumeController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(isset($userID), function ($q) use ($userID) {
+            ->when($status !== null, function ($q) use ($status) {
+                $q->where('state', $status);
+            })
+            ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {
                     $q->where('id', $userID);
                 });
