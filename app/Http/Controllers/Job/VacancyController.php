@@ -176,9 +176,9 @@ class VacancyController extends Controller
             })
             ->first();
 
-        if (!isset($vacancy)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
-        }
+//        if (!isset($vacancy)) {
+//            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+//        }
 
         $vacancy->fill($formData);
 
