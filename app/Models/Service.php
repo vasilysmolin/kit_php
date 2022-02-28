@@ -19,6 +19,7 @@ class Service extends Model
         'title',
         'name',
         'price',
+        'state',
         'description',
         'longitude',
         'latitude',

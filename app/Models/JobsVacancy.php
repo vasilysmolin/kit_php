@@ -19,6 +19,7 @@ class JobsVacancy extends Model
         'title',
         'name',
         'price',
+        'state',
         'description',
         'education',
         'experience',

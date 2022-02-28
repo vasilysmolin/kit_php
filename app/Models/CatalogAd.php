@@ -13,6 +13,7 @@ class CatalogAd extends Model
         'id',
         'title',
         'name',
+        'state',
         'price',
         'sale_price',
         'description',

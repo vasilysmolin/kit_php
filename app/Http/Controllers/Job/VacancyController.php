@@ -164,8 +164,6 @@ class VacancyController extends Controller
     public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-//        $user = auth('api')->user();
-        $formData['profile_id'] = auth('api')->user() ? auth('api')->user()->profile->id : $request->profileID;
 
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');

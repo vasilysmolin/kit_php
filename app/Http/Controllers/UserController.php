@@ -2,9 +2,15 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\JobsVacancy;
+use App\Models\JobsVacancyCategory;
 use App\Models\User;
+use App\Objects\Files;
 use App\Objects\JsonHelper;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Str;
 
 class UserController extends Controller
 {
@@ -123,16 +129,20 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
+        $formData = $request->all();
 
-        $user = User::find($id);
-        $user->name = $request->name;
-        $user->email = $request->email;
+        $user = User::where('id', (int) $id)
+            ->first();
+
+        if (!isset($user)) {
+            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+        }
+
+        $user->fill($formData);
+
         $user->update();
-        return view('admin.users.usersEdit', [
-            'user' => $user,
-        ])->with('success', 'успешно')
-//            ->with('success', Lang::get('messages.admin_success_event'))
-            ;
+
+        return response()->json([], 204);
     }
 
     /**

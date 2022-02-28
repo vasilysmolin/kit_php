@@ -7,7 +7,9 @@ use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class ResumeController extends Controller
@@ -162,9 +164,6 @@ class ResumeController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-//        $user = auth('api')->user();
-        $formData['profile_id'] = auth('api')->user() ? auth('api')->user()->profile->id : $request->profileID;
-
 
         if (isset($formData['name'])) {
             $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
@@ -177,9 +176,9 @@ class ResumeController extends Controller
 //            })
             ->first();
 
-//        if (!isset($resume)) {
-//            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
-//        }
+        if (!isset($resume)) {
+            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+        }
 
         $resume->fill($formData);
 
@@ -196,7 +195,6 @@ class ResumeController extends Controller
         }
 
         $files->save($resume, $request['files']);
-
 
         return response()->json([], 204);
     }

@@ -14,6 +14,7 @@ class JobsResume extends Model
         'title',
         'name',
         'price',
+        'state',
         'description',
         'education',
         'experience',
