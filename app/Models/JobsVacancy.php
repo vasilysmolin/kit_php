@@ -13,9 +13,6 @@ class JobsVacancy extends Model
 {
     use HasFactory;
     use HasSlug;
-//    use SortableTrait;
-//    use HasTranslations;
-//    use ValidatingTrait;
 
     /**
      * The attributes that are mass assignable.
