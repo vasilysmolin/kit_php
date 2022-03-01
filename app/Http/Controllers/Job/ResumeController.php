@@ -3,17 +3,21 @@
 namespace App\Http\Controllers\Job;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\ResumeMiddleware;
 use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 class ResumeController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth:api'])->only('store');
+        $this->middleware(['auth:api', ResumeMiddleware::class])->only('destroy', 'update');
+    }
+
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
 
@@ -98,39 +102,6 @@ class ResumeController extends Controller
         return response()->json($data);
     }
 
-    public function store(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $formData = $request->all();
-
-        $formData['profile_id'] = auth('api')->user()->profile->id;
-
-        $formData['active'] = true;
-
-//        if (isset($formData['address']) && isset($formData['address']['coords']) && is_array($formData['address']['coords'])) {
-//            $formData['latitude'] = $formData['address']['coords'][0] ?? 0;
-//            $formData['longitude'] = $formData['address']['coords'][1] ?? 0;
-//        }
-        $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-        unset($formData['category_id']);
-        $resume = new JobsResume();
-        $resume->fill($formData);
-//        dd($resume);
-        $resume->save();
-        $files = resolve(Files::class);
-
-        if (isset($request['category_id'])) {
-            $category = JobsResumeCategory::find($request['category_id']);
-            if (isset($category)) {
-                $resume->category_id = $request['category_id'];
-                $resume->update();
-            }
-        }
-
-        $files->save($resume, $request['files']);
-
-        return response()->json([], 201, ['Location' => "/resumes/$resume->id"]);
-    }
-
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
@@ -161,24 +132,40 @@ class ResumeController extends Controller
         return response()->json($resume);
     }
 
+    public function store(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $formData = $request->all();
+
+        $formData['profile_id'] = auth('api')->user()->profile->id;
+
+        $formData['active'] = true;
+        unset($formData['category_id']);
+        $resume = new JobsResume();
+        $resume->fill($formData);
+        $resume->save();
+        $files = resolve(Files::class);
+
+        if (isset($request['category_id'])) {
+            $category = JobsResumeCategory::find($request['category_id']);
+            if (isset($category)) {
+                $resume->category_id = $request['category_id'];
+                $resume->update();
+            }
+        }
+
+        $files->save($resume, $request['files']);
+
+        return response()->json([], 201, ['Location' => "/resumes/$resume->id"]);
+    }
+
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
 
-        if (isset($formData['name'])) {
-            $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-        }
         unset($formData['category_id']);
         $resume = JobsResume::where('alias', $id)
             ->orWhere('id', (int) $id)
-//            ->whereHas('profile.user', function ($q) use ($user) {
-//                $q->where('id', $user->id);
-//            })
             ->first();
-
-        if (!isset($resume)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
-        }
 
         $resume->fill($formData);
 
