@@ -8,7 +8,7 @@ services:
       context: images/php
       dockerfile: Dockerfile
       args:
-        - ENV=${ENV}
+        - ENV=${APP_ENV}
         - USER=${USER}
         - UID=${UID}
     container_name: ${BB_PHP_WORKDIR}
@@ -27,7 +27,7 @@ services:
       dockerfile: Dockerfile
       args:
         - DOMAIN=${DOMAIN}
-        - ENV=${ENV}
+        - ENV=${APP_ENV}
         - BACK_DIR=${BB_PHP_WORKDIR}
         - LOCAL_DIR=${BB_NGINX_WORKDIR}
     container_name: ${BB_NGINX_WORKDIR}
