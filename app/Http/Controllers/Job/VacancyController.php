@@ -17,7 +17,7 @@ class VacancyController extends Controller
     public function __construct()
     {
         $this->middleware(['auth:api'])->only('store');
-        $this->middleware(['auth:api', VacanciesMiddleware::class])->only('destroy', 'update');
+//        $this->middleware(['auth:api', VacanciesMiddleware::class])->only('destroy', 'update');
     }
 
     public function index(Request $request): \Illuminate\Http\JsonResponse
