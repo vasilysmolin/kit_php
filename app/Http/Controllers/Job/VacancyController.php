@@ -132,7 +132,7 @@ class VacancyController extends Controller
         return response()->json($vacancy);
     }
 
-    public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         return response()->json([], 204);
         $formData = $request->all();
