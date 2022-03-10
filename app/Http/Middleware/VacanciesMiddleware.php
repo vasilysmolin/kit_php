@@ -26,7 +26,9 @@ class VacanciesMiddleware
         $vacancyID = $request->route('vacancy');
 
         if (isset($vacancyID)) {
-            $vacancy = JobsVacancy::find($vacancyID);
+            $vacancy = JobsVacancy::where('alias', $vacancyID)
+                ->orWhere('id', (int) $vacancyID)
+                ->first();
             if (isset($vacancy) && $vacancy->profile_id !== $profile->profile_id) {
                 return response()->json([
                     'errors' => [
