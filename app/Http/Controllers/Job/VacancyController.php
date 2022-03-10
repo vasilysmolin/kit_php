@@ -10,6 +10,7 @@ use App\Models\JobsVacancy;
 use App\Models\JobsVacancyCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
+use App\Objects\States\States;
 use Illuminate\Http\Request;
 
 class VacancyController extends Controller
@@ -30,6 +31,7 @@ class VacancyController extends Controller
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
         $status = $request->status;
+        $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -45,7 +47,7 @@ class VacancyController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when($status !== null, function ($q) use ($status) {
+            ->when($states->isExists($status), function ($q) use ($status) {
                 $q->where('state', $status);
             })
             ->when(!empty($userID), function ($q) use ($userID) {

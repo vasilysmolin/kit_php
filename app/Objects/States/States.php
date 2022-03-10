@@ -33,4 +33,9 @@ class States implements ScheduleInterface
             return null;
         }
     }
+    public function isExists(string $value): bool
+    {
+        $key = array_search($value, $this->states);
+        return $key !== false;
+    }
 }
