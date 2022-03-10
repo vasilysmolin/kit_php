@@ -38,9 +38,9 @@ class VacancyUpdateRequest extends FormRequest
             'latitude' => 'nullable|numeric|between:0,9999.99',
             'longitude' => 'nullable|numeric|between:0,9999.99',
             'work_experience' => 'nullable|boolean',
-            'title' => 'string|min:1|max:255',
+            'title' => 'nullable|string|min:1|max:255',
             'address' => 'nullable|string|min:1|max:255',
-            'phone' => 'string|min:1|max:255',
+            'phone' => 'nullable|string|min:1|max:255',
 //            'alias' => [
 //                'unique:jobs_vacancies,alias',
 //                'string',
