@@ -17,7 +17,7 @@ class VacancyController extends Controller
     public function __construct()
     {
         $this->middleware(['auth:api'])->only('store');
-//        $this->middleware(['auth:api', VacanciesMiddleware::class])->only('destroy', 'update');
+        $this->middleware(['auth:api', VacanciesMiddleware::class])->only('destroy', 'update');
     }
 
     public function index(Request $request): \Illuminate\Http\JsonResponse
@@ -132,9 +132,8 @@ class VacancyController extends Controller
         return response()->json($vacancy);
     }
 
-    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
-        return response()->json([], 204);
         $formData = $request->all();
 
         unset($formData['category_id']);
