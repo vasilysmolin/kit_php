@@ -22,7 +22,6 @@ class VacancyController extends Controller
 
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
@@ -141,7 +140,6 @@ class VacancyController extends Controller
         $vacancy = JobsVacancy::where('alias', $id)
             ->orWhere('id', (int) $id)
             ->first();
-
         $vacancy->fill($formData);
 
         $vacancy->update();

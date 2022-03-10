@@ -47,6 +47,7 @@
         "spatie/laravel-cookie-consent": "^2.12",
         "spatie/laravel-permission": "^5.1",
         "spatie/laravel-sluggable": "^2.6",
+        "spatie/laravel-tags": "^3.1",
         "spatie/laravel-translatable": "^4.6",
         "spiti/smsclient": "1.1.0",
         "symfony/translation": "^5.3",
