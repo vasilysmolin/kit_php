@@ -24,7 +24,7 @@ class VacancyUpdateRequest extends FormRequest
     public function rules()
     {
         return [
-            'name' => 'string|min:1|max:255',
+            'name' => 'string|min:1|max:2',
             'max_price' => 'nullable|integer|max:9999999',
             'min_price' => 'integer|max:9999999',
             'description' => 'nullable|string|min:1|max:1000',
