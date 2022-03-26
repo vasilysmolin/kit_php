@@ -107,7 +107,6 @@ class AdController extends Controller
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
-        $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
         unset($formData['category_id']);
         $catalogAd = new CatalogAd();
         $catalogAd->fill($formData);
