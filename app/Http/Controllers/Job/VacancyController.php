@@ -62,13 +62,14 @@ class VacancyController extends Controller
             })
             ->with('image', 'categories')
             ->orderBy('id', 'DESC')
-            ->where('active', 1)
+//            ->where('active', 1)
             ->get();
 
 
         $vacancy->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
+                $item->title = $item->name;
                 $item->makeHidden('image');
             }
         });
@@ -128,6 +129,7 @@ class VacancyController extends Controller
             $vacancy->photo = $files->getFilePath($vacancy->image);
 //            $vacancy->makeHidden('image');
         }
+        $vacancy->title = $vacancy->name;
 
         abort_unless($vacancy, 404);
 

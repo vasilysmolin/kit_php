@@ -4,7 +4,7 @@ namespace App\Http\Requests\Job;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class VacancyUpdateRequest extends FormRequest
+class ResumeUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class VacancyUpdateRequest extends FormRequest
     {
         return [
             'name' => 'string|min:1|max:255',
-//            'max_price' => 'nullable|integer|max:9999999',
+            'max_price' => 'nullable|integer|max:9999999',
             'min_price' => 'integer|max:9999999',
             'description' => 'nullable|string|min:1|max:1000',
             'duties' => 'nullable|string|min:1|max:1000',

@@ -62,13 +62,14 @@ class ResumeController extends Controller
             })
             ->orderBy('id', 'DESC')
             ->with('categories', 'image')
-            ->where('active', 1)
+//            ->where('active', 1)
             ->get();
 
 
         $resume->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
+                $item->title = $item->name;
                 $item->makeHidden('image');
             }
         });
@@ -128,6 +129,7 @@ class ResumeController extends Controller
             $resume->photo = $files->getFilePath($resume->image);
 //            $resume->makeHidden('image');
         }
+        $resume->title = $resume->name;
 
         abort_unless($resume, 404);
 

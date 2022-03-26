@@ -25,7 +25,7 @@ class VacancyStoreRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:1|max:255',
-            'max_price' => 'required|integer|max:9999999',
+//            'max_price' => 'required|integer|max:9999999',
             'min_price' => 'required|integer|max:9999999',
             'description' => 'string|min:1|max:1000',
             'duties' => 'string|min:1|max:1000',
