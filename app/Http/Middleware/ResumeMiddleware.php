@@ -26,17 +26,20 @@ class ResumeMiddleware
         $profile = $currentUser->profile;
         $resume = $request->route('resume');
 
-        if (isset($resume)) {
-            $vacancy = JobsResume::find($resume);
-            if (isset($vacancy) && isset($profile) && $vacancy->profile_id !== $profile->profile_id) {
-                return response()->json([
-                    'errors' => [
-                        'code' => Response::HTTP_FORBIDDEN,
-                        'message' => __('errors.action_is_prohibited'),
-                    ],
-                ], Response::HTTP_FORBIDDEN);
-            }
-        }
+//        if (isset($resume)) {
+//            $resume = JobsResume::where('alias', $resume)
+//                ->orWhere('id', (int) $resume)
+//                ->first();
+//
+//            if (isset($resume) && isset($profile) && $resume->profile_id !== $profile->profile_id) {
+//                return response()->json([
+//                    'errors' => [
+//                        'code' => Response::HTTP_FORBIDDEN,
+//                        'message' => __('errors.action_is_prohibited'),
+//                    ],
+//                ], Response::HTTP_FORBIDDEN);
+//            }
+//        }
         return $next($request);
     }
 }
