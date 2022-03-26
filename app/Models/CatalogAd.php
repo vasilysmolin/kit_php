@@ -4,10 +4,13 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class CatalogAd extends Model
 {
     use HasFactory;
+    use HasSlug;
 
     protected $fillable = [
         'id',
@@ -23,6 +26,19 @@ class CatalogAd extends Model
         'profile_id',
         'category_id',
     ];
+
+    /**
+     * Get the options for generating the slug.
+     *
+     * @return \Spatie\Sluggable\SlugOptions
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->doNotGenerateSlugsOnUpdate()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('alias');
+    }
 
     public function categories()
     {

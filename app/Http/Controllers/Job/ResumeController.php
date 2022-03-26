@@ -129,9 +129,9 @@ class ResumeController extends Controller
             $resume->photo = $files->getFilePath($resume->image);
 //            $resume->makeHidden('image');
         }
-        $resume->title = $resume->name;
 
         abort_unless($resume, 404);
+        $resume->title = $resume->name;
 
         return response()->json($resume);
     }
@@ -194,6 +194,7 @@ class ResumeController extends Controller
     {
         JobsResume::where('alias', $id)
             ->orWhere('id', (int) $id)->delete();
+
         return response()->json([], 204);
     }
 }

@@ -129,9 +129,10 @@ class VacancyController extends Controller
             $vacancy->photo = $files->getFilePath($vacancy->image);
 //            $vacancy->makeHidden('image');
         }
-        $vacancy->title = $vacancy->name;
+
 
         abort_unless($vacancy, 404);
+        $vacancy->title = $vacancy->name;
 
         return response()->json($vacancy);
     }

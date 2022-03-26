@@ -28,7 +28,7 @@ class ResumeMiddleware
 
         if (isset($resume)) {
             $vacancy = JobsResume::find($resume);
-            if (isset($vacancy) && $vacancy->profile_id !== $profile->profile_id) {
+            if (isset($vacancy) && isset($profile) && $vacancy->profile_id !== $profile->profile_id) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,
