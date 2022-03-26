@@ -65,7 +65,7 @@ class AdController extends Controller
         $catalogAd->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
-                $item->title = $item->name;
+//                $item->title = $item->name;
                 $item->makeHidden('image');
             }
         });
@@ -149,7 +149,7 @@ class AdController extends Controller
         $files = resolve(Files::class);
         if (isset($catalogAd->image)) {
             $catalogAd->photo = $files->getFilePath($catalogAd->image);
-            $catalogAd->title = $catalogAd->name;
+//            $catalogAd->title = $catalogAd->name;
 //            $catalogAd->makeHidden('image');
         }
 
