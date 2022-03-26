@@ -47,7 +47,7 @@ class ResumeController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when($states->isExists($status), function ($q) use ($status) {
+            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
                 $q->where('state', $status);
             })
             ->when(!empty($userID), function ($q) use ($userID) {
@@ -83,7 +83,7 @@ class ResumeController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when($status !== null, function ($q) use ($status) {
+            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
                 $q->where('state', $status);
             })
             ->when(!empty($userID), function ($q) use ($userID) {
