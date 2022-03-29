@@ -58,7 +58,6 @@ class ServiceController extends Controller
             })
             ->orderBy('id', 'DESC')
             ->with('image', 'categories')
-//            ->where('active', 1)
             ->get();
 
 
