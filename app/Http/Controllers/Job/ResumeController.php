@@ -69,9 +69,9 @@ class ResumeController extends Controller
         $resume->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
-                $item->title = $item->name;
                 $item->makeHidden('image');
             }
+            $item->title = $item->name;
         });
 
         $count = JobsResume::take((int) $take)

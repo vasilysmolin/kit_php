@@ -69,9 +69,9 @@ class VacancyController extends Controller
         $vacancy->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
-                $item->title = $item->name;
                 $item->makeHidden('image');
             }
+            $item->title = $item->name;
         });
         $count = JobsVacancy::take((int) $take)
             ->skip((int) $skip)

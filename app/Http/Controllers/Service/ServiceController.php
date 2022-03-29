@@ -151,9 +151,9 @@ class ServiceController extends Controller
         $files = resolve(Files::class);
         if (isset($service->image)) {
             $service->photo = $files->getFilePath($service->image);
-            $service->title = $service->name;
 //            $service->makeHidden('image');
         }
+        $service->title = $service->name;
 
         abort_unless($service, 404);
 
