@@ -30,6 +30,7 @@ class VacancyController extends Controller
         $user = auth('api')->user();
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
+        $expand = explode(',', $request->expand);
         $status = $request->status;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
@@ -60,7 +61,8 @@ class VacancyController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->with('image', 'categories')
+//            ->with(['image', 'categories', ...$expand])
+            ->with(['image', 'categories',])
             ->orderBy('id', 'DESC')
 //            ->where('active', 1)
             ->get();
