@@ -67,4 +67,7 @@ setup:
 	php artisan db:seed --force
 	php artisan optimize
 
+db-import-from-backup:
+	docker-compose exec -T database psql -d tapigo-database -U postgres  < data
+
 
