@@ -26,8 +26,8 @@ class VacancyIndexRequest extends FormRequest
     public function rules()
     {
 
-        $reflector = (new Reflector(JobsVacancy::class));
-        dd($reflector);
+        $relations = (new Reflector(JobsVacancy::class))->reflector();
+        dd($relations);
         return [
             'name' => 'string|min:1|max:255',
             'min_price' => 'integer|max:9999999',
