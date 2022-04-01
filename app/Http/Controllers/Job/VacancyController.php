@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Job;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\VacanciesMiddleware;
+use App\Http\Requests\Job\VacancyIndexRequest;
+use App\Http\Requests\Job\VacancyShowRequest;
 use App\Http\Requests\Job\VacancyStoreRequest;
 use App\Http\Requests\Job\VacancyUpdateRequest;
 use App\Models\JobsVacancy;
@@ -11,7 +13,6 @@ use App\Models\JobsVacancyCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
-use Illuminate\Http\Request;
 
 class VacancyController extends Controller
 {
@@ -21,7 +22,7 @@ class VacancyController extends Controller
         $this->middleware(['auth:api', VacanciesMiddleware::class])->only('destroy', 'update');
     }
 
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(VacancyIndexRequest $request): \Illuminate\Http\JsonResponse
     {
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
@@ -30,7 +31,7 @@ class VacancyController extends Controller
         $user = auth('api')->user();
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
-        $expand = explode(',', $request->expand);
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         $status = $request->status;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
@@ -38,9 +39,8 @@ class VacancyController extends Controller
         } else {
             $cabinet = false;
         }
-        $vacancy = JobsVacancy::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $buidler = JobsVacancy::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
@@ -61,12 +61,16 @@ class VacancyController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-//            ->with(['image', 'categories', ...$expand])
-            ->with(['image', 'categories',])
-            ->orderBy('id', 'DESC')
-//            ->where('active', 1)
-            ->get();
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
+            })
+            ->with(['image', 'categories'])
+            ->orderBy('id', 'DESC');
 
+        $vacancy = $buidler->get();
+
+        $count = $buidler->take((int) $take)
+            ->skip((int) $skip)->count();
 
         $vacancy->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -75,40 +79,16 @@ class VacancyController extends Controller
             }
             $item->title = $item->name;
         });
-        $count = JobsVacancy::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->when(isset($categoryID), function ($q) use ($categoryID) {
-                $q->whereHas('categories', function ($q) use ($categoryID) {
-                    $q->where('id', $categoryID);
-                });
-            })
-            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
-                $q->where('state', $status);
-            })
-            ->when(!empty($userID), function ($q) use ($userID) {
-                $q->whereHas('profile.user', function ($q) use ($userID) {
-                    $q->where('id', $userID);
-                });
-            })
-            ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
-                });
-            })
-            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new JobsVacancy(), $vacancy, $count, (int) $skip);
 
         return response()->json($data);
     }
 
-    public function show(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function show(VacancyShowRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -124,6 +104,9 @@ class VacancyController extends Controller
                     $q->where('id', $user->id);
                 });
             })
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
+            })
             ->first();
 
         $files = resolve(Files::class);
@@ -131,7 +114,6 @@ class VacancyController extends Controller
             $vacancy->photo = $files->getFilePath($vacancy->image);
 //            $vacancy->makeHidden('image');
         }
-
 
         abort_unless($vacancy, 404);
         $vacancy->title = $vacancy->name;

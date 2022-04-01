@@ -2,11 +2,9 @@
 
 namespace App\Http\Requests\Job;
 
-use App\Http\Requests\Helper\Reflector;
-use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
 
-class VacancyIndexRequest extends FormRequest
+class VacancyShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,19 +23,9 @@ class VacancyIndexRequest extends FormRequest
      */
     public function rules()
     {
-
-//        $relations = (new Reflector(JobsVacancy::class))->reflector();
-        $states = (new States())->keys();
         return [
             'expand' => 'nullable|ends_with:profile.user,profile',
-            'status' => "nullable|ends_with:null,{$states}",
             'from' => 'nullable|ends_with:null,cabinet',
-            'category_id' => [
-                'exists:jobs_vacancy_categories,id',
-                'integer',
-                'nullable',
-                'max:255',
-            ],
         ];
     }
 }

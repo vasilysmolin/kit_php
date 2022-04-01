@@ -38,4 +38,9 @@ class States implements ScheduleInterface
         $key = array_search($value, $this->states);
         return $key !== false;
     }
+
+    public function keys(): string
+    {
+        return collect($this->states)->keys()->join(',');
+    }
 }
