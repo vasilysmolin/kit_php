@@ -21,18 +21,17 @@ class CategoryAdController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
 
-        $builder = CatalogAdCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = CatalogAdCategory::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->with('image', 'childrenCategories')
             ->whereNull('parent_id')
             ->where('active', 1);
 
         $category = $builder
             ->take((int) $take)
             ->skip((int) $skip)
+            ->with('image', 'childrenCategories')
             ->get();
 
         $count = $builder->count();
@@ -66,7 +65,7 @@ class CategoryAdController extends Controller
 
         $files->save($category, $request['files']);
 
-        return response()->json([], 201, ['Location' => "/category-ads/$category->id"]);
+        return response()->json([], 201, ['Location' => "/category-declarations/$category->id"]);
     }
 
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse

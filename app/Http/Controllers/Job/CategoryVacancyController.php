@@ -21,15 +21,19 @@ class CategoryVacancyController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
 
-        $vacancyCategory = JobsVacancyCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = JobsVacancyCategory::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->with('image')
-            ->where('active', 1)
+            ->where('active', 1);
+
+        $vacancyCategory = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
+            ->with('image', 'childrenCategories')
             ->get();
 
+        $count = $builder->count();
 
         $vacancyCategory->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -37,14 +41,6 @@ class CategoryVacancyController extends Controller
                 $item->makeHidden('image');
             }
         });
-
-        $count = JobsVacancyCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new JobsVacancyCategory(), $vacancyCategory, $count, (int) $skip);
 
@@ -76,7 +72,7 @@ class CategoryVacancyController extends Controller
 
         $vacancyCategory = JobsVacancyCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image')
+            ->with('image', 'childrenCategories')
             ->first();
 
         $files = resolve(Files::class);

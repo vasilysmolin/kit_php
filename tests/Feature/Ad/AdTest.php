@@ -20,7 +20,7 @@ class AdTest extends TestCase
 
     public function testCatalogAdIndex()
     {
-        $response = $this->get(route('ads.index'));
+        $response = $this->get(route('declarations.index'));
         $response->assertStatus(200)->assertJsonStructure([
             'catalog_ads',
         ]);
@@ -30,7 +30,7 @@ class AdTest extends TestCase
     {
         $categoryServices = CatalogAd::factory()->create();
 
-        $response = $this->get(route('ads.show', [$categoryServices->id]));
+        $response = $this->get(route('declarations.show', [$categoryServices->id]));
 
         $response->assertStatus(200);
     }
@@ -39,7 +39,7 @@ class AdTest extends TestCase
     {
         $categoryServices = CatalogAd::factory()->create();
 
-        $response = $this->get(route('ads.show', $categoryServices->id . $categoryServices->id));
+        $response = $this->get(route('declarations.show', $categoryServices->id . $categoryServices->id));
         $response->assertStatus(404);
     }
 
@@ -51,7 +51,7 @@ class AdTest extends TestCase
 
         $response = $this
             ->withToken($access_token)
-            ->json('POST', route('ads.store'), [
+            ->json('POST', route('declarations.store'), [
                 'name' => 'test',
             ]);
 
@@ -69,7 +69,7 @@ class AdTest extends TestCase
 
         $response = $this
             ->withToken($access_token)
-            ->json('DELETE', route('ads.destroy', [$catalogAd->id]), []);
+            ->json('DELETE', route('declarations.destroy', [$catalogAd->id]), []);
 
         $this->assertNull(CatalogAd::find($catalogAd->id));
         $response->assertStatus(Response::HTTP_NO_CONTENT);

@@ -11,7 +11,7 @@ use Tests\TestCase;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 /**
- * @group category-ads
+ * @group category-declarations
  * @group ci
  * */
 class AdCategoryTest extends TestCase
@@ -20,7 +20,7 @@ class AdCategoryTest extends TestCase
 
     public function testCatalogAdCategoryIndex()
     {
-        $response = $this->get(route('category-ads.index'));
+        $response = $this->get(route('category-declarations.index'));
         $response->assertStatus(200)->assertJsonStructure([
             'catalog_ad_categories',
         ]);
@@ -30,7 +30,7 @@ class AdCategoryTest extends TestCase
     {
         $categoryServices = CatalogAdCategory::factory()->create();
 
-        $response = $this->get(route('category-ads.show', [$categoryServices->id]));
+        $response = $this->get(route('category-declarations.show', [$categoryServices->id]));
 
         $response->assertStatus(200);
     }
@@ -39,7 +39,7 @@ class AdCategoryTest extends TestCase
     {
         $categoryServices = CatalogAdCategory::factory()->create();
 
-        $response = $this->get(route('category-ads.show', $categoryServices->id . $categoryServices->id));
+        $response = $this->get(route('category-declarations.show', $categoryServices->id . $categoryServices->id));
         $response->assertStatus(404);
     }
 
@@ -51,11 +51,11 @@ class AdCategoryTest extends TestCase
 
         $response = $this
             ->withToken($access_token)
-            ->json('POST', route('category-ads.store'), [
+            ->json('POST', route('category-declarations.store'), [
                 'name' => 'test',
             ]);
 
-        $id = explode('/category-ads/', $response->baseResponse->headers->get('Location'));
+        $id = explode('/category-declarations/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('catalog_ad_categories', [ 'id' => $id[1] ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
@@ -69,7 +69,7 @@ class AdCategoryTest extends TestCase
 
         $response = $this
             ->withToken($access_token)
-            ->json('DELETE', route('category-ads.destroy', [$categoryResume->id]), []);
+            ->json('DELETE', route('category-declarations.destroy', [$categoryResume->id]), []);
 
         $this->assertNull(CatalogAdCategory::find($categoryResume->id));
         $response->assertStatus(Response::HTTP_NO_CONTENT);

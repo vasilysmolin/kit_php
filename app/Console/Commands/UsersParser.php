@@ -111,9 +111,9 @@ class UsersParser extends Command
 //        }
 //
 //        $client = new Client();
-//        $response = $client->get('https://catalog.tapigo.ru/all-category-ads-json', ['verify' => false]);
+//        $response = $client->get('https://catalog.tapigo.ru/all-category-declarations-json', ['verify' => false]);
 //        $contents = $response->getBody()->getContents();
-//        Storage::disk('local')->put('all-category-ads-json.txt', $contents);
+//        Storage::disk('local')->put('all-category-declarations-json.txt', $contents);
 //        $contents = json_decode($contents, true);
 //        $i = 1;
 //        foreach ($contents as $item) {

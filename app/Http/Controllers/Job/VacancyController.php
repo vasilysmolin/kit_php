@@ -61,16 +61,18 @@ class VacancyController extends Controller
                     $q->where('id', $user->id);
                 });
             })
+            ->orderBy('id', 'DESC');
+
+        $vacancy = $buidler
+            ->take((int) $take)
+            ->skip((int) $skip)
+            ->with(['image', 'categories'])
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
-            ->with(['image', 'categories'])
-            ->orderBy('id', 'DESC');
+            ->get();
 
-        $vacancy = $buidler->get();
-
-        $count = $buidler->take((int) $take)
-            ->skip((int) $skip)->count();
+        $count = $buidler->count();
 
         $vacancy->each(function ($item) use ($files) {
             if (isset($item->image)) {

@@ -32,9 +32,8 @@ class AdController extends Controller
         } else {
             $cabinet = false;
         }
-
         $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
+            $query->whereIn('id', $id);
         })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
@@ -54,14 +53,17 @@ class AdController extends Controller
                     $q->where('id', $user->id);
                 });
             })
+            ->orderBy('id', 'DESC');
+
+
+        $catalogAd = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
+            ->with('image', 'categories')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
-            ->orderBy('id', 'DESC')
-            ->with('image', 'categories');
-
-        $catalogAd = $builder->take((int) $take)
-            ->skip((int) $skip)->get();
+            ->get();
         $count = $builder->count();
 
         $catalogAd->each(function ($item) use ($files) {

@@ -21,30 +21,24 @@ class CategoryResumeController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
 
-        $resumeCategory = JobsResumeCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = JobsResumeCategory::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->with('image')
-            ->where('active', 1)
+            ->where('active', 1);
+
+        $resumeCategory = $builder
+            ->take((int) $take)
+            ->with('image', 'childrenCategories')
+            ->skip((int) $skip)
             ->get();
-
-
+        $count = $builder->count();
         $resumeCategory->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
         });
-
-        $count = JobsResumeCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new JobsResumeCategory(), $resumeCategory, $count, (int) $skip);
 
@@ -77,7 +71,7 @@ class CategoryResumeController extends Controller
 
         $resumeCategory = JobsResumeCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image')
+            ->with('image', 'childrenCategories')
             ->first();
 
         $files = resolve(Files::class);

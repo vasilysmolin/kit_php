@@ -21,6 +21,7 @@ class ServiceController extends Controller
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
@@ -33,9 +34,8 @@ class ServiceController extends Controller
         $status = $request->status;
         $states = new States();
 
-        $service = Service::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = Service::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
@@ -56,10 +56,18 @@ class ServiceController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('id', 'DESC')
+            ->orderBy('id', 'DESC');
+
+        $service = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
             ->with('image', 'categories')
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
+            })
             ->get();
 
+        $count = $builder->count();
 
         $service->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -68,32 +76,6 @@ class ServiceController extends Controller
             }
             $item->title = $item->name;
         });
-
-        $count = Service::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->when(isset($categoryID), function ($q) use ($categoryID) {
-                $q->whereHas('categories', function ($q) use ($categoryID) {
-                    $q->where('id', $categoryID);
-                });
-            })
-            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
-                $q->where('state', $status);
-            })
-            ->when(!empty($userID), function ($q) use ($userID) {
-                $q->whereHas('profile.user', function ($q) use ($userID) {
-                    $q->where('id', $userID);
-                });
-            })
-            ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
-                });
-            })
-//            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new Service(), $service, $count, (int) $skip);
 
@@ -111,7 +93,6 @@ class ServiceController extends Controller
         unset($formData['category_id']);
         $service = new Service();
         $service->fill($formData);
-//        dd($service);
         $service->save();
         $files = resolve(Files::class);
 
@@ -152,9 +133,9 @@ class ServiceController extends Controller
             $service->photo = $files->getFilePath($service->image);
 //            $service->makeHidden('image');
         }
-        $service->title = $service->name;
 
         abort_unless($service, 404);
+        $service->title = $service->name;
 
         return response()->json($service);
     }
