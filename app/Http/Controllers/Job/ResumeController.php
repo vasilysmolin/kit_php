@@ -89,6 +89,7 @@ class ResumeController extends Controller
     public function show(ResumeShowRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -98,6 +99,9 @@ class ResumeController extends Controller
         $resume = JobsResume::where('alias', $id)
             ->orWhere('id', (int) $id)
             ->with('image')
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
+            })
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
