@@ -114,6 +114,7 @@ class ServiceController extends Controller
     public function show(ServiceShowRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -127,6 +128,9 @@ class ServiceController extends Controller
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
                 });
+            })
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
             })
             ->first();
 
