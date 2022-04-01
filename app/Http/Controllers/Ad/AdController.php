@@ -3,24 +3,24 @@
 namespace App\Http\Controllers\Ad;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Ad\AdIndexRequest;
+use App\Http\Requests\Ad\AdShowRequest;
 use App\Models\CatalogAd;
 use App\Models\CatalogAdCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 class AdController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(AdIndexRequest $request): \Illuminate\Http\JsonResponse
     {
 
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
@@ -33,11 +33,9 @@ class AdController extends Controller
             $cabinet = false;
         }
 
-        $catalogAd = CatalogAd::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
-            })
+        })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
@@ -56,11 +54,15 @@ class AdController extends Controller
                     $q->where('id', $user->id);
                 });
             })
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
+            })
             ->orderBy('id', 'DESC')
-            ->with('image', 'categories')
-//            ->where('active', 1)
-            ->get();
+            ->with('image', 'categories');
 
+        $catalogAd = $builder->take((int) $take)
+            ->skip((int) $skip)->get();
+        $count = $builder->count();
 
         $catalogAd->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -69,31 +71,6 @@ class AdController extends Controller
                 $item->makeHidden('image');
             }
         });
-
-        $count = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-        })
-            ->when(isset($categoryID), function ($q) use ($categoryID) {
-                $q->whereHas('categories', function ($q) use ($categoryID) {
-                    $q->where('id', $categoryID);
-                });
-            })
-            ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
-                });
-            })
-            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
-                $q->where('state', $status);
-            })
-            ->when(!empty($userID), function ($q) use ($userID) {
-                $q->whereHas('profile.user', function ($q) use ($userID) {
-                    $q->where('id', $userID);
-                });
-            })
-//            ->where('active', 1)
-            ->skip((int) $skip)->take((int) $take)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
 
@@ -126,9 +103,10 @@ class AdController extends Controller
         return response()->json([], 201, ['Location' => "/ads/$catalogAd->id"]);
     }
 
-    public function show(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function show(AdShowRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
+        $expand = $request->expand ? explode(',', $request->expand) : null;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -143,13 +121,14 @@ class AdController extends Controller
                     $q->where('id', $user->id);
                 });
             })
+            ->when(!empty($expand), function ($q) use ($expand) {
+                $q->with($expand);
+            })
             ->first();
 
         $files = resolve(Files::class);
         if (isset($catalogAd->image)) {
             $catalogAd->photo = $files->getFilePath($catalogAd->image);
-//            $catalogAd->title = $catalogAd->name;
-//            $catalogAd->makeHidden('image');
         }
 
         abort_unless($catalogAd, 404);

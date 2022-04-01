@@ -21,15 +21,21 @@ class CategoryAdController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
 
-        $category = CatalogAdCategory::take((int) $take)
+        $builder = CatalogAdCategory::take((int) $take)
             ->skip((int) $skip)
             ->when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->with('image')
-            ->where('active', 1)
+            ->with('image', 'childrenCategories')
+            ->whereNull('parent_id')
+            ->where('active', 1);
+
+        $category = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
             ->get();
 
+        $count = $builder->count();
 
         $category->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -37,14 +43,6 @@ class CategoryAdController extends Controller
                 $item->makeHidden('image');
             }
         });
-
-        $count = CatalogAdCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
 
@@ -76,7 +74,7 @@ class CategoryAdController extends Controller
 
         $category = CatalogAdCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image')
+            ->with('image', 'childrenCategories')
             ->first();
 
         $files = resolve(Files::class);
