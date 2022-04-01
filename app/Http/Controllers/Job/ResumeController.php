@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Job;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ResumeMiddleware;
+use App\Http\Requests\Job\ResumeIndexRequest;
+use App\Http\Requests\Job\ResumeShowRequest;
 use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
 use App\Objects\Files;
@@ -19,7 +21,7 @@ class ResumeController extends Controller
         $this->middleware(['auth:api', ResumeMiddleware::class])->only('destroy', 'update');
     }
 
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(ResumeIndexRequest $request): \Illuminate\Http\JsonResponse
     {
 
         $take = $request->take ?? config('settings.take_twenty_five');
@@ -84,7 +86,7 @@ class ResumeController extends Controller
         return response()->json($data);
     }
 
-    public function show(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function show(ResumeShowRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         if (isset($user) && $request->from === 'cabinet') {

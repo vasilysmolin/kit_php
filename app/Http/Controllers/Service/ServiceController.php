@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Service\ServiceIndexRequest;
+use App\Http\Requests\Service\ServiceShowRequest;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
@@ -15,7 +17,7 @@ use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
-    public function index(Request $request): \Illuminate\Http\JsonResponse
+    public function index(ServiceIndexRequest $request): \Illuminate\Http\JsonResponse
     {
 
         $take = $request->take ?? config('settings.take_twenty_five');
@@ -109,7 +111,7 @@ class ServiceController extends Controller
         return response()->json([], 201, ['Location' => "/services/$service->id"]);
     }
 
-    public function show(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function show(ServiceShowRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         if (isset($user) && $request->from === 'cabinet') {

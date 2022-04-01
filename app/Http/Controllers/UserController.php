@@ -29,9 +29,8 @@ class UserController extends Controller
             $cabinet = false;
         }
 
-        $users = User::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = User::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
             ->when($cabinet !== false, function ($q) use ($user) {
@@ -39,8 +38,6 @@ class UserController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('id', 'DESC')
-            ->with(['profile.restaurant', 'profile.person'])
             ->when($status !== null, function ($q) use ($status) {
                 $q->where('state', $status);
             })
@@ -54,33 +51,14 @@ class UserController extends Controller
                     $q->where('isPerson', true);
                 });
             })
-            ->get();
+            ->orderBy('id', 'DESC');
 
-        $count = User::take((int) $take)
+        $users = $builder
+            ->take((int) $take)
+            ->with(['profile.restaurant', 'profile.person'])
             ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
-                });
-            })
-            ->when($status !== null, function ($q) use ($status) {
-                $q->where('state', $status);
-            })
-            ->when($type === 'physical', function ($q) {
-                $q->whereHas('profile', function ($q) {
-                    $q->where('isPerson', false);
-                });
-            })
-            ->when($type === 'entity', function ($q) {
-                $q->whereHas('profile', function ($q) {
-                    $q->where('isPerson', true);
-                });
-            })
-//            ->where('active', 1)
-            ->count();
+            ->get();
+        $count = $builder->count();
 
         $data = (new JsonHelper())->getIndexStructure(new User(), $users, $count, (int) $skip);
 
