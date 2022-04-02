@@ -69,9 +69,9 @@ class AdController extends Controller
         $catalogAd->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
-//                $item->title = $item->name;
                 $item->makeHidden('image');
             }
+                $item->title = $item->name;
         });
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
