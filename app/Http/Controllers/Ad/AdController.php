@@ -128,12 +128,13 @@ class AdController extends Controller
             })
             ->first();
 
+        abort_unless($catalogAd, 404);
+
         $files = resolve(Files::class);
         if (isset($catalogAd->image)) {
             $catalogAd->photo = $files->getFilePath($catalogAd->image);
         }
-
-        abort_unless($catalogAd, 404);
+        $catalogAd->title = $catalogAd->name;
 
         return response()->json($catalogAd);
     }
