@@ -30,7 +30,7 @@ class CategoryVacancyController extends Controller
         $vacancyCategory = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->get();
 
         $count = $builder->count();
@@ -72,7 +72,7 @@ class CategoryVacancyController extends Controller
 
         $vacancyCategory = JobsVacancyCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->first();
 
         $files = resolve(Files::class);

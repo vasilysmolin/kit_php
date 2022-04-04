@@ -31,7 +31,7 @@ class CategoryAdController extends Controller
         $category = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->get();
 
         $count = $builder->count();
@@ -73,7 +73,7 @@ class CategoryAdController extends Controller
 
         $category = CatalogAdCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->first();
 
         $files = resolve(Files::class);

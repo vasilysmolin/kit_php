@@ -29,7 +29,7 @@ class CategoryServiceController extends Controller
         $serviceCategory = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->get();
         $count = $builder->count();
 
@@ -70,7 +70,7 @@ class CategoryServiceController extends Controller
 
         $serviceCategory = ServiceCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->first();
 
         $files = resolve(Files::class);

@@ -26,7 +26,8 @@ class JobsResumeCategory extends Model
 
     public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(JobsResumeCategory::class, 'parent_id', 'id')->with('categories');
+        return $this->hasMany(JobsResumeCategory::class, 'parent_id', 'id')
+            ->with('categories');
     }
 
     public function childrenCategories(): \Illuminate\Database\Eloquent\Relations\HasMany

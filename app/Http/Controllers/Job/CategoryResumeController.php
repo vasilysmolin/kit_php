@@ -29,7 +29,7 @@ class CategoryResumeController extends Controller
 
         $resumeCategory = $builder
             ->take((int) $take)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->skip((int) $skip)
             ->get();
         $count = $builder->count();
@@ -71,7 +71,7 @@ class CategoryResumeController extends Controller
 
         $resumeCategory = JobsResumeCategory::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image', 'childrenCategories')
+            ->with('image', 'categories')
             ->first();
 
         $files = resolve(Files::class);

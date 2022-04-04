@@ -15,6 +15,7 @@ use App\Models\User;
 use App\Objects\Education\Constants\Education;
 use App\Objects\Files;
 use App\Objects\SalaryType\Constants\SalaryType;
+use App\Objects\Schedule\Constants\Schedule;
 use App\Objects\Time\Constants\TimeArray;
 use GuzzleHttp\Client;
 use Illuminate\Console\Command;
@@ -241,7 +242,7 @@ class UsersParser extends Command
 //                            $model->category_id = isset($cats) ? $cats->id : null;
 //                            $model->experience = (new TimeArray($property['experience_years'], null))->parce();
 //                            $model->education = (new Education($property['education'], null))->parce();
-//                            $model->schedule = (new Education($property['schedule'], null))->parce();
+//                            $model->schedule = (new Schedule($property['schedule'], null))->parce();
 //                            $model->salary_type = (new SalaryType($property['salary_type'] ?? null, null))->parce();
 //                            $model->alias = $slug;
 //                            $model->active = true;
@@ -276,7 +277,7 @@ class UsersParser extends Command
 //                        $model->additionally = $property['additionally'];
 //                        $model->experience = (new TimeArray($property['experience_years'], null))->parce();
 //                        $model->education = (new Education($property['education'], null))->parce();
-//                        $model->schedule = (new Education($property['schedule'], null))->parce();
+//                        $model->schedule = (new Schedule($property['schedule'], null))->parce();
 //                        $model->salary_type = (new SalaryType($property['salary_type'] ?? null, null))->parce();
 //                        $model->alias = $slug;
 //                        $model->active = true;
@@ -292,42 +293,42 @@ class UsersParser extends Command
 //        }
 //
 //
-
-        $client = new Client();
-//        $response = $client->get('https://catalog.tapigo.ru/all-uslugi-json2', ['verify' => false]);
-//        $contents = $response->getBody()->getContents();
-//        Storage::disk('local')->put('all-uslugi-json2.txt', $contents);
-        $contents = Storage::disk('local')->get('all-uslugi-json2.txt');
-        $contents = json_decode($contents, true);
-//        dd($contents);
-        foreach ($contents as $item) {
-            $userDB = User::find($item['id']);
-            if (isset($userDB)) {
-                foreach ($item['uslugi'] as $relation) {
-                        $alias = Str::slug(Str::limit($relation['property']['desc'], 10) . ' ' . str_random(5), '-');
-                        $isModel = Service::find($relation['property']['id']);
-                    if (isset($relation['cats'])) {
-                        $cats = ServiceCategory::where('name', $relation['cats']['title'])->first();
-                    } else {
-                        $cats = null;
-                    }
-                        var_dump($relation['property']);
-                        $model = $isModel ?? new Service();
-                        $model->id = $relation['property']['id'];
-                        $model->profile_id = $userDB->profile->getKey();
-                        $model->title = $relation['property']['title'];
-                        $model->contract = $relation['property']['contract'];
-                        $model->guarantee = $relation['property']['guarantee'];
-                        $model->consultation = $relation['property']['consultation'];
-                        $model->hourly_payment = $relation['property']['hourly_payment'];
-                        $model->category_id = isset($cats) ? $cats->id : null;
-                        $model->alias = $alias;
-                        $model->description = $relation['property']['desc'];
-                        $model->price = (int) str_replace(' ', '', $relation['property']['price']);
-                        $isModel ? $model->update() : $model->save();
-                }
-            }
-        }
+//
+//        $client = new Client();
+////        $response = $client->get('https://catalog.tapigo.ru/all-uslugi-json2', ['verify' => false]);
+////        $contents = $response->getBody()->getContents();
+////        Storage::disk('local')->put('all-uslugi-json2.txt', $contents);
+//        $contents = Storage::disk('local')->get('all-uslugi-json2.txt');
+//        $contents = json_decode($contents, true);
+////        dd($contents);
+//        foreach ($contents as $item) {
+//            $userDB = User::find($item['id']);
+//            if (isset($userDB)) {
+//                foreach ($item['uslugi'] as $relation) {
+//                        $alias = Str::slug(Str::limit($relation['property']['desc'], 10) . ' ' . str_random(5), '-');
+//                        $isModel = Service::find($relation['property']['id']);
+//                    if (isset($relation['cats'])) {
+//                        $cats = ServiceCategory::where('name', $relation['cats']['title'])->first();
+//                    } else {
+//                        $cats = null;
+//                    }
+//                        var_dump($relation['property']);
+//                        $model = $isModel ?? new Service();
+//                        $model->id = $relation['property']['id'];
+//                        $model->profile_id = $userDB->profile->getKey();
+//                        $model->title = $relation['property']['title'];
+//                        $model->contract = $relation['property']['contract'];
+//                        $model->guarantee = $relation['property']['guarantee'];
+//                        $model->consultation = $relation['property']['consultation'];
+//                        $model->hourly_payment = $relation['property']['hourly_payment'];
+//                        $model->category_id = isset($cats) ? $cats->id : null;
+//                        $model->alias = $alias;
+//                        $model->description = $relation['property']['desc'];
+//                        $model->price = (int) str_replace(' ', '', $relation['property']['price']);
+//                        $isModel ? $model->update() : $model->save();
+//                }
+//            }
+//        }
 
 //        dd($contents);
         return 1;
