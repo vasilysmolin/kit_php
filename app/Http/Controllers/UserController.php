@@ -2,15 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\JobsVacancy;
-use App\Models\JobsVacancyCategory;
 use App\Models\User;
-use App\Objects\Files;
 use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
 
 class UserController extends Controller
 {

@@ -71,7 +71,9 @@ class CategoryVacancyController extends Controller
     {
 
         $vacancyCategory = JobsVacancyCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->with('image', 'categories')
             ->first();
 
@@ -95,7 +97,9 @@ class CategoryVacancyController extends Controller
         }
 
         $vacancyCategory = JobsVacancyCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->first();
 
         if (!isset($vacancyCategory)) {
@@ -116,7 +120,10 @@ class CategoryVacancyController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         JobsVacancyCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete();
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete();
         return response()->json([], 204);
     }
 }

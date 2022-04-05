@@ -27,7 +27,9 @@ class VacanciesMiddleware
 
 //        if (isset($vacancyID)) {
 //            $vacancy = JobsVacancy::where('alias', $vacancyID)
-//                ->orWhere('id', (int) $vacancyID)
+//                ->when(ctype_digit($id), function ($q) use ($id) {
+//                $q->orWhere('id', (int) $id);
+//                  })
 //                ->first();
 //            if (isset($vacancy) && $vacancy->profile_id !== $profile->profile_id) {
 //                return response()->json([

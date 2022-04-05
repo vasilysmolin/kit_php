@@ -10,9 +10,7 @@ use App\Models\ServiceCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class ServiceController extends Controller
@@ -122,7 +120,9 @@ class ServiceController extends Controller
         }
 
         $service = Service::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -153,7 +153,9 @@ class ServiceController extends Controller
 
         unset($formData['category_id']);
         $service = Service::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })
@@ -179,7 +181,10 @@ class ServiceController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         Service::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete();
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete();
         return response()->json([], 204);
     }
 }

@@ -117,6 +117,9 @@ class AdController extends Controller
         }
 
         $catalogAd = CatalogAd::where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->orWhere('id', (int) $id)
             ->with('image', 'images')
             ->when($cabinet !== false, function ($q) use ($user) {
@@ -154,7 +157,9 @@ class AdController extends Controller
         $user = auth('api')->user();
         unset($formData['category_id']);
         $catalogAd = CatalogAd::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->whereHas('profile.user', function ($q) use ($user) {
                 $q->where('id', $user->id);
             })
@@ -182,7 +187,10 @@ class AdController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         CatalogAd::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete();
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete();
         return response()->json([], 204);
     }
 }

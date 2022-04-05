@@ -69,7 +69,9 @@ class CategoryServiceController extends Controller
     {
 
         $serviceCategory = ServiceCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->with('image', 'categories')
             ->first();
 
@@ -93,7 +95,9 @@ class CategoryServiceController extends Controller
         }
 
         $serviceCategory = ServiceCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->first();
 
         if (!isset($serviceCategory)) {
@@ -115,7 +119,10 @@ class CategoryServiceController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         ServiceCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete();
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete();
         return response()->json([], 204);
     }
 }

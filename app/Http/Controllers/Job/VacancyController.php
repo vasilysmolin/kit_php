@@ -99,7 +99,9 @@ class VacancyController extends Controller
 
         $vacancy = JobsVacancy::
         where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->with('image')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
@@ -129,7 +131,9 @@ class VacancyController extends Controller
 
         unset($formData['category_id']);
         $vacancy = JobsVacancy::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->first();
         $vacancy->fill($formData);
 
@@ -179,7 +183,10 @@ class VacancyController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         JobsVacancy::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete($id);
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete($id);
         return response()->json([], 204);
     }
 }

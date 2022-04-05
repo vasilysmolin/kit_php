@@ -28,7 +28,9 @@ class ResumeMiddleware
 
 //        if (isset($resume)) {
 //            $resume = JobsResume::where('alias', $resume)
-//                ->orWhere('id', (int) $resume)
+//                ->when(ctype_digit($id), function ($q) use ($id) {
+//                $q->orWhere('id', (int) $id);
+//            })
 //                ->first();
 //
 //            if (isset($resume) && isset($profile) && $resume->profile_id !== $profile->profile_id) {
