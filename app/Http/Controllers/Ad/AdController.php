@@ -11,6 +11,7 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class AdController extends Controller
 {
@@ -140,6 +141,8 @@ class AdController extends Controller
                 $catalogAd->photos->push($files->getFilePath($image));
             });
         }
+        $catalogAd->makeHidden('image');
+        $catalogAd->makeHidden('images');
         $catalogAd->title = $catalogAd->name;
 
         return response()->json($catalogAd);
@@ -149,7 +152,6 @@ class AdController extends Controller
     {
         $formData = $request->all();
         $user = auth('api')->user();
-
         unset($formData['category_id']);
         $catalogAd = CatalogAd::where('alias', $id)
             ->orWhere('id', (int) $id)
