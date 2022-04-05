@@ -117,7 +117,7 @@ class AdController extends Controller
 
         $catalogAd = CatalogAd::where('alias', $id)
             ->orWhere('id', (int) $id)
-            ->with('image')
+            ->with('image', 'images')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
@@ -133,6 +133,12 @@ class AdController extends Controller
         $files = resolve(Files::class);
         if (isset($catalogAd->image)) {
             $catalogAd->photo = $files->getFilePath($catalogAd->image);
+        }
+        if (!empty($catalogAd->images)) {
+            $catalogAd->photos = collect([]);
+            $catalogAd->images->each(function ($image) use ($files, $catalogAd) {
+                $catalogAd->photos->push($files->getFilePath($image));
+            });
         }
         $catalogAd->title = $catalogAd->name;
 
