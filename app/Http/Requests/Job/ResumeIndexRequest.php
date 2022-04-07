@@ -30,8 +30,8 @@ class ResumeIndexRequest extends FormRequest
         $states = (new States())->keys();
         return [
             'expand' => 'nullable|ends_with:profile.user,profile',
-            'status' => "nullable|ends_with:null,{$states}",
-            'from' => 'nullable|ends_with:null,cabinet',
+            'status' => "nullable|ends_with:{$states}",
+            'from' => 'nullable|ends_with:cabinet',
             'category_id' => [
                 'exists:jobs_vacancy_categories,id',
                 'integer',

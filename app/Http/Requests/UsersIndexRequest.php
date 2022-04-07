@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Requests\Ad;
+namespace App\Http\Requests;
 
 use App\Http\Requests\Helper\Reflector;
 use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdShowRequest extends FormRequest
+class UsersIndexRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,15 +29,9 @@ class AdShowRequest extends FormRequest
 //        $relations = (new Reflector(JobsVacancy::class))->reflector();
         $states = (new States())->keys();
         return [
-            'expand' => 'nullable|ends_with:profile.user,profile',
+            'expand' => 'nullable|ends_with:profile,profile.person,profile.resume,profile.vacancy',
             'status' => "nullable|ends_with:{$states}",
             'from' => 'nullable|ends_with:cabinet',
-            'category_id' => [
-                'exists:catalog_ad_categories,id',
-                'integer',
-                'nullable',
-                'max:255',
-            ],
         ];
     }
 }

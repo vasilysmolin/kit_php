@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UsersIndexRequest;
+use App\Http\Requests\UsersShowRequest;
 use App\Models\User;
 use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -16,7 +18,7 @@ class UserController extends Controller
         $this->middleware('role:admin', ['except' => ['update']]);
     }
 
-    public function index(Request $request)
+    public function index(UsersIndexRequest $request)
     {
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
@@ -70,7 +72,7 @@ class UserController extends Controller
     {
     }
 
-    public function show(Request $request, $id)
+    public function show(UsersShowRequest $request, $id)
     {
 
         $user = User::find($id);
@@ -90,12 +92,16 @@ class UserController extends Controller
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
         $result = $formData
-            ->only(['name','email','phone','state'])
+            ->only(['name','email','phone','state'])->filter(function ($item) {
+                return $item !== null;
+            })
             ->all();
 
-        $user->fill($result);
-
-        $user->update();
+        $user->fill($result)->update();
+        $inn = $formData->only(['inn'])->all();
+        if (!empty($inn)) {
+            $user->profile->fill($inn)->update();
+        }
 
         return response()->json([], 204);
     }

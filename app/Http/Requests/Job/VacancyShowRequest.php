@@ -25,7 +25,7 @@ class VacancyShowRequest extends FormRequest
     {
         return [
             'expand' => 'nullable|ends_with:profile.user,profile',
-            'from' => 'nullable|ends_with:null,cabinet',
+            'from' => 'nullable|ends_with:cabinet',
         ];
     }
 }
