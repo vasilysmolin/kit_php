@@ -30,7 +30,7 @@ class UsersShowRequest extends FormRequest
         $states = (new States())->keys();
         return [
             'expand' => 'nullable|ends_with:profile,profile.person,profile.resume,profile.vacancy',
-            'status' => "nullable|ends_with:{$states}",
+            'state' => "nullable|ends_with:{$states}",
             'from' => 'nullable|ends_with:cabinet',
         ];
     }

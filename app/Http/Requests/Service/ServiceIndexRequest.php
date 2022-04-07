@@ -30,7 +30,7 @@ class ServiceIndexRequest extends FormRequest
         $states = (new States())->keys();
         return [
             'expand' => 'nullable|ends_with:profile.user,profile',
-            'status' => "nullable|ends_with:{$states}",
+            'state' => "nullable|ends_with:{$states}",
             'from' => 'nullable|ends_with:cabinet',
             'category_id' => [
                 'exists:catalog_ad_categories,id',

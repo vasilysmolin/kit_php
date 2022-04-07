@@ -31,7 +31,7 @@ class ServiceController extends Controller
             $cabinet = false;
         }
         $userID = (int) $request->user_id;
-        $status = $request->status;
+        $state = $request->state;
         $states = new States();
 
         $builder = Service::
@@ -43,8 +43,8 @@ class ServiceController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
-                $q->where('state', $status);
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+                $q->where('state', $state);
             })
             ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {

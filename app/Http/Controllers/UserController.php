@@ -6,6 +6,7 @@ use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
 use App\Models\User;
 use App\Objects\JsonHelper;
+use App\Objects\States\States;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -24,8 +25,9 @@ class UserController extends Controller
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $user = auth('api')->user();
-        $status = $request->status;
+        $state = $request->state;
         $type = $request->type;
+        $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -41,8 +43,8 @@ class UserController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->when($status !== null, function ($q) use ($status) {
-                $q->where('state', $status);
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+                $q->where('state', $state);
             })
             ->when($type === 'physical', function ($q) {
                 $q->whereHas('profile', function ($q) {
@@ -99,8 +101,8 @@ class UserController extends Controller
 
         $user->fill($result)->update();
         $inn = $formData->only(['inn'])->all();
-        if (!empty($inn)) {
-            $user->profile->fill($inn)->update();
+        if (!empty($inn) && isset($user->profile->person)) {
+            $user->profile->person->fill($inn)->update();
         }
 
         return response()->json([], 204);

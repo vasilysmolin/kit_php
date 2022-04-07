@@ -32,7 +32,7 @@ class ResumeController extends Controller
         $user = auth('api')->user();
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
-        $status = $request->status;
+        $state = $request->state;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
@@ -49,8 +49,8 @@ class ResumeController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
-                $q->where('state', $status);
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+                $q->where('state', $state);
             })
             ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {

@@ -32,7 +32,7 @@ class VacancyController extends Controller
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
         $expand = $request->expand ? explode(',', $request->expand) : null;
-        $status = $request->status;
+        $state = $request->state;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
@@ -48,8 +48,8 @@ class VacancyController extends Controller
                     $q->where('id', $categoryID);
                 });
             })
-            ->when(!empty($status) && $states->isExists($status), function ($q) use ($status) {
-                $q->where('state', $status);
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+                $q->where('state', $state);
             })
             ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {
