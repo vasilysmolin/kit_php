@@ -18,7 +18,7 @@ Route::group([
 });
 
 Route::group([
-    'middleware' => ['auth:api', 'role:admin'],
+    'middleware' => ['auth:api'],
 ], function ($router) {
     Route::apiResource('users', 'UserController');
 });

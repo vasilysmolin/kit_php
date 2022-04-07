@@ -23,7 +23,10 @@ class Profile extends Model
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * The attributes that should be cast to native types.

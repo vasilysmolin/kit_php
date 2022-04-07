@@ -115,36 +115,21 @@ class UsersParser extends Command
 //        $response = $client->get('https://catalog.tapigo.ru/all-category-declarations-json', ['verify' => false]);
 //        $contents = $response->getBody()->getContents();
 //        Storage::disk('local')->put('all-category-ads-json.txt', $contents);
-        $contents = Storage::disk('local')->get('all-category-ads-json.txt');
-        $contents = json_decode($contents, true);
-        $i = 1;
-        foreach ($contents as $item) {
-//            if ($item['parent_id'] === 0 || $item['parent_id'] === 1) {
-//                $isModel = CatalogMeta::find($item['id']);
-//                $meta = $isModel ?? new CatalogMeta();
+//        $contents = Storage::disk('local')->get('all-category-ads-json.txt');
+//        $contents = json_decode($contents, true);
+//        $i = 1;
+//        foreach ($contents as $item) {
+//                $isModel = CatalogAdCategory::find($item['id']);
+//                $meta = $isModel ?? new CatalogAdCategory();
 //                $meta->id = $item['id'];
-//                var_dump('11 ' . $item['title']);
 //                $meta->name = $item['title'];
-//                $meta->sort = $i;
-//                $meta->alias = $item['slug'] . '_' . Str::random(5);
+//                var_dump('22 ' . $item['title']);
+//
+//                $meta->parent_id = ($item['parent_id'] === 0) ? null : $item['parent_id'];
+//                $meta->alias = $item['slug']  . '_' . Str::random(5);
 //                $meta->active = 1;
 //                $isModel ? $meta->update() : $meta->save();
-//                $i += 1;
-//            } else {
-//                $isModelMeta = CatalogMeta::find($item['parent_id']);
-                $isModel = CatalogAdCategory::find($item['id']);
-                $meta = $isModel ?? new CatalogAdCategory();
-                $meta->id = $item['id'];
-                $meta->name = $item['title'];
-                var_dump('22 ' . $item['title']);
-
-                $meta->parent_id = ($item['parent_id'] === 0) ? null : $item['parent_id'];
-//                $meta->meta_id = $isModelMeta ? $isModelMeta->getKey() : null;
-                $meta->alias = $item['slug']  . '_' . Str::random(5);
-                $meta->active = 1;
-                $isModel ? $meta->update() : $meta->save();
-//            }
-        }
+//        }
 //
 //        $client = new Client();
 //        $response = $client->get('https://catalog.tapigo.ru/all-ads-json', ['verify' => false]);
@@ -213,6 +198,7 @@ class UsersParser extends Command
 //        $response = $client->get('https://catalog.tapigo.ru/all-resume-json', ['verify' => false]);
 //        $contents = $response->getBody()->getContents();
 //        Storage::disk('local')->put('all-resume-json.txt', $contents);
+//        $contents = Storage::disk('local')->put('all-resume-json.txt');
 //        $contents = json_decode($contents, true);
 //
 //        foreach ($contents as $item) {

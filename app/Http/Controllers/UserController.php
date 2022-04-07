@@ -11,6 +11,11 @@ use Illuminate\Http\Response;
 class UserController extends Controller
 {
 
+    public function __construct()
+    {
+        $this->middleware('role:admin', ['except' => ['update']]);
+    }
+
     public function index(Request $request)
     {
         $take = $request->take ?? config('settings.take_twenty_five');
@@ -61,25 +66,9 @@ class UserController extends Controller
         return response()->json($data);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
     public function store(Request $request)
     {
     }
-
 
     public function show(Request $request, $id)
     {
@@ -90,20 +79,9 @@ class UserController extends Controller
         return response()->json($user->load(['profile.restaurant', 'profile.person']));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-    }
-
-
     public function update(Request $request, $id)
     {
-        $formData = $request->all();
+        $formData = collect($request->all());
 
         $user = User::where('id', (int) $id)
             ->first();
@@ -111,20 +89,18 @@ class UserController extends Controller
         if (!isset($user)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
+        $result = $formData
+            ->only(['name','email','phone','state'])
+            ->all();
 
-        $user->fill($formData);
+        $user->fill($result);
 
         $user->update();
 
         return response()->json([], 204);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy($id)
     {
     }
