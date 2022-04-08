@@ -35,7 +35,7 @@ class States implements ScheduleInterface
     }
     public function isExists(string $value): bool
     {
-        $key = array_search($value, $this->states);
+        $key = array_key_exists($value, $this->states);
         return $key !== false;
     }
 
