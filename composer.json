@@ -36,6 +36,7 @@
         "league/flysystem-aws-s3-v3": "^1.0",
         "maatwebsite/excel": "3.1.26",
         "milon/barcode": "8.*",
+        "movemoveapp/laravel-dadata": "^1.0",
         "nothingworks/blade-svg": "^1.1.2",
         "phpmailer/phpmailer": "^6.0",
         "predis/predis": "^1.1",

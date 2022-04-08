@@ -36,6 +36,13 @@ Route::group([
 });
 
 Route::group([
+    'namespace' => 'Common',
+    'prefix' => 'external',
+], function ($router) {
+    Route::get('find-company', 'External\DadataController@findCompany')->name('dadata.find-company');
+});
+
+Route::group([
     'namespace' => 'Food',
 ], function ($router) {
     Route::apiResource('restaurants', 'RestaurantController');

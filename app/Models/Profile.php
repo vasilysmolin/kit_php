@@ -15,7 +15,7 @@ class Profile extends Model
      * @var array
      */
     protected $fillable = [
-        'entity',
+        'isPerson',
     ];
 
     /**

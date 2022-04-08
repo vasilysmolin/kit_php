@@ -85,7 +85,7 @@ class UserController extends Controller
 
     public function update(Request $request, $id)
     {
-        $formData = collect($request->all());
+        $userData = collect($request->all());
 
         $user = User::where('id', (int) $id)
             ->first();
@@ -93,19 +93,27 @@ class UserController extends Controller
         if (!isset($user)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
-        $result = $formData
+        $result = $userData
             ->only(['name','email','phone','state'])->filter(function ($item) {
                 return $item !== null;
             })
             ->all();
 
         $user->fill($result)->update();
-        $inn = $formData->only(['inn'])->all();
-        if (!empty($inn) && isset($user->profile->person)) {
-            $user->profile->person->fill($inn)->update();
+        if (!empty($userData['profile'])) {
+            $isPerson = collect($userData['profile'])->only(['isPerson'])->all();
+            $user->profile->fill($isPerson)->update();
+            $inn = collect($userData['person'])->only(['inn','name'])->all();
+            if (!empty($inn)) {
+                if (empty($user->profile->person)) {
+                    $user->profile->person()->create($inn);
+                } else {
+                    $user->profile->person->fill($inn)->update();
+                }
+            }
         }
 
-        return response()->json([], 204);
+        return response()->json([$inn], 204);
     }
 
 
