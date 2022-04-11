@@ -5,11 +5,13 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
 use App\Models\User;
+use App\Objects\Dadata\Dadata;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -99,21 +101,27 @@ class UserController extends Controller
             })
             ->all();
 
-        $user->fill($result)->update();
-        if (!empty($userData['profile'])) {
-            $isPerson = collect($userData['profile'])->only(['isPerson'])->all();
-            $user->profile->fill($isPerson)->update();
-            $inn = collect($userData['person'])->only(['inn','name'])->all();
-            if (!empty($inn)) {
-                if (empty($user->profile->person)) {
-                    $user->profile->person()->create($inn);
-                } else {
-                    $user->profile->person->fill($inn)->update();
+        DB::transaction(function () use ($user, $result, $userData) {
+            $user->fill($result)->update();
+            if (!empty($userData['profile'])) {
+                $isPerson = collect($userData['profile'])->only(['isPerson'])->all();
+                $user->profile->fill($isPerson)->update();
+                $person = collect($userData['person'])->only(['inn','name'])->all();
+                if (!empty($person)) {
+                    $dadata = new Dadata();
+                    $companies = $dadata->findCompany($person['inn']);
+                    $person['name'] = $dadata->getCompanyName($companies);
+                    if (empty($user->profile->person)) {
+                        $user->profile->person()->create($person);
+                    } else {
+                        $user->profile->person->fill($person)->update();
+                    }
                 }
             }
-        }
+        }, 3);
 
-        return response()->json([$inn], 204);
+
+        return response()->json([], 204);
     }
 
 

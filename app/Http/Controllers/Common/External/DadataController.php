@@ -12,6 +12,6 @@ class DadataController extends Controller
     {
         $dadata = new Dadata();
         $result = $dadata->findCompany($request->inn);
-        return response()->json(['inn' => $dadata->hasCompany($result)]);
+        return response()->json(['has_company' => $dadata->hasCompany($result)]);
     }
 }

@@ -10,7 +10,7 @@ use MoveMoveIo\DaData\Facades\DaDataCompany;
 class Dadata
 {
 
-    public function findCompany(string $string): \MoveMoveIo\DaData\DaDataCompany
+    public function findCompany(string $string)
     {
         try {
             $dadata = DaDataCompany::id($string, 1, null, BranchType::MAIN, CompanyType::LEGAL);
@@ -23,5 +23,11 @@ class Dadata
     public function hasCompany($company): bool
     {
         return count($company['suggestions']) > 0;
+    }
+
+    public function getCompanyName($company): ?string
+    {
+        $company = collect($company['suggestions'])->first();
+        return !empty($company) ? $company['value'] : 'Не найдена';
     }
 }
