@@ -62,7 +62,7 @@ class ResumeController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('id', 'DESC');
+            ->orderBy('updated_at', 'DESC');
 
         $resume = $builder
             ->take((int) $take)
@@ -163,6 +163,7 @@ class ResumeController extends Controller
         $resume->fill($formData);
 
         $resume->update();
+        $resume->touch();
 
         $files = resolve(Files::class);
 

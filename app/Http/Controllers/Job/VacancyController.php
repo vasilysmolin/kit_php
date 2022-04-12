@@ -61,7 +61,7 @@ class VacancyController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('id', 'DESC');
+            ->orderBy('updated_at', 'DESC');
 
         $vacancy = $buidler
             ->take((int) $take)
@@ -138,6 +138,7 @@ class VacancyController extends Controller
         $vacancy->fill($formData);
 
         $vacancy->update();
+        $vacancy->touch();
 
         $files = resolve(Files::class);
 

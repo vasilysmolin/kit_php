@@ -54,7 +54,7 @@ class AdController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('id', 'DESC');
+            ->orderBy('updated_at', 'DESC');
 
 
         $catalogAd = $builder
@@ -168,6 +168,7 @@ class AdController extends Controller
         $catalogAd->fill($formData);
 
         $catalogAd->update();
+        $catalogAd->touch();
 
         $files = resolve(Files::class);
 

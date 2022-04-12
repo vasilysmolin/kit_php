@@ -56,7 +56,7 @@ class ServiceController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('id', 'DESC');
+            ->orderBy('updated_at', 'DESC');
 
         $service = $builder
             ->take((int) $take)
@@ -163,6 +163,7 @@ class ServiceController extends Controller
 
         $service->fill($formData);
         $service->update();
+        $service->touch();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {

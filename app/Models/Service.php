@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -11,6 +12,7 @@ class Service extends Model
 {
     use HasFactory;
     use HasSlug;
+    use SoftDeletes;
 
     /**
      * The attributes that are mass assignable.
@@ -38,6 +40,16 @@ class Service extends Model
         'additionally',
         'contract',
         'work_experience',
+    ];
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
     ];
 
     /**

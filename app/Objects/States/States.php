@@ -12,6 +12,7 @@ class States implements ScheduleInterface
         'block' => 'Заблокирован',
         'active' => 'Активный',
         're_block' => 'Повторно заблокирован',
+        'pause' => 'На паузе',
     ];
 
     public function __construct(?string $key = null, ?string $value = null)
