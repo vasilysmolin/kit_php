@@ -37,7 +37,7 @@ class VacancyStoreRequest extends FormRequest
             'salary_type' => 'string|min:1|max:255',
             'latitude' => 'nullable|numeric|between:0,9999.99',
             'longitude' => 'nullable|numeric|between:0,9999.99',
-            'work_experience' => 'nullable|boolean',
+//            'work_experience' => 'nullable|boolean',
             'title' => 'nullable|string|min:1|max:255',
             'address' => 'nullable|string|min:1|max:255',
             'phone' => 'nullable|string|min:1|max:255',

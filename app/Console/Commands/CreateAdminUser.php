@@ -56,42 +56,48 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
-        $users = User::get();
-        $users->map(function ($user) {
-            $user->email = Str::lower($user->email);
-//            var_dump($user->email);
-            $user->update();
-        });
+//        $users = User::get();
+//        $users->map(function ($user) {
+////            $user->email = Str::lower($user->email);
+////            var_dump($user->email);
+//            $user->update();
+//        });
 
-        $items = JobsVacancy::get();
-        $items->map(function ($item) {
-            $item->state = 'active';
+        $items = JobsVacancy::orderBy('id','DESC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
             $item->update();
+            $i++;
         });
 
-        $items = JobsResume::get();
-        $items->map(function ($item) {
-            $item->state = 'active';
+        $items = JobsResume::orderBy('id','DESC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
             $item->update();
+            $i++;
         });
-
-        $items = Service::get();
-        $items->map(function ($item) {
-            $item->state = 'active';
+        $items = Service::orderBy('id','DESC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
             $item->update();
+            $i++;
         });
 
-        $items = CatalogAd::get();
-        $items->map(function ($item) {
-            $item->state = 'active';
+        $items = CatalogAd::orderBy('id','DESC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
             $item->update();
+            $i++;
         });
-
-        $role = Role::where('name', 'admin')->first();
-        if (!isset($role)) {
-            Role::create(['name' => 'admin']);
-        }
-        User::where('email', 'tapigo@mail.ru')->first()->assignRole('admin');
+//        $role = Role::where('name', 'admin')->first();
+//        if (!isset($role)) {
+//            Role::create(['name' => 'admin']);
+//        }
+//        User::where('email', 'tapigo@mail.ru')->first()->assignRole('admin');
 
         return 1;
     }

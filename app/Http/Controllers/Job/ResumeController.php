@@ -62,7 +62,7 @@ class ResumeController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('updated_at', 'DESC');
+            ->orderBy('sort', 'ASC');
 
         $resume = $builder
             ->take((int) $take)
@@ -123,6 +123,20 @@ class ResumeController extends Controller
         return response()->json($resume);
     }
 
+    public function sort($id): \Illuminate\Http\JsonResponse
+    {
+
+        $vacancy = JobsResume::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $vacancy->moveToStart();
+
+        return response()->json([]);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
@@ -163,7 +177,6 @@ class ResumeController extends Controller
         $resume->fill($formData);
 
         $resume->update();
-        $resume->touch();
 
         $files = resolve(Files::class);
 

@@ -60,8 +60,10 @@ Route::group([
     'namespace' => 'Job',
 ], function ($router) {
     Route::apiResource('vacancies', 'VacancyController');
+    Route::put('vacancies/{id}/sort', 'VacancyController@sort')->name('vacancies.sort');
     Route::apiResource('category-vacancies', 'CategoryVacancyController');
     Route::apiResource('resume', 'ResumeController');
+    Route::put('resume/{id}/sort', 'ResumeController@sort')->name('resume.sort');
     Route::apiResource('category-resume', 'CategoryResumeController');
 });
 
@@ -69,6 +71,7 @@ Route::group([
     'namespace' => 'Service',
 ], function ($router) {
     Route::apiResource('services', 'ServiceController');
+    Route::put('services/{id}/sort', 'ServiceController@sort')->name('services.sort');
     Route::apiResource('category-services', 'CategoryServiceController');
 });
 
@@ -76,5 +79,6 @@ Route::group([
     'namespace' => 'Ad',
 ], function ($router) {
     Route::apiResource('declarations', 'AdController');
+    Route::put('declarations/{id}/sort', 'AdController@sort')->name('declarations.sort');
     Route::apiResource('category-declarations', 'CategoryAdController');
 });

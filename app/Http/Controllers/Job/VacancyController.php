@@ -61,7 +61,7 @@ class VacancyController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('updated_at', 'DESC');
+            ->orderBy('sort', 'ASC');
 
         $vacancy = $buidler
             ->take((int) $take)
@@ -125,6 +125,20 @@ class VacancyController extends Controller
         return response()->json($vacancy);
     }
 
+    public function sort($id): \Illuminate\Http\JsonResponse
+    {
+
+        $vacancy = JobsVacancy::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $vacancy->moveToStart();
+
+        return response()->json([]);
+    }
+
     public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
@@ -138,7 +152,6 @@ class VacancyController extends Controller
         $vacancy->fill($formData);
 
         $vacancy->update();
-        $vacancy->touch();
 
         $files = resolve(Files::class);
 

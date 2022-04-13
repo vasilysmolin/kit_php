@@ -25,7 +25,7 @@ class CreateFoodRestaurantsTable extends Migration
             $table->float('min_delivery_price', 8, 2)->default(0);
             $table->string('alias', 255)->unique();
             $table->boolean('active')->default(0);
-            $table->boolean('sort')->nullable();
+            $table->integer('sort')->nullable();
             $table->string('address', 255)->nullable();
             $table->float('latitude', 10, 0)->nullable();
             $table->float('longitude', 10, 0)->nullable();

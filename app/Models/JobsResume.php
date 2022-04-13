@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
@@ -13,6 +14,7 @@ class JobsResume extends Model
     use HasFactory;
     use HasSlug;
     use SoftDeletes;
+    use SortableTrait;
 
     protected $fillable = [
         'id',

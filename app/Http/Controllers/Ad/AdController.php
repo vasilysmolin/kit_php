@@ -11,7 +11,6 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class AdController extends Controller
 {
@@ -54,7 +53,7 @@ class AdController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('updated_at', 'DESC');
+            ->orderBy('sort', 'ASC');
 
 
         $catalogAd = $builder
@@ -104,6 +103,20 @@ class AdController extends Controller
         $files->save($catalogAd, $request['files']);
 
         return response()->json([], 201, ['Location' => "/ads/$catalogAd->id"]);
+    }
+
+    public function sort($id): \Illuminate\Http\JsonResponse
+    {
+
+        $vacancy = CatalogAd::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $vacancy->moveToStart();
+
+        return response()->json([]);
     }
 
     public function show(AdShowRequest $request, $id): \Illuminate\Http\JsonResponse
@@ -168,7 +181,6 @@ class AdController extends Controller
         $catalogAd->fill($formData);
 
         $catalogAd->update();
-        $catalogAd->touch();
 
         $files = resolve(Files::class);
 

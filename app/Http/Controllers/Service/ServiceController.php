@@ -56,7 +56,7 @@ class ServiceController extends Controller
                     $q->where('id', $user->id);
                 });
             })
-            ->orderBy('updated_at', 'DESC');
+            ->orderBy('sort', 'ASC');
 
         $service = $builder
             ->take((int) $take)
@@ -146,6 +146,20 @@ class ServiceController extends Controller
         return response()->json($service);
     }
 
+    public function sort($id): \Illuminate\Http\JsonResponse
+    {
+
+        $vacancy = Service::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $vacancy->moveToStart();
+
+        return response()->json([]);
+    }
+
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
@@ -163,7 +177,6 @@ class ServiceController extends Controller
 
         $service->fill($formData);
         $service->update();
-        $service->touch();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {

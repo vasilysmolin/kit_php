@@ -15,6 +15,7 @@ class JobsVacancy extends Model
     use HasFactory;
     use HasSlug;
     use SoftDeletes;
+    use SortableTrait;
 
     /**
      * The attributes that are mass assignable.
