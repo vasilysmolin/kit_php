@@ -107,7 +107,7 @@ class UserController extends Controller
                 $isPerson = collect($userData['profile'])->only(['isPerson'])->all();
                 $user->profile->fill($isPerson)->update();
                 $person = collect($userData['person'])->only(['inn','name'])->all();
-                if (!empty($person)) {
+                if (!empty($person) && !empty($person['inn'])) {
                     $dadata = new Dadata();
                     $companies = $dadata->findCompany($person['inn']);
                     $person['name'] = $dadata->getCompanyName($companies);
