@@ -199,11 +199,27 @@ class AdController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        CatalogAd::where('alias', $id)
+        $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->delete();
+            ->first();
+        if (isset($catalogAd)) {
+            $catalogAd->moveToStart();
+            $catalogAd->delete();
+        }
+        return response()->json([], 204);
+    }
+    public function restore($id): \Illuminate\Http\JsonResponse
+    {
+        $catalogAd = CatalogAd::where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })->withTrashed()->first();
+        if (isset($catalogAd)) {
+            $catalogAd->moveToStart();
+            $catalogAd->restore();
+        }
         return response()->json([], 204);
     }
 }

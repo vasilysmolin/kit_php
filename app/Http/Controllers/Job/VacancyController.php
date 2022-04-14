@@ -196,11 +196,27 @@ class VacancyController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        JobsVacancy::where('alias', $id)
+        $vacancy = JobsVacancy::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
-            })
-            ->delete($id);
+            })->first();
+        if (isset($vacancy)) {
+            $vacancy->moveToEnd();
+            $vacancy->delete();
+        }
+        return response()->json([], 204);
+    }
+
+    public function restore($id): \Illuminate\Http\JsonResponse
+    {
+        $vacancy = JobsVacancy::where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })->withTrashed()->first();
+        if (isset($vacancy)) {
+            $vacancy->moveToStart();
+            $vacancy->restore();
+        }
         return response()->json([], 204);
     }
 }

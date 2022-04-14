@@ -61,8 +61,10 @@ Route::group([
 ], function ($router) {
     Route::apiResource('vacancies', 'VacancyController');
     Route::put('vacancies/{id}/sort', 'VacancyController@sort')->name('vacancies.sort');
+    Route::put('vacancies/{id}/restore', 'VacancyController@restore')->name('vacancies.restore');
     Route::apiResource('category-vacancies', 'CategoryVacancyController');
     Route::apiResource('resume', 'ResumeController');
+    Route::put('resume/{id}/restore', 'ResumeController@restore')->name('resume.restore');
     Route::put('resume/{id}/sort', 'ResumeController@sort')->name('resume.sort');
     Route::apiResource('category-resume', 'CategoryResumeController');
 });
@@ -72,6 +74,7 @@ Route::group([
 ], function ($router) {
     Route::apiResource('services', 'ServiceController');
     Route::put('services/{id}/sort', 'ServiceController@sort')->name('services.sort');
+    Route::put('services/{id}/restore', 'ServiceController@restore')->name('services.restore');
     Route::apiResource('category-services', 'CategoryServiceController');
 });
 
@@ -80,5 +83,6 @@ Route::group([
 ], function ($router) {
     Route::apiResource('declarations', 'AdController');
     Route::put('declarations/{id}/sort', 'AdController@sort')->name('declarations.sort');
+    Route::put('declarations/{id}/restore', 'AdController@restore')->name('declarations.restore');
     Route::apiResource('category-declarations', 'CategoryAdController');
 });

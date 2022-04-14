@@ -194,11 +194,27 @@ class ServiceController extends Controller
 
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
-        Service::where('alias', $id)
+        $service = Service::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->delete();
+            ->first();
+        if (isset($service)) {
+            $service->moveToEnd();
+            $service->delete();
+        }
+        return response()->json([], 204);
+    }
+    public function restore($id): \Illuminate\Http\JsonResponse
+    {
+        $service = Service::where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })->withTrashed()->first();
+        if (isset($service)) {
+            $service->moveToStart();
+            $service->restore();
+        }
         return response()->json([], 204);
     }
 }
