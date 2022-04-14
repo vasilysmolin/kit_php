@@ -148,6 +148,7 @@ class ResumeController extends Controller
         $resume = new JobsResume();
         $resume->fill($formData);
         $resume->save();
+        $resume->moveToStart();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {

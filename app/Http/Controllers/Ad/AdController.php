@@ -90,6 +90,7 @@ class AdController extends Controller
         $catalogAd = new CatalogAd();
         $catalogAd->fill($formData);
         $catalogAd->save();
+        $catalogAd->moveToStart();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {

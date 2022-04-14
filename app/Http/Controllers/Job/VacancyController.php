@@ -179,6 +179,7 @@ class VacancyController extends Controller
         $vacancy = new JobsVacancy();
         $vacancy->fill($formData);
         $vacancy->save();
+        $vacancy->moveToStart();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {

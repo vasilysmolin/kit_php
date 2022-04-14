@@ -94,6 +94,7 @@ class ServiceController extends Controller
         $service = new Service();
         $service->fill($formData);
         $service->save();
+        $service->moveToStart();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {
@@ -149,13 +150,13 @@ class ServiceController extends Controller
     public function sort($id): \Illuminate\Http\JsonResponse
     {
 
-        $vacancy = Service::
+        $service = Service::
         where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-        $vacancy->moveToStart();
+        $service->moveToStart();
 
         return response()->json([]);
     }
@@ -205,6 +206,7 @@ class ServiceController extends Controller
         }
         return response()->json([], 204);
     }
+
     public function restore($id): \Illuminate\Http\JsonResponse
     {
         $service = Service::where('alias', $id)
