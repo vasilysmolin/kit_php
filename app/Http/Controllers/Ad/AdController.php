@@ -205,7 +205,7 @@ class AdController extends Controller
             })
             ->first();
         if (isset($catalogAd)) {
-            $catalogAd->moveToStart();
+            $catalogAd->moveToEnd();
             $catalogAd->delete();
         }
         return response()->json([], 204);

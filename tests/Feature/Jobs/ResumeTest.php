@@ -74,4 +74,31 @@ class ResumeTest extends TestCase
         $this->assertNull(JobsResume::find($resume->id));
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
+
+    public function testRestoreResumeAd()
+    {
+        $resume = JobsResume::factory()->create();
+        $user = User::factory()->create();
+        $access_token = JWTAuth::fromUser($user);
+        $resume->delete();
+        $response = $this
+            ->withToken($access_token)
+            ->json('PUT', route('resume.restore', [$resume->id]), []);
+
+        $this->assertDatabaseHas('jobs_resumes', [ 'id' => $resume->id ]);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function testSortResumeAd()
+    {
+        $resume = JobsResume::factory()->create();
+        $user = User::factory()->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this
+            ->withToken($access_token)
+            ->json('PUT', route('resume.sort', [$resume->id]), []);
+        $resume = JobsResume::find($resume->id);
+        $this->assertEquals(1, $resume->sort);
+        $response->assertStatus(Response::HTTP_OK);
+    }
 }

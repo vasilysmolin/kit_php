@@ -29,6 +29,7 @@ class JobsResumeFactory extends Factory
             'alias' => $this->faker->slug(6),
             'profile_id' => Profile::factory(),
             'price' => $this->faker->numberBetween(0, 1500),
+            'sort' => $this->faker->numberBetween(0, 1500),
             'address' => $this->faker->streetAddress(),
         ];
     }

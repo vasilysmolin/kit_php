@@ -28,6 +28,7 @@ class ServiceFactory extends Factory
             'description' => $this->faker->text(),
             'title' => $this->faker->name(),
             'active' => 1,
+            'sort' => $this->faker->numberBetween(0, 1500),
             'alias' => $this->faker->slug(6),
             'profile_id' => Profile::factory(),
             'price' => $this->faker->numberBetween(0, 1500),

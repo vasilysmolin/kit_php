@@ -69,15 +69,42 @@ class VacancyTest extends TestCase
      * */
     public function testDestroyVacancy()
     {
-        $restaraunt = JobsVacancy::factory()->create();
+        $vacancy = JobsVacancy::factory()->create();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this
             ->withToken($access_token)
-            ->json('DELETE', route('vacancies.destroy', [$restaraunt->id]), []);
+            ->json('DELETE', route('vacancies.destroy', [$vacancy->id]), []);
 
-        $this->assertNull(JobsVacancy::find($restaraunt->id));
+        $this->assertNull(JobsVacancy::find($vacancy->id));
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function testRestoreVacancy()
+    {
+        $vacancy = JobsVacancy::factory()->create();
+        $user = User::factory()->create();
+        $access_token = JWTAuth::fromUser($user);
+        $vacancy->delete();
+        $response = $this
+            ->withToken($access_token)
+            ->json('PUT', route('vacancies.restore', [$vacancy->id]), []);
+
+        $this->assertDatabaseHas('jobs_vacancies', [ 'id' => $vacancy->id ]);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    public function testSortVacancy()
+    {
+        $vacancy = JobsVacancy::factory()->create();
+        $user = User::factory()->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this
+            ->withToken($access_token)
+            ->json('PUT', route('vacancies.sort', [$vacancy->id]), []);
+        $vacancy = JobsVacancy::find($vacancy->id);
+        $this->assertEquals(1, $vacancy->sort);
+        $response->assertStatus(Response::HTTP_OK);
     }
 }

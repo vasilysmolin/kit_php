@@ -198,8 +198,8 @@ class ResumeController extends Controller
         $resume = JobsResume::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
-            })
-            ->first();
+            })->first();
+
         if (isset($resume)) {
             $resume->moveToEnd();
             $resume->delete();
