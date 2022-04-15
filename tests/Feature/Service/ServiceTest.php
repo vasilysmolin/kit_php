@@ -57,6 +57,8 @@ class ServiceTest extends TestCase
 
         $id = explode('/services/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('services', [ 'id' => $id[1] ]);
+        $services = Service::find($id[1]);
+        $this->assertEquals(1, $services->sort);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }

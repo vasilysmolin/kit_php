@@ -63,36 +63,36 @@ class CreateAdminUser extends Command
 //            $user->update();
 //        });
 
-        $items = JobsVacancy::orderBy('id','DESC')->get();
-        $i = 1;
-        $items->map(function ($item) use (&$i) {
-            $item->sort = $i;
-            $item->update();
-            $i++;
-        });
-
-        $items = JobsResume::orderBy('id','DESC')->get();
-        $i = 1;
-        $items->map(function ($item) use (&$i) {
-            $item->sort = $i;
-            $item->update();
-            $i++;
-        });
-        $items = Service::orderBy('id','DESC')->get();
-        $i = 1;
-        $items->map(function ($item) use (&$i) {
-            $item->sort = $i;
-            $item->update();
-            $i++;
-        });
-
-        $items = CatalogAd::orderBy('id','DESC')->get();
-        $i = 1;
-        $items->map(function ($item) use (&$i) {
-            $item->sort = $i;
-            $item->update();
-            $i++;
-        });
+//        $items = JobsVacancy::orderBy('id','DESC')->get();
+//        $i = 1;
+//        $items->map(function ($item) use (&$i) {
+//            $item->sort = $i;
+//            $item->update();
+//            $i++;
+//        });
+//
+//        $items = JobsResume::orderBy('id','DESC')->get();
+//        $i = 1;
+//        $items->map(function ($item) use (&$i) {
+//            $item->sort = $i;
+//            $item->update();
+//            $i++;
+//        });
+//        $items = Service::orderBy('id','DESC')->get();
+//        $i = 1;
+//        $items->map(function ($item) use (&$i) {
+//            $item->sort = $i;
+//            $item->update();
+//            $i++;
+//        });
+//
+//        $items = CatalogAd::orderBy('id','DESC')->get();
+//        $i = 1;
+//        $items->map(function ($item) use (&$i) {
+//            $item->sort = $i;
+//            $item->update();
+//            $i++;
+//        });
 //        $role = Role::where('name', 'admin')->first();
 //        if (!isset($role)) {
 //            Role::create(['name' => 'admin']);

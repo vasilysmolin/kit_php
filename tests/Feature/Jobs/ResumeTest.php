@@ -57,6 +57,8 @@ class ResumeTest extends TestCase
 
         $id = explode('/resumes/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('jobs_resumes', [ 'id' => $id[1] ]);
+        $resume = JobsResume::find($id[1]);
+        $this->assertEquals(1, $resume->sort);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }

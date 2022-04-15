@@ -167,16 +167,18 @@ class ResumeController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
+        $currentUser = auth('api')->user();
 
-        unset($formData['category_id']);
+//        unset($formData['category_id']);
         $resume = JobsResume::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-
+//        if (!$currentUser->isAdmin()) {
+//            $formData['state'] = (new States())->new();
+//        }
         $resume->fill($formData);
-
         $resume->update();
 
         $files = resolve(Files::class);
@@ -207,6 +209,7 @@ class ResumeController extends Controller
         }
         return response()->json([], 204);
     }
+
     public function restore($id): \Illuminate\Http\JsonResponse
     {
         $resume = JobsResume::where('alias', $id)

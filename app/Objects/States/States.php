@@ -6,13 +6,20 @@ use App\Objects\Schedule\Contract\ScheduleInterface;
 
 class States implements ScheduleInterface
 {
+    private const NEW = 'new';
+    private const IN_PROGRESS = 'in_progress';
+    private const BLOCK = 'block';
+    private const ACTIVE = 'active';
+    private const RE_BLOCK = 're_block';
+    private const PAUSE = 'pause';
+
     private $states = [
-        'new' => 'Новый',
-        'in_progress' => 'На проверке',
-        'block' => 'Заблокирован',
-        'active' => 'Активный',
-        're_block' => 'Повторно заблокирован',
-        'pause' => 'На паузе',
+        self::NEW => 'Новый',
+        self::IN_PROGRESS => 'На проверке',
+        self::BLOCK => 'Заблокирован',
+        self::ACTIVE => 'Активный',
+        self::RE_BLOCK => 'Повторно заблокирован',
+        self::PAUSE => 'На паузе',
     ];
 
     public function __construct(?string $key = null, ?string $value = null)
@@ -43,5 +50,25 @@ class States implements ScheduleInterface
     public function keys(): string
     {
         return collect($this->states)->keys()->join(',');
+    }
+    public function new(): string
+    {
+        return self::NEW;
+    }
+    public function active(): string
+    {
+        return self::ACTIVE;
+    }
+    public function block(): string
+    {
+        return self::BLOCK;
+    }
+    public function reBlock(): string
+    {
+        return self::RE_BLOCK;
+    }
+    public function pause(): string
+    {
+        return self::PAUSE;
     }
 }

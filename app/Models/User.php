@@ -16,6 +16,8 @@ class User extends Authenticatable implements JWTSubject
     use HasRoles;
     use SoftDeletes;
 
+    private const ADMIN = 'admin';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -37,7 +39,7 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password',
         'remember_token',
-        'created_at',
+//        'created_at',
         'updated_at',
         'deleted_at',
     ];
@@ -71,5 +73,11 @@ class User extends Authenticatable implements JWTSubject
     public function orders()
     {
         return $this->hasMany(FoodOrder::class, 'user_id', 'id');
+    }
+
+    public function isAdmin()
+    {
+        $role = $this->roles->first();
+        return $role && $role->name === self::ADMIN;
     }
 }

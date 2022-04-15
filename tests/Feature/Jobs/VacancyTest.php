@@ -59,6 +59,8 @@ class VacancyTest extends TestCase
 
         $id = explode('/vacancies/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('jobs_vacancies', [ 'id' => $id[1] ]);
+        $vacancy = JobsVacancy::find($id[1]);
+        $this->assertEquals(1, $vacancy->sort);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }

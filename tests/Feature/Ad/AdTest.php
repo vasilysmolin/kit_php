@@ -57,6 +57,8 @@ class AdTest extends TestCase
 
         $id = explode('/ads/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('catalog_ads', [ 'id' => $id[1] ]);
+        $catalogAd = CatalogAd::find($id[1]);
+        $this->assertEquals(1, $catalogAd->sort);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
