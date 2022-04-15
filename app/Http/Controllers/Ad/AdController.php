@@ -170,15 +170,15 @@ class AdController extends Controller
         $formData = $request->all();
         $user = auth('api')->user();
         unset($formData['category_id']);
+
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->whereHas('profile.user', function ($q) use ($user) {
-                $q->where('id', $user->id);
-            })
+//            ->whereHas('profile.user', function ($q) use ($user) {
+//                $q->where('id', $user->id);
+//            })
             ->first();
-
         $catalogAd->fill($formData);
 
         $catalogAd->update();
@@ -211,6 +211,7 @@ class AdController extends Controller
         }
         return response()->json([], 204);
     }
+
     public function restore($id): \Illuminate\Http\JsonResponse
     {
         $catalogAd = CatalogAd::where('alias', $id)
