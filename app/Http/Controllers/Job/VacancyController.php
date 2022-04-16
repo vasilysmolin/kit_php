@@ -13,6 +13,7 @@ use App\Models\JobsVacancyCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
+use Illuminate\Http\Request;
 
 class VacancyController extends Controller
 {
@@ -142,7 +143,7 @@ class VacancyController extends Controller
     public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-
+        $currentUser = auth('api')->user();
         unset($formData['category_id']);
         $vacancy = JobsVacancy::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
@@ -150,7 +151,10 @@ class VacancyController extends Controller
             })
             ->first();
         $vacancy->fill($formData);
-
+        if (!$currentUser->isAdmin()) {
+            $formData['state'] = (new States())->inProgress();
+            $vacancy->moveToEnd();
+        }
         $vacancy->update();
 
         $files = resolve(Files::class);
@@ -165,6 +169,24 @@ class VacancyController extends Controller
 
         $files->save($vacancy, $request['files']);
 
+
+        return response()->json([], 204);
+    }
+
+    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $state = $request->state;
+        $vacancy = JobsVacancy::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $vacancy->state = $state;
+        $vacancy->update();
+        if ($state !== (new States())->active()) {
+            $vacancy->moveToEnd();
+        }
 
         return response()->json([], 204);
     }

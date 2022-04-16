@@ -35,12 +35,46 @@ class AdTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testServiceShow404()
+    public function testCatalogShow404()
     {
         $categoryServices = CatalogAd::factory()->create();
 
         $response = $this->get(route('declarations.show', $categoryServices->id . $categoryServices->id));
         $response->assertStatus(404);
+    }
+
+    public function testCatalogUpdate()
+    {
+        $ad = CatalogAd::factory(2)->create()->first();
+        $ad->sort = 1;
+        $ad->update();
+        $sort = $ad->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('declarations.update', $ad->id), [
+            'name' => 'newName',
+        ]);
+        $ad = CatalogAd::find($ad->id);
+        $this->assertEquals('newName', $ad->name);
+        $this->assertNotEquals($ad->sort, $sort);
+        $response->assertStatus(204);
+    }
+
+    public function testCatalogState()
+    {
+        $ad = CatalogAd::factory(2)->create()->first();
+        $ad->sort = 1;
+        $ad->update();
+        $sort = $ad->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('declarations.state', $ad->id), [
+            'state' => 'new',
+        ]);
+        $ad = CatalogAd::find($ad->id);
+        $this->assertEquals('new', $ad->state);
+        $this->assertNotEquals($ad->sort, $sort);
+        $response->assertStatus(204);
     }
 
     public function testStoreCatalogAd()
@@ -79,7 +113,7 @@ class AdTest extends TestCase
 
     public function testRestoreCatalogAd()
     {
-        $catalogAd = CatalogAd::factory()->create();
+        $catalogAd = CatalogAd::factory(4)->create()->first();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
         $catalogAd->delete();
@@ -88,6 +122,8 @@ class AdTest extends TestCase
             ->json('PUT', route('declarations.restore', [$catalogAd->id]), []);
 
         $this->assertDatabaseHas('catalog_ads', [ 'id' => $catalogAd->id ]);
+        $catalogAdSort = CatalogAd::orderBy('sort', 'ASC')->first();
+        $this->assertEquals($catalogAdSort->getKey(), $catalogAd->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
@@ -103,5 +139,4 @@ class AdTest extends TestCase
         $this->assertEquals(1, $catalogAd->sort);
         $response->assertStatus(Response::HTTP_OK);
     }
-
 }

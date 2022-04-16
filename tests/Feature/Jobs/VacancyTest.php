@@ -42,6 +42,40 @@ class VacancyTest extends TestCase
         $response->assertStatus(404);
     }
 
+    public function testVacancyUpdate()
+    {
+        $vacancy = JobsVacancy::factory(2)->create()->first();
+        $vacancy->sort = 1;
+        $vacancy->update();
+        $sort = $vacancy->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('vacancies.update', $vacancy->id), [
+            'name' => 'newName',
+        ]);
+        $vacancy = JobsVacancy::find($vacancy->id);
+        $this->assertEquals('newName', $vacancy->name);
+        $this->assertNotEquals($vacancy->sort, $sort);
+        $response->assertStatus(204);
+    }
+
+    public function testVacancyState()
+    {
+        $vacancy = JobsVacancy::factory(2)->create()->first();
+        $vacancy->sort = 1;
+        $vacancy->update();
+        $sort = $vacancy->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('vacancies.state', $vacancy->id), [
+            'state' => 'new',
+        ]);
+        $vacancy = JobsVacancy::find($vacancy->id);
+        $this->assertEquals('new', $vacancy->state);
+        $this->assertNotEquals($vacancy->sort, $sort);
+        $response->assertStatus(204);
+    }
+
     public function testStoreVacancy()
     {
 //        $category = JobsVacancyCategory::factory()->create();
@@ -85,7 +119,7 @@ class VacancyTest extends TestCase
 
     public function testRestoreVacancy()
     {
-        $vacancy = JobsVacancy::factory()->create();
+        $vacancy = JobsVacancy::factory(4)->create()->first();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
         $vacancy->delete();
@@ -94,6 +128,8 @@ class VacancyTest extends TestCase
             ->json('PUT', route('vacancies.restore', [$vacancy->id]), []);
 
         $this->assertDatabaseHas('jobs_vacancies', [ 'id' => $vacancy->id ]);
+        $vacancySort = JobsVacancy::orderBy('sort', 'ASC')->first();
+        $this->assertEquals($vacancySort->getKey(), $vacancy->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 

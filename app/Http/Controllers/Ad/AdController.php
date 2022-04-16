@@ -168,7 +168,7 @@ class AdController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $user = auth('api')->user();
+        $currentUser = auth('api')->user();
         unset($formData['category_id']);
 
         $catalogAd = CatalogAd::where('alias', $id)
@@ -180,8 +180,13 @@ class AdController extends Controller
 //            })
             ->first();
         $catalogAd->fill($formData);
+        if (!$currentUser->isAdmin()) {
+            $formData['state'] = (new States())->inProgress();
+            $catalogAd->moveToEnd();
+        }
 
         $catalogAd->update();
+
 
         $files = resolve(Files::class);
 
@@ -194,6 +199,24 @@ class AdController extends Controller
         }
 
         $files->save($catalogAd, $request['files']);
+
+        return response()->json([], 204);
+    }
+
+    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $state = $request->state;
+        $ad = CatalogAd::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $ad->state = $state;
+        $ad->update();
+        if ($state !== (new States())->active()) {
+            $ad->moveToEnd();
+        }
 
         return response()->json([], 204);
     }

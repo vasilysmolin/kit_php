@@ -28,18 +28,18 @@ class ServiceTest extends TestCase
 
     public function testServiceShow()
     {
-        $services = Service::factory()->create();
+        $service = Service::factory()->create();
 
-        $response = $this->get(route('services.show', [$services->id]));
+        $response = $this->get(route('services.show', [$service->id]));
 
         $response->assertStatus(200);
     }
 
     public function testServiceShow404()
     {
-        $services = Service::factory()->create();
+        $service = Service::factory()->create();
 
-        $response = $this->get(route('services.show', $services->id . $services->id));
+        $response = $this->get(route('services.show', $service->id . $service->id));
         $response->assertStatus(404);
     }
 
@@ -57,49 +57,86 @@ class ServiceTest extends TestCase
 
         $id = explode('/services/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('services', [ 'id' => $id[1] ]);
-        $services = Service::find($id[1]);
-        $this->assertEquals(1, $services->sort);
+        $service = Service::find($id[1]);
+        $this->assertEquals(1, $service->sort);
 
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
+    public function testVacancyUpdate()
+    {
+        $service = Service::factory(2)->create()->first();
+        $service->sort = 1;
+        $service->update();
+        $sort = $service->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('services.update', $service->id), [
+            'name' => 'newName',
+        ]);
+        $service = Service::find($service->id);
+        $this->assertEquals('newName', $service->name);
+        $this->assertNotEquals($service->sort, $sort);
+        $response->assertStatus(204);
+    }
+
+    public function testVacancyState()
+    {
+        $service = Service::factory(2)->create()->first();
+        $service->sort = 1;
+        $service->update();
+        $sort = $service->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('services.state', $service->id), [
+            'state' => 'new',
+        ]);
+        $service = Service::find($service->id);
+        $this->assertEquals('new', $service->state);
+        $this->assertNotEquals($service->sort, $sort);
+        $response->assertStatus(204);
+    }
+
     public function testDestroyService()
     {
-        $services = Service::factory()->create();
+        $service = Service::factory()->create();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this
             ->withToken($access_token)
-            ->json('DELETE', route('services.destroy', [$services->id]), []);
+            ->json('DELETE', route('services.destroy', [$service->id]), []);
 
-        $this->assertNull(Service::find($services->id));
+        $this->assertNull(Service::find($service->id));
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
-    public function testRestoreVacancy()
+
+    public function testRestoreService()
     {
-        $services = Service::factory()->create();
+        $service = Service::factory(4)->create()->first();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
-        $services->delete();
+        $service->delete();
         $response = $this
             ->withToken($access_token)
-            ->json('PUT', route('services.restore', [$services->id]), []);
+            ->json('PUT', route('services.restore', [$service->id]), []);
 
-        $this->assertDatabaseHas('services', [ 'id' => $services->id ]);
+        $this->assertDatabaseHas('services', [ 'id' => $service->id ]);
+        $serviceSort = Service::orderBy('sort', 'ASC')->first();
+        $this->assertEquals($serviceSort->getKey(), $service->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
     public function testSortVacancy()
     {
-        $services = Service::factory()->create();
+        $service = Service::factory()->create();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
         $response = $this
             ->withToken($access_token)
-            ->json('PUT', route('services.sort', [$services->id]), []);
-        $services = Service::find($services->id);
-        $this->assertEquals(1, $services->sort);
+            ->json('PUT', route('services.sort', [$service->id]), []);
+        $service = Service::find($service->id);
+        $this->assertEquals(1, $service->sort);
         $response->assertStatus(Response::HTTP_OK);
     }
 

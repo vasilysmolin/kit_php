@@ -18,6 +18,7 @@ class ResumeTest extends TestCase
 {
     use DatabaseTransactions;
 
+
     public function testResumeIndex()
     {
         $response = $this->get(route('resume.index'));
@@ -32,6 +33,40 @@ class ResumeTest extends TestCase
 
         $response = $this->get(route('resume.show', $resume->id));
         $response->assertStatus(200);
+    }
+
+    public function testResumeUpdate()
+    {
+        $resume = JobsResume::factory(2)->create()->first();
+        $resume->sort = 1;
+        $resume->update();
+        $sort = $resume->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('resume.update', $resume->id), [
+            'name' => 'newName',
+        ]);
+        $resume = JobsResume::find($resume->id);
+        $this->assertEquals('newName', $resume->name);
+        $this->assertNotEquals($resume->sort, $sort);
+        $response->assertStatus(204);
+    }
+
+    public function testResumeState()
+    {
+        $resume = JobsResume::factory(2)->create()->first();
+        $resume->sort = 1;
+        $resume->update();
+        $sort = $resume->sort;
+        $user = User::factory()->has(Profile::factory())->create();
+        $access_token = JWTAuth::fromUser($user);
+        $response = $this->withToken($access_token)->put(route('resume.state', $resume->id), [
+            'state' => 'new',
+        ]);
+        $resume = JobsResume::find($resume->id);
+        $this->assertEquals('new', $resume->state);
+        $this->assertNotEquals($resume->sort, $sort);
+        $response->assertStatus(204);
     }
 
     public function testResumeShow404()
@@ -79,7 +114,7 @@ class ResumeTest extends TestCase
 
     public function testRestoreResumeAd()
     {
-        $resume = JobsResume::factory()->create();
+        $resume = JobsResume::factory(5)->create()->first();
         $user = User::factory()->create();
         $access_token = JWTAuth::fromUser($user);
         $resume->delete();
@@ -88,6 +123,8 @@ class ResumeTest extends TestCase
             ->json('PUT', route('resume.restore', [$resume->id]), []);
 
         $this->assertDatabaseHas('jobs_resumes', [ 'id' => $resume->id ]);
+        $resumeSort = JobsResume::orderBy('sort', 'ASC')->first();
+        $this->assertEquals($resumeSort->getKey(), $resume->id);
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 

@@ -126,15 +126,33 @@ class ResumeController extends Controller
     public function sort($id): \Illuminate\Http\JsonResponse
     {
 
-        $vacancy = JobsResume::
+        $resume = JobsResume::
         where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-        $vacancy->moveToStart();
+        $resume->moveToStart();
 
         return response()->json([]);
+    }
+
+    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $state = $request->state;
+        $resume = JobsResume::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $resume->state = $state;
+        $resume->update();
+        if ($state !== (new States())->active()) {
+            $resume->moveToEnd();
+        }
+
+        return response()->json([], 204);
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
@@ -169,15 +187,15 @@ class ResumeController extends Controller
         $formData = $request->all();
         $currentUser = auth('api')->user();
 
-//        unset($formData['category_id']);
         $resume = JobsResume::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-//        if (!$currentUser->isAdmin()) {
-//            $formData['state'] = (new States())->new();
-//        }
+        if (!$currentUser->isAdmin()) {
+            $formData['state'] = (new States())->inProgress();
+            $resume->moveToEnd();
+        }
         $resume->fill($formData);
         $resume->update();
 

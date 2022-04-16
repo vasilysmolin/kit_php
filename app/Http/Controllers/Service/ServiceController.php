@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Service;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Service\ServiceIndexRequest;
 use App\Http\Requests\Service\ServiceShowRequest;
+use App\Models\JobsVacancy;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
@@ -164,7 +165,7 @@ class ServiceController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $user = auth('api')->user();
+        $currentUser = auth('api')->user();
 
         unset($formData['category_id']);
         $service = Service::where('alias', $id)
@@ -175,7 +176,10 @@ class ServiceController extends Controller
 //                $q->where('id', $user->id);
 //            })
             ->first();
-
+        if (!$currentUser->isAdmin()) {
+            $formData['state'] = (new States())->inProgress();
+            $service->moveToEnd();
+        }
         $service->fill($formData);
         $service->update();
         $files = resolve(Files::class);
@@ -189,6 +193,24 @@ class ServiceController extends Controller
         }
 
         $files->save($service, $request['files']);
+
+        return response()->json([], 204);
+    }
+
+    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    {
+        $state = $request->state;
+        $service = Service::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $service->state = $state;
+        $service->update();
+        if ($state !== (new States())->active()) {
+            $service->moveToEnd();
+        }
 
         return response()->json([], 204);
     }

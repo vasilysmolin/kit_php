@@ -55,6 +55,10 @@ class States implements ScheduleInterface
     {
         return self::NEW;
     }
+    public function inProgress(): string
+    {
+        return self::IN_PROGRESS;
+    }
     public function active(): string
     {
         return self::ACTIVE;
