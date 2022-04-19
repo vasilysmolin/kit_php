@@ -33,6 +33,7 @@ class ResumeController extends Controller
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
         $state = $request->state;
+        $name = $request->name;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
@@ -51,6 +52,9 @@ class ResumeController extends Controller
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
+            })
+            ->when(!empty($name), function ($q) use ($name) {
+                $q->where('name', 'ilike', "%{$name}%");
             })
             ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {

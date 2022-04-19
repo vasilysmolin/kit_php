@@ -32,6 +32,7 @@ class VacancyController extends Controller
         $user = auth('api')->user();
         $categoryID = $request->category_id;
         $userID = (int) $request->user_id;
+        $name = $request->name;
         $expand = $request->expand ? explode(',', $request->expand) : null;
         $state = $request->state;
         $states = new States();
@@ -51,6 +52,9 @@ class VacancyController extends Controller
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
+            })
+            ->when(!empty($name), function ($q) use ($name) {
+                $q->where('name', 'ilike', "%{$name}%");
             })
             ->when(!empty($userID), function ($q) use ($userID) {
                 $q->whereHas('profile.user', function ($q) use ($userID) {

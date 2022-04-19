@@ -26,6 +26,7 @@ class ServiceController extends Controller
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
+        $name = $request->name;
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
         } else {
@@ -43,6 +44,9 @@ class ServiceController extends Controller
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
                 });
+            })
+            ->when(!empty($name), function ($q) use ($name) {
+                $q->where('name', 'ilike', "%{$name}%");
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
