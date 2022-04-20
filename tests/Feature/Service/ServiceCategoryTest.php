@@ -64,7 +64,7 @@ class ServiceCategoryTest extends TestCase
     public function testDestroyServiceCategory()
     {
         $categoryResume = ServiceCategory::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this

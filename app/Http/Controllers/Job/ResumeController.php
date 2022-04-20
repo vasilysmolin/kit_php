@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Job;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ResumeMiddleware;
+use App\Http\Middleware\StateMiddleware;
+use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Job\ResumeIndexRequest;
 use App\Http\Requests\Job\ResumeShowRequest;
 use App\Models\JobsResume;
@@ -15,10 +17,15 @@ use Illuminate\Http\Request;
 
 class ResumeController extends Controller
 {
+
     public function __construct()
     {
-        $this->middleware(['auth:api'])->only('store');
-        $this->middleware(['auth:api', ResumeMiddleware::class])->only('destroy', 'update');
+        $this->middleware(['auth:api', StoreMiddleware::class])
+            ->only('store');
+        $this->middleware(['auth:api', ResumeMiddleware::class])
+            ->only('destroy', 'update', 'restore', 'state', 'sort');
+        $this->middleware([StateMiddleware::class])
+            ->only('state');
     }
 
     public function index(ResumeIndexRequest $request): \Illuminate\Http\JsonResponse

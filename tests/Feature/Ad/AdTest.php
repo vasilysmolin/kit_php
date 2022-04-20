@@ -100,7 +100,7 @@ class AdTest extends TestCase
     public function testDestroyCatalogAd()
     {
         $catalogAd = CatalogAd::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this
@@ -114,7 +114,7 @@ class AdTest extends TestCase
     public function testRestoreCatalogAd()
     {
         $catalogAd = CatalogAd::factory(4)->create()->first();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
         $catalogAd->delete();
         $response = $this
@@ -130,7 +130,7 @@ class AdTest extends TestCase
     public function testSortCatalogAd()
     {
         $catalogAd = CatalogAd::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
         $response = $this
             ->withToken($access_token)

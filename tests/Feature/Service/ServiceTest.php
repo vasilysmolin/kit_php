@@ -100,7 +100,7 @@ class ServiceTest extends TestCase
     public function testDestroyService()
     {
         $service = Service::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this
@@ -114,7 +114,7 @@ class ServiceTest extends TestCase
     public function testRestoreService()
     {
         $service = Service::factory(4)->create()->first();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
         $service->delete();
         $response = $this
@@ -130,7 +130,7 @@ class ServiceTest extends TestCase
     public function testSortVacancy()
     {
         $service = Service::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
         $response = $this
             ->withToken($access_token)
