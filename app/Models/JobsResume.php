@@ -48,6 +48,7 @@ class JobsResume extends Model
 //        'updated_at',
         'deleted_at',
     ];
+
     /**
      * Get the options for generating the slug.
      *

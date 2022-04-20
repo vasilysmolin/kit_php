@@ -85,7 +85,7 @@ class States implements ScheduleInterface
 
     public function hasChange($state): bool
     {
-        $key = array_search($state, [self::PAUSE, self::ACTIVE]);
+        $key = array_search($state, [self::PAUSE, self::ACTIVE], true);
         return $key !== false;
     }
 }
