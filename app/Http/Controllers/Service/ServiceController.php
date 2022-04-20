@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Service;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\ServiceMiddleware;
+use App\Http\Middleware\StateMiddleware;
+use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Service\ServiceIndexRequest;
 use App\Http\Requests\Service\ServiceShowRequest;
-use App\Models\JobsVacancy;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
@@ -16,6 +18,17 @@ use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware(['auth:api', StoreMiddleware::class])
+            ->only('store');
+        $this->middleware(['auth:api', ServiceMiddleware::class])
+            ->only('destroy', 'update', 'restore', 'state', 'sort');
+        $this->middleware([StateMiddleware::class])
+            ->only('state');
+    }
+
     public function index(ServiceIndexRequest $request): \Illuminate\Http\JsonResponse
     {
 
