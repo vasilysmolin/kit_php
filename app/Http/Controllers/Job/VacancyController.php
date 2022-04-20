@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Job;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\VacanciesMiddleware;
+use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Job\VacancyIndexRequest;
 use App\Http\Requests\Job\VacancyShowRequest;
+use App\Http\Requests\Job\VacancyStateRequest;
 use App\Http\Requests\Job\VacancyStoreRequest;
 use App\Http\Requests\Job\VacancyUpdateRequest;
 use App\Models\JobsVacancy;
@@ -13,14 +16,17 @@ use App\Models\JobsVacancyCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
-use Illuminate\Http\Request;
 
 class VacancyController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth:api'])->only('store');
-        $this->middleware(['auth:api', VacanciesMiddleware::class])->only('destroy', 'update');
+        $this->middleware(['auth:api', StoreMiddleware::class])
+            ->only('store');
+        $this->middleware(['auth:api', VacanciesMiddleware::class])
+            ->only('destroy', 'update', 'restore', 'state', 'sort');
+        $this->middleware([StateMiddleware::class])
+            ->only('state');
     }
 
     public function index(VacancyIndexRequest $request): \Illuminate\Http\JsonResponse
@@ -148,7 +154,7 @@ class VacancyController extends Controller
     {
         $formData = $request->all();
         $currentUser = auth('api')->user();
-        unset($formData['category_id']);
+        unset($formData['state']);
         $vacancy = JobsVacancy::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
@@ -177,8 +183,9 @@ class VacancyController extends Controller
         return response()->json([], 204);
     }
 
-    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function state(VacancyStateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
+
         $state = $request->state;
         $vacancy = JobsVacancy::
         where('alias', $id)
@@ -199,9 +206,9 @@ class VacancyController extends Controller
     {
         $formData = $request->all();
 
-        $formData['profile_id'] = auth('api')->user()->profile->id;
+        $formData['profile_id'] = $request->profile_id ?? auth('api')->user()->profile->getKey();
         $formData['active'] = true;
-        unset($formData['category_id']);
+        unset($formData['state']);
         $vacancy = new JobsVacancy();
         $vacancy->fill($formData);
         $vacancy->save();

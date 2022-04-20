@@ -22,24 +22,24 @@ class VacanciesMiddleware
         if ($currentUser->hasRole('admin')) {
             return $next($request);
         }
-        $profile = $currentUser->profile;
         $vacancyID = $request->route('vacancy');
 
-//        if (isset($vacancyID)) {
-//            $vacancy = JobsVacancy::where('alias', $vacancyID)
-//                ->when(ctype_digit($id), function ($q) use ($id) {
-//                $q->orWhere('id', (int) $id);
-//                  })
-//                ->first();
-//            if (isset($vacancy) && $vacancy->profile_id !== $profile->profile_id) {
-//                return response()->json([
-//                    'errors' => [
-//                        'code' => Response::HTTP_FORBIDDEN,
-//                        'message' => __('errors.action_is_prohibited'),
-//                    ],
-//                ], Response::HTTP_FORBIDDEN);
-//            }
-//        }
+        if (isset($vacancyID)) {
+            $vacancy = JobsVacancy::where('alias', $vacancyID)
+                ->when(ctype_digit($vacancyID), function ($q) use ($vacancyID) {
+                    $q->orWhere('id', (int) $vacancyID);
+                })
+                ->withTrashed()
+                ->first();
+            if (isset($vacancy) && $vacancy->profile_id !== $currentUser->profile->getKey()) {
+                return response()->json([
+                    'errors' => [
+                        'code' => Response::HTTP_FORBIDDEN,
+                        'message' => __('errors.action_is_prohibited'),
+                    ],
+                ], Response::HTTP_FORBIDDEN);
+            }
+        }
         return $next($request);
     }
 }

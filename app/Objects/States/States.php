@@ -41,6 +41,7 @@ class States implements ScheduleInterface
             return null;
         }
     }
+
     public function isExists(string $value): bool
     {
         $key = array_key_exists($value, $this->states);
@@ -51,28 +52,40 @@ class States implements ScheduleInterface
     {
         return collect($this->states)->keys()->join(',');
     }
+
     public function new(): string
     {
         return self::NEW;
     }
+
     public function inProgress(): string
     {
         return self::IN_PROGRESS;
     }
+
     public function active(): string
     {
         return self::ACTIVE;
     }
+
     public function block(): string
     {
         return self::BLOCK;
     }
+
     public function reBlock(): string
     {
         return self::RE_BLOCK;
     }
+
     public function pause(): string
     {
         return self::PAUSE;
+    }
+
+    public function hasChange($state): bool
+    {
+        $key = array_search($state, [self::PAUSE, self::ACTIVE]);
+        return $key !== false;
     }
 }
