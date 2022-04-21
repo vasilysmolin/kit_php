@@ -56,12 +56,28 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
-//        $users = User::get();
-//        $users->map(function ($user) {
-////            $user->email = Str::lower($user->email);
-////            var_dump($user->email);
-//            $user->update();
-//        });
+        $users = User::get();
+        $users->map(function ($user) {
+//            $user->email = Str::lower($user->email);
+//            var_dump($user->email);
+            if (strlen($user->phone) < 10) {
+                $phone = null;
+            }
+            if (strlen($user->phone) === 10) {
+                $phone = $user->phone;
+            }
+            if (strlen($user->phone) === 11) {
+                $phone = substr($user->phone, 1);
+            }
+            if (strlen($user->phone) === 12) {
+                $phone = substr($user->phone, 2);
+            }
+            if (strlen($user->phone) > 12) {
+                $phone = null;
+            }
+            $user->phone = $phone;
+            $user->update();
+        });
 
 //        $items = JobsVacancy::orderBy('id','DESC')->get();
 //        $i = 1;
