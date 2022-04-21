@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
+use App\Http\Requests\UsersUpdateRequest;
 use App\Models\User;
 use App\Objects\Dadata\Dadata;
 use App\Objects\JsonHelper;
@@ -89,7 +90,7 @@ class UserController extends Controller
         return response()->json($user->load(['profile.person']));
     }
 
-    public function update(Request $request, $id)
+    public function update(UsersUpdateRequest $request, $id)
     {
         $userData = collect($request->all());
 

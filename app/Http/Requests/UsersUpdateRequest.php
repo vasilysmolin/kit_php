@@ -32,7 +32,7 @@ class UsersUpdateRequest extends FormRequest
             'state' => "nullable|ends_with:{$states}",
             'name' => 'nullable|string|min:1|max:255',
             'email' => 'nullable|email',
-            'phone' => 'nullable|string|min:1|max:255',
+            'phone' => 'nullable|string|min:10|max:10',
             'inn' => 'nullable|string|min:1|max:255',
         ];
     }
