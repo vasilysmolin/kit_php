@@ -18,7 +18,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('role:admin', ['except' => ['update']]);
+        $this->middleware('role:admin')->except('update', 'show');
     }
 
     public function index(UsersIndexRequest $request)
@@ -86,7 +86,7 @@ class UserController extends Controller
         $user = User::find($id);
 
         $user->setAttribute('role', $user->getRoleNames()->first());
-        return response()->json($user->load(['profile.restaurant', 'profile.person']));
+        return response()->json($user->load(['profile.person']));
     }
 
     public function update(Request $request, $id)
