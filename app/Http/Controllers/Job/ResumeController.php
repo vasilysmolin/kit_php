@@ -121,14 +121,13 @@ class ResumeController extends Controller
                 });
             })
             ->first();
-
+        abort_unless($resume, 404);
         $files = resolve(Files::class);
         if (isset($resume->image)) {
             $resume->photo = $files->getFilePath($resume->image);
 //            $resume->makeHidden('image');
         }
 
-        abort_unless($resume, 404);
         $resume->title = $resume->name;
 
         return response()->json($resume);

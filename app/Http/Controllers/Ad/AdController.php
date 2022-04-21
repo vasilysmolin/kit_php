@@ -3,6 +3,10 @@
 namespace App\Http\Controllers\Ad;
 
 use App\Http\Controllers\Controller;
+use App\Http\Middleware\AdMiddleware;
+use App\Http\Middleware\ServiceMiddleware;
+use App\Http\Middleware\StateMiddleware;
+use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Ad\AdIndexRequest;
 use App\Http\Requests\Ad\AdShowRequest;
 use App\Models\CatalogAd;
@@ -14,6 +18,16 @@ use Illuminate\Http\Request;
 
 class AdController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth:api', StoreMiddleware::class])
+            ->only('store');
+        $this->middleware(['auth:api', AdMiddleware::class])
+            ->only('destroy', 'update', 'restore', 'state', 'sort');
+        $this->middleware([StateMiddleware::class])
+            ->only('state');
+    }
+
     public function index(AdIndexRequest $request): \Illuminate\Http\JsonResponse
     {
 
@@ -107,7 +121,7 @@ class AdController extends Controller
 
         $files->save($catalogAd, $request['files']);
 
-        return response()->json([], 201, ['Location' => "/ads/$catalogAd->id"]);
+        return response()->json([], 201, ['Location' => "/declarations/$catalogAd->id"]);
     }
 
     public function sort($id): \Illuminate\Http\JsonResponse
@@ -133,16 +147,14 @@ class AdController extends Controller
         } else {
             $cabinet = false;
         }
-
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->orWhere('id', (int) $id)
             ->with('image', 'images')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
+                    $q->where('id', $user->getKey());
                 });
             })
             ->when(!empty($expand), function ($q) use ($expand) {
