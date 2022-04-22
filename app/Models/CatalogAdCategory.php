@@ -27,7 +27,7 @@ class CatalogAdCategory extends Model
     public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CatalogAdCategory::class, 'parent_id', 'id')
-            ->with('categories');
+            ->with('categories')->with('categoriesParent');
     }
 
     public function categoriesParent(): \Illuminate\Database\Eloquent\Relations\HasMany
