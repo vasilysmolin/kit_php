@@ -30,6 +30,12 @@ class CatalogAdCategory extends Model
             ->with('categories');
     }
 
+    public function categoriesParent(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CatalogAdCategory::class, 'id', 'parent_id')
+            ->with('categoriesParent');
+    }
+
     public function childrenCategories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CatalogAdCategory::class, 'parent_id', 'id')

@@ -75,9 +75,8 @@ class CategoryAdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'categories')
+            ->with('image', 'categories', 'categoriesParent')
             ->first();
-
         $files = resolve(Files::class);
         if (isset($category->image)) {
             $category->photo = $files->getFilePath($category->image);
