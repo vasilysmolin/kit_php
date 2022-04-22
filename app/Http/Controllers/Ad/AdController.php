@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Ad;
 
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\AdMiddleware;
-use App\Http\Middleware\ServiceMiddleware;
 use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Ad\AdIndexRequest;
@@ -41,6 +40,7 @@ class AdController extends Controller
         $userID = (int) $request->user_id;
         $state = $request->state;
         $name = $request->name;
+        $alias = $request->alias;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
             $cabinet = true;
@@ -53,6 +53,16 @@ class AdController extends Controller
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
+                });
+            })
+            ->when(!empty($alias), function ($query) use ($alias) {
+                $category = CatalogAdCategory::where('alias', $alias)
+                    ->with('categories')
+                    ->first();
+
+                $categoriesID = $this->iter($category, []);
+                $query->whereHas('categories', function ($q) use ($categoriesID) {
+                    $q->whereIn('id', $categoriesID);
                 });
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
@@ -262,5 +272,18 @@ class AdController extends Controller
             $catalogAd->restore();
         }
         return response()->json([], 204);
+    }
+
+    private function iter($item, $acc)
+    {
+        array_push($acc, $item->getKey());
+        if (empty($item->categories)) {
+            return array_values($acc);
+        }
+        return $item->categories->reduce(function ($carry, $category) {
+            $carry[] = $category->getKey();
+            $carry = array_unique($carry);
+            return $this->iter($category, $carry);
+        }, $acc);
     }
 }

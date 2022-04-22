@@ -20,7 +20,6 @@ class CategoryAdController extends Controller
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
-
         $builder = CatalogAdCategory::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
