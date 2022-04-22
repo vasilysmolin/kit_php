@@ -31,7 +31,7 @@ class CategoryAdController extends Controller
         $category = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories')
+            ->with('image', 'categories', 'categoriesParent')
             ->get();
 
         $count = $builder->count();
