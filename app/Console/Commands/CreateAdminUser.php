@@ -56,59 +56,60 @@ class CreateAdminUser extends Command
      */
     public function handle()
     {
-        $users = User::get();
-        $users->map(function ($user) {
+//        $users = User::get();
+//        $users->map(function ($user) {
 //            $user->email = Str::lower($user->email);
 //            var_dump($user->email);
-            if (strlen($user->phone) < 10) {
-                $phone = null;
-            }
-            if (strlen($user->phone) === 10) {
-                $phone = $user->phone;
-            }
-            if (strlen($user->phone) === 11) {
-                $phone = substr($user->phone, 1);
-            }
-            if (strlen($user->phone) === 12) {
-                $phone = substr($user->phone, 2);
-            }
-            if (strlen($user->phone) > 12) {
-                $phone = null;
-            }
-            $user->phone = $phone;
-            $user->update();
+//            if (strlen($user->phone) < 10) {
+//                $phone = null;
+//            }
+//            if (strlen($user->phone) === 10) {
+//                $phone = $user->phone;
+//            }
+//            if (strlen($user->phone) === 11) {
+//                $phone = substr($user->phone, 1);
+//            }
+//            if (strlen($user->phone) === 12) {
+//                $phone = substr($user->phone, 2);
+//            }
+//            if (strlen($user->phone) > 12) {
+//                $phone = null;
+//            }
+//            $user->phone = $phone;
+//            $user->update();
+//        });
+
+        $items = JobsVacancy::orderBy('sort','ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i++;
         });
 
-//        $items = JobsVacancy::orderBy('id','DESC')->get();
-//        $i = 1;
-//        $items->map(function ($item) use (&$i) {
-//            $item->sort = $i;
-//            $item->update();
-//            $i++;
-//        });
-//
-//        $items = JobsResume::orderBy('id','DESC')->get();
-//        $i = 1;
-//        $items->map(function ($item) use (&$i) {
-//            $item->sort = $i;
-//            $item->update();
-//            $i++;
-//        });
-//        $items = Service::orderBy('id','DESC')->get();
-//        $i = 1;
-//        $items->map(function ($item) use (&$i) {
-//            $item->sort = $i;
-//            $item->update();
-//            $i++;
-//        });
-//
-//        $items = CatalogAd::orderBy('id','DESC')->get();
-//        $i = 1;
-//        $items->map(function ($item) use (&$i) {
-//            $item->sort = $i;
-//            $item->update();
-//            $i++;
-//        });
+        $items = JobsResume::orderBy('sort','ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i++;
+        });
+        $items = Service::orderBy('sort','ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i++;
+        });
+
+        $items = CatalogAd::orderBy('sort','ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i++;
+        });
+        dd(1);
 //        $role = Role::where('name', 'admin')->first();
 //        if (!isset($role)) {
 //            Role::create(['name' => 'admin']);
