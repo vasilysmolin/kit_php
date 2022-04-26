@@ -33,6 +33,7 @@ Route::group([
     Route::get('schedules', 'Select\SelectController@schedules')->name('select.schedules');
     Route::get('salary', 'Select\SelectController@salary')->name('select.salary');
     Route::get('states', 'Select\SelectController@states')->name('select.states');
+    Route::get('reasons', 'Select\SelectController@reasons')->name('select.reasons');
 });
 
 Route::group([

@@ -19,6 +19,7 @@ class CatalogAd extends Model
     protected $fillable = [
         'id',
         'title',
+        'reason',
         'name',
         'state',
         'price',
