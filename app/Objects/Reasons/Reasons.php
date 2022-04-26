@@ -10,7 +10,7 @@ class Reasons
     private const PRICE = 'price';
 
     private $states = [
-        self::PHOTO => 'Отсутствует фотография',
+        self::PHOTO => 'Отсутствуют фотографии',
         self::CONTENT => 'Запрещенный контент (фото или текст)',
         self::TEXT => 'Некорректный текст обьявления',
         self::PRICE => 'Возможно, вы ошиблись в указании цены',
