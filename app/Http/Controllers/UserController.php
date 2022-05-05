@@ -30,6 +30,7 @@ class UserController extends Controller
         $user = auth('api')->user();
         $state = $request->state;
         $name = $request->name;
+        $phone = $request->phone;
         $type = $request->type;
         $states = new States();
         if (isset($user) && $request->from === 'cabinet') {
@@ -52,6 +53,9 @@ class UserController extends Controller
             })
             ->when(!empty($name), function ($q) use ($name) {
                 $q->where('name', 'ilike', "%{$name}%");
+            })
+            ->when(!empty($phone), function ($q) use ($phone) {
+                $q->where('phone', 'ilike', "%{$phone}%");
             })
             ->when($type === 'physical', function ($q) {
                 $q->whereHas('profile', function ($q) {

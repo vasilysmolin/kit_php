@@ -1,20 +1,52 @@
 <?php
 
+use App\Http\Controllers\Auth\ConfirmablePasswordController;
+use App\Http\Controllers\Auth\EmailVerificationNotificationController;
+use App\Http\Controllers\Auth\EmailVerificationPromptController;
+use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\Auth\PasswordResetLinkController;
+use App\Http\Controllers\Auth\VerifyEmailController;
 use Illuminate\Support\Facades\Route;
 
 
 Route::group([
-    'middleware' => 'auth:api',
     'namespace' => 'Auth',
     'prefix' => 'auth',
 ], function ($router) {
 
-    Route::post('login', 'AuthController@login')->withoutMiddleware('auth:api');
-    Route::post('login-hash', 'AuthController@loginHash')->withoutMiddleware('auth:api');
-    Route::post('register', 'AuthController@register')->withoutMiddleware('auth:api');
-    Route::post('logout', 'AuthController@logout')->withoutMiddleware('auth:api');
-    Route::post('refresh', 'AuthController@refresh')->withoutMiddleware('auth:api');
-    Route::get('user', 'AuthController@user');
+    Route::post('login', 'AuthController@login');
+    Route::post('login-hash', 'AuthController@loginHash');
+    Route::post('register', 'AuthController@register');
+    Route::post('logout', 'AuthController@logout');
+    Route::post('refresh', 'AuthController@refresh');
+    Route::get('user', 'AuthController@user')->middleware('auth:api');
+
+    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
+        ->middleware('guest')
+        ->name('password.request');
+
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->middleware('guest')
+        ->name('password.email');
+
+    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
+        ->middleware('guest')
+        ->name('password.reset');
+
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])
+        ->middleware('guest')
+        ->name('password.update');
+
+    Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
+        ->middleware(['auth:api', 'signed', 'throttle:6,1'])
+        ->name('verification.verify');
+
+    Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
+        ->middleware(['auth:api', 'throttle:6,1'])
+        ->name('verification.send');
+
+    Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store'])
+        ->middleware('auth:api');
 });
 
 Route::group([

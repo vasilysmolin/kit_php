@@ -32,6 +32,8 @@ class UsersIndexRequest extends FormRequest
             'expand' => 'nullable|ends_with:profile,profile.person,profile.resume,profile.vacancy',
             'state' => "nullable|ends_with:{$states}",
             'from' => 'nullable|ends_with:cabinet',
+            'name' => 'nullable|string|max:255',
+            'phone' => 'nullable|string|max:15',
         ];
     }
 }
