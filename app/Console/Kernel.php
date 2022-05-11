@@ -24,6 +24,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
 //        $schedule->command('user-parse')->everyFourHours();
+        $schedule->command('user-boarding')->daily()->at('09:00');
 
         if (config('app.env') === 'production') {
             // Backups pgsql
