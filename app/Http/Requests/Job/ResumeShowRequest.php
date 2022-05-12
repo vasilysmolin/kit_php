@@ -24,7 +24,7 @@ class ResumeShowRequest extends FormRequest
     public function rules()
     {
         return [
-            'expand' => 'nullable|ends_with:profile.user,profile',
+            'expand' => 'nullable|ends_with:profile.user,profile,profile.person',
             'from' => 'nullable|ends_with:cabinet',
         ];
     }

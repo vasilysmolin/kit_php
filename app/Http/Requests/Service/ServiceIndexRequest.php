@@ -29,7 +29,7 @@ class ServiceIndexRequest extends FormRequest
 //        $relations = (new Reflector(JobsVacancy::class))->reflector();
         $states = (new States())->keys();
         return [
-            'expand' => 'nullable|ends_with:profile.user,profile',
+            'expand' => 'nullable|ends_with:profile.user,profile,profile.person',
             'state' => "nullable|ends_with:{$states}",
             'from' => 'nullable|ends_with:cabinet',
             'category_id' => [
