@@ -41,14 +41,13 @@ class UsersBoarding extends Command
      */
     public function handle()
     {
-        $usersIsNotPerson = User::where('created_at', Carbon::now()->subDay())
+        $usersIsNotPerson = User::whereDate('created_at', Carbon::now()->subDay())
             ->whereHas('profile', function ($q) {
                 $q->where('isPerson', false);
             })
             ->whereNull('phone')
             ->get();
-
-        $usersIsPerson = User::where('created_at', Carbon::now()->subDay())
+        $usersIsPerson = User::whereDate('created_at', Carbon::now()->subDay())
             ->whereHas('profile', function ($q) {
                 $q->where('isPerson', true);
                 $q->whereHas('person', function ($q) {
@@ -58,6 +57,7 @@ class UsersBoarding extends Command
             ->get();
 
         $allUsers = $usersIsNotPerson->merge($usersIsPerson);
+
         $allUsers->map(function ($user) {
             Mail::to($user->email)->queue(new NotifyStepsUserEmail($user));
         });
