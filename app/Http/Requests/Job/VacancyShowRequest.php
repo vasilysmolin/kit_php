@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests\Job;
 
+use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VacancyShowRequest extends FormRequest
 {
@@ -23,9 +25,22 @@ class VacancyShowRequest extends FormRequest
      */
     public function rules()
     {
+        $states = (new States())->keys();
         return [
-            'expand' => 'nullable|ends_with:profile.user,profile,person',
-            'from' => 'nullable|ends_with:cabinet',
+            'expand' => [
+                Rule::in(['profile', 'profile.user','profile.person','profile.user,profile.person']),
+            ],
+            'state' => [
+                Rule::in($states),
+            ],
+            'from' => [
+                Rule::in(['cabinet']),
+            ],
+            'category_id' => [
+                'exists:jobs_vacancy_categories,id',
+                'integer',
+                'max:255',
+            ],
         ];
     }
 }

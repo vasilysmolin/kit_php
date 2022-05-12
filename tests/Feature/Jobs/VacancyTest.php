@@ -73,7 +73,6 @@ class VacancyTest extends TestCase
         $response = $this->withToken($access_token)->put(route('vacancies.state', $vacancy->id), [
             'state' => 'pause',
         ]);
-
         $vacancy = JobsVacancy::find($vacancy->id);
         $this->assertEquals('pause', $vacancy->state);
         $this->assertNotEquals($vacancy->sort, $sort);

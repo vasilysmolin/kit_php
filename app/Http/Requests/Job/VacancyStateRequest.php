@@ -4,6 +4,7 @@ namespace App\Http\Requests\Job;
 
 use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class VacancyStateRequest extends FormRequest
 {
@@ -26,8 +27,9 @@ class VacancyStateRequest extends FormRequest
     {
         $states = (new States())->keys();
         return [
-            'state' => "ends_with:{$states}",
-
+            'state' => [
+                Rule::in($states),
+            ],
         ];
     }
 }

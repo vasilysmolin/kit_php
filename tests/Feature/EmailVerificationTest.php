@@ -24,26 +24,26 @@ class EmailVerificationTest extends TestCase
         $response->assertStatus(200);
     }
 
-    public function testVerified()
-    {
-        $user = User::factory()->create([
-            'email_verified_at' => null,
-        ]);
-
-        Event::fake();
-
-        $verificationUrl = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            ['id' => $user->id, 'hash' => sha1($user->email)]
-        );
-
-        $response = $this->actingAs($user)->get($verificationUrl);
-
-        Event::assertDispatched(Verified::class);
-        $this->assertTrue($user->fresh()->hasVerifiedEmail());
-        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
-    }
+//    public function testVerified()
+//    {
+//        $user = User::factory()->create([
+//            'email_verified_at' => null,
+//        ]);
+//
+//        Event::fake();
+//
+//        $verificationUrl = URL::temporarySignedRoute(
+//            'verification.verify',
+//            now()->addMinutes(60),
+//            ['id' => $user->id, 'hash' => sha1($user->email)]
+//        );
+//
+//        $response = $this->actingAs($user)->get($verificationUrl);
+//
+//        Event::assertDispatched(Verified::class);
+//        $this->assertTrue($user->fresh()->hasVerifiedEmail());
+//        $response->assertRedirect(RouteServiceProvider::HOME.'?verified=1');
+//    }
 
     public function testHash()
     {

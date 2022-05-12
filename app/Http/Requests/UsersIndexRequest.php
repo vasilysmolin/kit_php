@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Helper\Reflector;
 use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UsersIndexRequest extends FormRequest
 {
@@ -18,22 +19,31 @@ class UsersIndexRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
+
     public function rules()
     {
-
-//        $relations = (new Reflector(JobsVacancy::class))->reflector();
         $states = (new States())->keys();
         return [
-            'expand' => 'nullable|ends_with:profile,profile.person,profile.resume,profile.vacancy',
-            'state' => "nullable|ends_with:{$states}",
-            'from' => 'nullable|ends_with:cabinet',
-            'name' => 'nullable|string|max:255',
-            'phone' => 'nullable|string|max:15',
+            'expand' => [
+                Rule::in([
+                    'profile',
+                    'profile.person',
+                    'profile.resume',
+                    'profile.resume,profile.vacancy',
+                    'profile.vacancy,profile.resume',
+                    'profile.ads',
+                    'profile.service,profile.ads',
+                    'profile.service,profile.ads,profile.vacancy,profile.resume',
+                ]),
+            ],
+            'state' => [
+                Rule::in($states),
+            ],
+            'from' => [
+                Rule::in(['cabinet']),
+            ],
+            'name' => 'string|max:255',
+            'phone' => 'string|max:15',
         ];
     }
 }

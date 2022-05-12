@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\Helper\Reflector;
 use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class UsersUpdateRequest extends FormRequest
 {
@@ -26,14 +27,15 @@ class UsersUpdateRequest extends FormRequest
     public function rules()
     {
 
-//        $relations = (new Reflector(JobsVacancy::class))->reflector();
         $states = (new States())->keys();
         return [
-            'state' => "nullable|ends_with:{$states}",
-            'name' => 'nullable|string|min:1|max:255',
-            'email' => 'nullable|email',
-            'phone' => 'nullable|string|min:10|max:10',
-            'inn' => 'nullable|string|min:1|max:255',
+            'state' => [
+                Rule::in($states),
+            ],
+            'name' => 'string|min:1|max:255',
+            'email' => 'email',
+            'phone' => 'string|min:10|max:10',
+            'inn' => 'string|min:1|max:255',
         ];
     }
 }

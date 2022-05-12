@@ -5,6 +5,7 @@ namespace App\Http\Requests\Ad;
 use App\Http\Requests\Helper\Reflector;
 use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class AdShowRequest extends FormRequest
 {
@@ -26,16 +27,20 @@ class AdShowRequest extends FormRequest
     public function rules()
     {
 
-//        $relations = (new Reflector(JobsVacancy::class))->reflector();
         $states = (new States())->keys();
         return [
-            'expand' => 'nullable|ends_with:profile.user,profile,profile.person',
-            'state' => "nullable|ends_with:{$states}",
-            'from' => 'nullable|ends_with:cabinet',
+            'expand' => [
+                Rule::in(['profile', 'profile.user','profile.person','profile.user,profile.person']),
+            ],
+            'state' => [
+                Rule::in($states),
+            ],
+            'from' => [
+                Rule::in(['cabinet']),
+            ],
             'category_id' => [
                 'exists:catalog_ad_categories,id',
                 'integer',
-                'nullable',
                 'max:255',
             ],
         ];

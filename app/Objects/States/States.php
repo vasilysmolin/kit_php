@@ -3,6 +3,7 @@
 namespace App\Objects\States;
 
 use App\Objects\Schedule\Contract\ScheduleInterface;
+use Illuminate\Support\Collection;
 
 class States implements ScheduleInterface
 {
@@ -24,7 +25,7 @@ class States implements ScheduleInterface
 
     public function __construct(?string $key = null, ?string $value = null)
     {
-        $this->key = $key ;
+        $this->key = $key;
         $this->value = $value;
     }
 
@@ -48,9 +49,14 @@ class States implements ScheduleInterface
         return $key !== false;
     }
 
-    public function keys(): string
+    public function stringKeys(): string
     {
         return collect($this->states)->keys()->join(',');
+    }
+
+    public function keys(): Collection
+    {
+        return collect($this->states)->keys();
     }
 
     public function new(): string
