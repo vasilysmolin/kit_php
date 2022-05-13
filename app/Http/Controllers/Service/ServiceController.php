@@ -40,11 +40,8 @@ class ServiceController extends Controller
         $user = auth('api')->user();
         $categoryID = $request->category_id;
         $name = $request->name;
-        if (isset($user) && $request->from === 'cabinet') {
-            $cabinet = true;
-        } else {
-            $cabinet = false;
-        }
+        $catalog = $request->from === 'catalog';
+$cabinet = isset($user) && $request->from === 'cabinet';
         $userID = (int) $request->user_id;
         $state = $request->state;
         $states = new States();
@@ -69,9 +66,14 @@ class ServiceController extends Controller
                     $q->where('id', $userID);
                 });
             })
-            ->when($cabinet !== false, function ($q) use ($user) {
+            ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
                 });
             })
             ->orderBy('sort', 'ASC');
@@ -132,20 +134,23 @@ class ServiceController extends Controller
     {
         $user = auth('api')->user();
         $expand = $request->expand ? explode(',', $request->expand) : null;
-        if (isset($user) && $request->from === 'cabinet') {
-            $cabinet = true;
-        } else {
-            $cabinet = false;
-        }
+        $states = new States();
+        $catalog = $request->from === 'catalog';
+        $cabinet = isset($user) && $request->from === 'cabinet';
 
         $service = Service::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->with('image')
-            ->when($cabinet !== false, function ($q) use ($user) {
+            ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
                 });
             })
             ->when(!empty($expand), function ($q) use ($expand) {

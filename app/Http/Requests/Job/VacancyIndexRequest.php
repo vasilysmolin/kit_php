@@ -35,8 +35,8 @@ class VacancyIndexRequest extends FormRequest
             'state' => [
                 Rule::in($states),
             ],
-            'from' => [
-                Rule::in(['cabinet']),
+             'from' => [
+                Rule::in(['cabinet','catalog']),
             ],
             'category_id' => [
                 'exists:jobs_vacancy_categories,id',

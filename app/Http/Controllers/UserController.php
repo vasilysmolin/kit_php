@@ -33,19 +33,21 @@ class UserController extends Controller
         $phone = $request->phone;
         $type = $request->type;
         $states = new States();
-        if (isset($user) && $request->from === 'cabinet') {
-            $cabinet = true;
-        } else {
-            $cabinet = false;
-        }
+        $catalog = $request->from === 'catalog';
+$cabinet = isset($user) && $request->from === 'cabinet';
 
         $builder = User::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->when($cabinet !== false, function ($q) use ($user) {
+            ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
                 });
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {

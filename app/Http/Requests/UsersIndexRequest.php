@@ -39,8 +39,8 @@ class UsersIndexRequest extends FormRequest
             'state' => [
                 Rule::in($states),
             ],
-            'from' => [
-                Rule::in(['cabinet']),
+             'from' => [
+                Rule::in(['cabinet','catalog']),
             ],
             'name' => 'string|max:255',
             'phone' => 'string|max:15',

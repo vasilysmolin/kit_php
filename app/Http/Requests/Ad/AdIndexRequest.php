@@ -36,7 +36,7 @@ class AdIndexRequest extends FormRequest
                 Rule::in($states),
             ],
             'from' => [
-                Rule::in(['cabinet']),
+                Rule::in(['cabinet','catalog']),
             ],
             'category_id' => [
                 'exists:catalog_ad_categories,id',

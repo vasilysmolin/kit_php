@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateRestaurantRequest;
 use App\Models\FoodRestaurant;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
+use App\Objects\States\States;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -30,11 +31,9 @@ class RestaurantController extends Controller
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryRestaurantID = $request->categoryRestaurantID;
-        if (isset($user) && $request->from === 'cabinet') {
-            $cabinet = true;
-        } else {
-            $cabinet = false;
-        }
+        $catalog = $request->from === 'catalog';
+        $cabinet = isset($user) && $request->from === 'cabinet';
+        $states = new States();
 
         $restaurants = FoodRestaurant::take((int) $take)
             ->skip((int) $skip)
@@ -46,9 +45,14 @@ class RestaurantController extends Controller
                     $q->whereIn('category_id', $categoryRestaurantID);
                 });
             })
-            ->when($cabinet !== false, function ($q) use ($user) {
+            ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
                 });
             })
             ->with('image', 'categories')
@@ -76,9 +80,14 @@ class RestaurantController extends Controller
                     $q->whereIn('category_id', $categoryRestaurantID);
                 });
             })
-            ->when($cabinet !== false, function ($q) use ($user) {
+            ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
                 });
             })
             ->where('active', 1)
@@ -123,18 +132,21 @@ class RestaurantController extends Controller
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
-        if (isset($user) && $request->from === 'cabinet') {
-            $cabinet = true;
-        } else {
-            $cabinet = false;
-        }
+        $catalog = $request->from === 'catalog';
+        $cabinet = isset($user) && $request->from === 'cabinet';
+        $states = new States();
 
         $restaurant = FoodRestaurant::where('alias', $id)
             ->orWhere('id', (int) $id)
             ->with('image', 'categories:id', 'dishes:id', 'dishes')
-            ->when($cabinet !== false, function ($q) use ($user) {
+            ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
                 });
             })
             ->first();
