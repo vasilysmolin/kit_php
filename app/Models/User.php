@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
@@ -15,6 +16,7 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
     use HasRoles;
     use SoftDeletes;
+    use SortableTrait;
 
     private const ADMIN = 'admin';
 

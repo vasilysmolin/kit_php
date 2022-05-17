@@ -49,6 +49,12 @@ class Profile extends Model
     {
         return $this->hasMany(JobsVacancy::class, 'profile_id', 'id');
     }
+
+    public function vacancies()
+    {
+        return $this->hasMany(JobsVacancy::class, 'profile_id', 'id');
+    }
+
     public function ads()
     {
         return $this->hasMany(CatalogAd::class, 'profile_id', 'id');

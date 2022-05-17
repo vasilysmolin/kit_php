@@ -30,14 +30,14 @@ class CreateAdminUser extends Command
      *
      * @var string
      */
-    protected $signature = 'create-admin';
+    protected $signature = 'sorting';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'create-admin';
+    protected $description = 'sorting';
 
     /**
      * Create a new command instance.
@@ -79,7 +79,7 @@ class CreateAdminUser extends Command
 //            $user->update();
 //        });
 
-        $items = JobsVacancy::orderBy('sort','ASC')->get();
+        $items = User::orderBy('sort', 'ASC')->get();
         $i = 1;
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
@@ -87,14 +87,7 @@ class CreateAdminUser extends Command
             $i++;
         });
 
-        $items = JobsResume::orderBy('sort','ASC')->get();
-        $i = 1;
-        $items->map(function ($item) use (&$i) {
-            $item->sort = $i;
-            $item->update();
-            $i++;
-        });
-        $items = Service::orderBy('sort','ASC')->get();
+        $items = JobsVacancy::orderBy('sort', 'ASC')->get();
         $i = 1;
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
@@ -102,14 +95,29 @@ class CreateAdminUser extends Command
             $i++;
         });
 
-        $items = CatalogAd::orderBy('sort','ASC')->get();
+        $items = JobsResume::orderBy('sort', 'ASC')->get();
         $i = 1;
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
             $item->update();
             $i++;
         });
-        dd(1);
+        $items = Service::orderBy('sort', 'ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i++;
+        });
+
+        $items = CatalogAd::orderBy('sort', 'ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i++;
+        });
+//        dd(1);
 //        $role = Role::where('name', 'admin')->first();
 //        if (!isset($role)) {
 //            Role::create(['name' => 'admin']);

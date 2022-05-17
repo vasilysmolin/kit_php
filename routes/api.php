@@ -53,6 +53,9 @@ Route::group([
     'middleware' => ['auth:api'],
 ], function ($router) {
     Route::apiResource('users', 'UserController');
+    Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
+    Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
+    Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
 });
 
 

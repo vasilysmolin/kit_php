@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
+use App\Http\Requests\UsersStateRequest;
 use App\Http\Requests\UsersUpdateRequest;
 use App\Models\User;
 use App\Objects\Dadata\Dadata;
@@ -34,7 +35,7 @@ class UserController extends Controller
         $type = $request->type;
         $states = new States();
         $catalog = $request->from === 'catalog';
-$cabinet = isset($user) && $request->from === 'cabinet';
+        $cabinet = isset($user) && $request->from === 'cabinet';
 
         $builder = User::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
@@ -107,9 +108,7 @@ $cabinet = isset($user) && $request->from === 'cabinet';
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
         $result = $userData
-            ->only(['name','email','phone','state'])->filter(function ($item) {
-                return $item !== null;
-            })
+            ->only(['name','email','phone'])
             ->all();
 
         DB::transaction(function () use ($user, $result, $userData) {
@@ -131,6 +130,63 @@ $cabinet = isset($user) && $request->from === 'cabinet';
             }
         }, 3);
 
+
+        return response()->json([], 204);
+    }
+
+    public function state(UsersStateRequest $request, $id): \Illuminate\Http\JsonResponse
+    {
+
+        $state = $request->state;
+        $user = User::where('id', $id)->with([
+            'profile.vacancies',
+            'profile.resume',
+            'profile.ads',
+            'profile.service',
+        ])->first();
+        $user->state = $state;
+        $user->update();
+        $states = new States();
+        if ($state !== $states->active()) {
+            $user->moveToEnd();
+            $user->profile->vacancies->each(function ($item) use ($states, $state) {
+                if ($state === $states->block() || $states->reBlock()) {
+                    $item->state = $state;
+                } else {
+                    $item->state = $states->pause();
+                }
+                $item->state = $states->inProgress();
+                $item->update();
+                $item->moveToEnd();
+            });
+            $user->profile->resume->each(function ($item) use ($states, $state) {
+                if ($state === $states->block() || $states->reBlock()) {
+                    $item->state = $state;
+                } else {
+                    $item->state = $states->pause();
+                }
+                $item->update();
+                $item->moveToEnd();
+            });
+            $user->profile->ads->each(function ($item) use ($states, $state) {
+                if ($state === $states->block() || $states->reBlock()) {
+                    $item->state = $state;
+                } else {
+                    $item->state = $states->pause();
+                }
+                $item->update();
+                $item->moveToEnd();
+            });
+            $user->profile->service->each(function ($item) use ($states, $state) {
+                if ($state === $states->block() || $states->reBlock()) {
+                    $item->state = $state;
+                } else {
+                    $item->state = $states->pause();
+                }
+                $item->update();
+                $item->moveToEnd();
+            });
+        }
 
         return response()->json([], 204);
     }
