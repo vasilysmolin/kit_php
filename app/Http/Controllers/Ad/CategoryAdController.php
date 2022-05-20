@@ -30,7 +30,8 @@ class CategoryAdController extends Controller
         $category = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories', 'categoriesParent')
+            ->with('image', 'categories', 'categoriesParent', 'color')
+            ->orderBy('id', 'ASC')
             ->get();
 
         $count = $builder->count();
@@ -74,7 +75,7 @@ class CategoryAdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'categories', 'categoriesParent')
+            ->with('image', 'categories', 'categoriesParent', 'color')
             ->first();
         $files = resolve(Files::class);
         if (isset($category->image)) {
@@ -89,18 +90,12 @@ class CategoryAdController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $formData['profile_id'] = auth('api')->user()->profile->id;
-
-        if (isset($formData['name'])) {
-            $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-        }
 
         $category = CatalogAdCategory::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-
         if (!isset($category)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }

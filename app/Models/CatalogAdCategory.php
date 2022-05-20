@@ -13,6 +13,8 @@ class CatalogAdCategory extends Model
 
     protected $fillable = [
         'name',
+        'description',
+        'color_id',
         'alias',
         'active',
         'sort',
@@ -27,7 +29,12 @@ class CatalogAdCategory extends Model
     public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
         return $this->hasMany(CatalogAdCategory::class, 'parent_id', 'id')
-            ->with('categories')->with('categoriesParent');
+            ->with(['categories.color', 'categoriesParent.color']);
+    }
+
+    public function color(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Color::class, 'color_id', 'id');
     }
 
     public function categoriesParent(): \Illuminate\Database\Eloquent\Relations\HasOne

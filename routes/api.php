@@ -60,6 +60,15 @@ Route::group([
 
 
 Route::group([
+    'namespace' => 'Color',
+], function ($router) {
+    Route::apiResource('colors', 'ColorController')
+//        ->middleware('role:admin')
+    ;
+});
+
+
+Route::group([
     'namespace' => 'Common',
     'prefix' => 'select',
 ], function ($router) {
@@ -126,3 +135,4 @@ Route::group([
     Route::put('declarations/{declaration}/restore', 'AdController@restore')->name('declarations.restore');
     Route::apiResource('category-declarations', 'CategoryAdController');
 });
+
