@@ -51,7 +51,9 @@ class CategoryAdController extends Controller
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-
+        if ((int) $formData['color_id'] === 0) {
+            $formData['color_id'] = null;
+        }
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
@@ -90,7 +92,9 @@ class CategoryAdController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-
+        if ((int) $formData['color_id'] === 0) {
+            $formData['color_id'] = null;
+        }
         $category = CatalogAdCategory::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
