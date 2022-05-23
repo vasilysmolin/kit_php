@@ -15,7 +15,8 @@ class CategoryAdController extends Controller
 {
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-
+        $user = auth('api')->user();
+        $cabinet = isset($user) && $request->from === 'cabinet';
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
@@ -36,16 +37,34 @@ class CategoryAdController extends Controller
 
         $count = $builder->count();
 
-        $category->each(function ($item) use ($files) {
+        $category->each(function ($item) use ($files, $cabinet) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
+            }
+            if ($cabinet) {
+                $this->changeName($item->categories);
             }
         });
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
 
         return response()->json($data);
+    }
+
+    private function changeName($node)
+    {
+        if ($node->isEmpty()) {
+            return;
+        }
+        $node->each(function ($item) {
+            if ($item->name === 'Снять') {
+                $item->name = 'Сдать';
+            }
+            if ($item->name === 'Купить') {
+                $item->name = 'Продать';
+            }
+        });
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
