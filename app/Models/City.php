@@ -17,4 +17,9 @@ class City extends Model
     {
         return $this->hasOne(Region::class, 'id', 'region_id');
     }
+
+    public function timezone()
+    {
+        return $this->hasOne(Timezone::class, 'id', 'timezone_id');
+    }
 }

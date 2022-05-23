@@ -53,8 +53,8 @@ class AdCategoryTest extends TestCase
             ->withToken($access_token)
             ->json('POST', route('category-declarations.store'), [
                 'name' => 'test',
+                'color_id' => null,
             ]);
-
         $id = explode('/category-declarations/', $response->baseResponse->headers->get('Location'));
         $this->assertDatabaseHas('catalog_ad_categories', [ 'id' => $id[1] ]);
 
