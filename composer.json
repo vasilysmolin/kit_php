@@ -35,6 +35,7 @@
         "laravel/tinker": "^2.0",
         "league/flysystem-aws-s3-v3": "^1.0",
         "maatwebsite/excel": "3.1.26",
+        "meilisearch/meilisearch-laravel-scout": "^0.12.5",
         "milon/barcode": "8.*",
         "movemoveapp/laravel-dadata": "^1.0",
         "nothingworks/blade-svg": "^1.1.2",
@@ -107,7 +108,10 @@
     "config": {
         "optimize-autoloader": true,
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     },
     "minimum-stability": "dev",
     "prefer-stable": true
