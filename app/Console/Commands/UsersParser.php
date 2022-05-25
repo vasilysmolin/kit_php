@@ -131,47 +131,70 @@ class UsersParser extends Command
 //                $isModel ? $meta->update() : $meta->save();
 //        }
 //
-//        $client = new Client();
-//        $response = $client->get('https://catalog.tapigo.ru/all-ads-json', ['verify' => false]);
-//        $contents = $response->getBody()->getContents();
+        $client = new Client();
+        $response = $client->get('https://catalog.tapigo.tech/all-ads-json', [
+            'verify' => false,
+            'auth' => [
+                'ktotam',
+                'eto_tapigo',
+            ],
+        ]);
+        $contents = $response->getBody()->getContents();
 //        Storage::disk('local')->put('all-ads-json.txt', $contents);
-//        $contents = json_decode($contents, true);
-//        foreach ($contents as $item) {
-//            $userDB = User::find($item['id']);
-//            if (isset($userDB)  || isset($userDB->profile)) {
-//                foreach ($item['ads'] as $relation) {
-//                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
-//                        continue;
-//                    }
-//                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
-//                    $isModel = CatalogAd::find($relation['property']['id']);
-//                    if (isset($relation['category'])) {
-//                        $cats = CatalogAdCategory::find($relation['category']['id']);
-//                    } else {
-//                        $cats = null;
-//                    }
-//                    $model = $isModel ?? new CatalogAd();
-//                    $model->id = $relation['property']['id'];
-//                    $model->profile_id = $userDB->profile->getKey();
-//                    $model->name = $relation['property']['title'];
-//                    $model->description = trim($relation['property']['desc']);
-//                    $model->category_id = isset($cats) ? $cats->id : null;
-//                    $model->alias = $alias;
-//                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
-//                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
-//                    $isModel ? $model->update() : $model->save();
+//        App\\Models\\Catalog\\Flat\\AdFlatProperty
+//
+//Инпуты
+//"total_area": "18", общая объект Area от 1 до 100
+//"kitchen_area": "3", кухня
+//"living_area": "14", жилая
 //
 //
-////                    if (!empty($relation['images'])) {
-////                        foreach ($relation['images'] as $image) {
-////                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
-////                            $files = resolve(Files::class);
-////                            $files->saveParser($model, $url);
-////                        }
-////                    }
-//                }
-//            }
-//        }
+//
+//"ad_flat_type_id": null,
+//"ad_flat_type_novelty_id": 1, 1 вторичка/2 новостройка
+//"ad_flat_type_seller_id": 1, 1 собственник/2 посредник
+//"ad_flat_type_building_id": 2, 1 панельный 2 кирпичный 3 деревянный 4 шлакоблоки
+//"floor": "1", 1 этаж объект Area от 1 до 100
+//"floors_in_house": "5", из 5 объект Floofs от 1 до 20
+//"rooms": "1" - комнат объект Rooms от 1 до 7
+        $contents = json_decode($contents, true);
+        dd($contents);
+        foreach ($contents as $item) {
+            $userDB = User::find($item['id']);
+            if (isset($userDB)  || isset($userDB->profile)) {
+                foreach ($item['ads'] as $relation) {
+                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
+                        continue;
+                    }
+                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
+                    $isModel = CatalogAd::find($relation['property']['id']);
+                    if (isset($relation['category'])) {
+                        $cats = CatalogAdCategory::find($relation['category']['id']);
+                    } else {
+                        $cats = null;
+                    }
+                    $model = $isModel ?? new CatalogAd();
+                    $model->id = $relation['property']['id'];
+                    $model->profile_id = $userDB->profile->getKey();
+                    $model->name = $relation['property']['title'];
+                    $model->description = trim($relation['property']['desc']);
+                    $model->category_id = isset($cats) ? $cats->id : null;
+                    $model->alias = $alias;
+                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
+                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
+                    $isModel ? $model->update() : $model->save();
+
+
+//                    if (!empty($relation['images'])) {
+//                        foreach ($relation['images'] as $image) {
+//                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+//                            $files = resolve(Files::class);
+//                            $files->saveParser($model, $url);
+//                        }
+//                    }
+                }
+            }
+        }
 //
 //        $client = new Client();
 //        $response = $client->get('https://user.tapigo.ru/all-up', ['verify' => false]);
