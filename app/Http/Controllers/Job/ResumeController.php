@@ -207,10 +207,10 @@ class ResumeController extends Controller
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-        if (!$currentUser->isAdmin()) {
-            $formData['state'] = (new States())->inProgress();
-            $resume->moveToEnd();
-        }
+//        if (!$currentUser->isAdmin()) {
+//            $formData['state'] = (new States())->inProgress();
+//            $resume->moveToEnd();
+//        }
         $resume->fill($formData);
         $resume->update();
 

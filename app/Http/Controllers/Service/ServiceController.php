@@ -198,10 +198,10 @@ $cabinet = isset($user) && $request->from === 'cabinet';
 //                $q->where('id', $user->id);
 //            })
             ->first();
-        if (!$currentUser->isAdmin()) {
-            $formData['state'] = (new States())->inProgress();
-            $service->moveToEnd();
-        }
+//        if (!$currentUser->isAdmin()) {
+//            $formData['state'] = (new States())->inProgress();
+//            $service->moveToEnd();
+//        }
         $service->fill($formData);
         $service->update();
         $files = resolve(Files::class);

@@ -27,6 +27,7 @@ class AppServiceProvider extends ServiceProvider
     {
 //        \DB::listen(function ($query) {
 //            var_dump([$query->sql, $query->time / 1000 . ' ms']);
+//            var_dump([$query->bindings]);
 //        });
         CatalogAd::observe(CatalogAdObserver::class);
         URL::forceScheme('https');

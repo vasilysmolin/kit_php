@@ -166,10 +166,10 @@ $cabinet = isset($user) && $request->from === 'cabinet';
             })
             ->first();
         $vacancy->fill($formData);
-        if (!$currentUser->isAdmin()) {
-            $formData['state'] = (new States())->inProgress();
-            $vacancy->moveToEnd();
-        }
+//        if (!$currentUser->isAdmin()) {
+//            $formData['state'] = (new States())->inProgress();
+//            $vacancy->moveToEnd();
+//        }
         $vacancy->update();
 
         $files = resolve(Files::class);

@@ -19,8 +19,13 @@ class CatalogParameter extends Model
         return $this->hasOne(CatalogFilter::class, 'filter_id', 'id');
     }
 
-    public function adParameters(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    public function adParameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany
     {
-        return $this->belongsTo(CatalogAd::class, 'filter_id', 'id');
+        return $this->belongsToMany(
+            CatalogAd::class,
+            'catalog_ad_parameters',
+            'parameter_id',
+            'ad_id'
+        );
     }
 }

@@ -162,7 +162,7 @@ class AdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images')
+            ->with('image', 'images', 'adParameters')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->getKey());
@@ -217,10 +217,10 @@ class AdController extends Controller
 //            })
             ->first();
         $catalogAd->fill($formData);
-        if (!$currentUser->isAdmin()) {
-            $formData['state'] = (new States())->inProgress();
-            $catalogAd->moveToEnd();
-        }
+//        if (!$currentUser->isAdmin()) {
+//            $formData['state'] = (new States())->inProgress();
+//            $catalogAd->moveToEnd();
+//        }
 
         $catalogAd->update();
 

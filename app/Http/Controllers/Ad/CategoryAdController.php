@@ -96,7 +96,7 @@ class CategoryAdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'categories', 'categoriesParent', 'color')
+            ->with('image', 'categories', 'categoriesParent', 'color', 'filters.parameters')
             ->first();
         $files = resolve(Files::class);
         if (isset($category->image)) {
