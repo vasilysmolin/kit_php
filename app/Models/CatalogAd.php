@@ -82,4 +82,9 @@ class CatalogAd extends Model
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
+
+    public function adParameters(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(CatalogParameter::class, 'ad_id', 'id');
+    }
 }

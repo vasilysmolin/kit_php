@@ -154,8 +154,10 @@ class UsersParser extends Command
 //"ad_flat_type_novelty_id": 1, 1 вторичка/2 новостройка
 //"ad_flat_type_seller_id": 1, 1 собственник/2 посредник
 //"ad_flat_type_building_id": 2, 1 панельный 2 кирпичный 3 деревянный 4 шлакоблоки
+
 //"floor": "1", 1 этаж объект Area от 1 до 100
 //"floors_in_house": "5", из 5 объект Floofs от 1 до 20
+
 //"rooms": "1" - комнат объект Rooms от 1 до 7
         $contents = json_decode($contents, true);
         dd($contents);

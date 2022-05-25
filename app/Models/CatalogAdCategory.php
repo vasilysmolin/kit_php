@@ -34,6 +34,11 @@ class CatalogAdCategory extends Model
             ->with(['categories.color', 'categoriesParent.color']);
     }
 
+    public function filters(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(CatalogFilter::class, 'category_id', 'id');
+    }
+
     public function color(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(Color::class, 'color_id', 'id');
