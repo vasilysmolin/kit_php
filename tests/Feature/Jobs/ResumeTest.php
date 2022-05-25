@@ -50,7 +50,7 @@ class ResumeTest extends TestCase
         ]);
         $resume = JobsResume::find($resume->id);
         $this->assertEquals('newName', $resume->name);
-        $this->assertNotEquals($resume->sort, $sort);
+        $this->assertEquals($resume->sort, $sort);
         $response->assertStatus(204);
     }
 

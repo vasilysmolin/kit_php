@@ -47,7 +47,6 @@ class VacancyTest extends TestCase
     {
         $user = User::factory()->has(Profile::factory())->create();
         $vacancy = JobsVacancy::factory(2)->create()->first();
-        $sort = $vacancy->sort;
         $vacancy->profile_id = $user->profile->getKey();
         $vacancy->sort = 1;
         $vacancy->update();
@@ -57,7 +56,7 @@ class VacancyTest extends TestCase
         ]);
         $vacancy = JobsVacancy::find($vacancy->id);
         $this->assertEquals('newName', $vacancy->name);
-        $this->assertNotEquals($vacancy->sort, $sort);
+        $this->assertEquals($vacancy->sort, 1);
         $response->assertStatus(204);
     }
 

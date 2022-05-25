@@ -64,7 +64,7 @@ class ServiceTest extends TestCase
         $response->assertStatus(Response::HTTP_CREATED);
     }
 
-    public function testVacancyUpdate()
+    public function testServiceUpdate()
     {
         $user = User::factory()->has(Profile::factory())->create();
         $service = Service::factory(2)->create()->first();
@@ -78,11 +78,11 @@ class ServiceTest extends TestCase
         ]);
         $service = Service::find($service->id);
         $this->assertEquals('newName', $service->name);
-        $this->assertNotEquals($service->sort, $sort);
+        $this->assertEquals($service->sort, $sort);
         $response->assertStatus(204);
     }
 
-    public function testVacancyState()
+    public function testServiceState()
     {
         $user = User::factory()->has(Profile::factory())->create();
         $service = Service::factory(5)->create()->first();
@@ -134,7 +134,7 @@ class ServiceTest extends TestCase
         $response->assertStatus(Response::HTTP_NO_CONTENT);
     }
 
-    public function testSortVacancy()
+    public function testSortService()
     {
         $user = User::factory()->has(Profile::factory())->create();
         $service = Service::factory()->create();

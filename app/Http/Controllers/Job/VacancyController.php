@@ -158,7 +158,7 @@ $cabinet = isset($user) && $request->from === 'cabinet';
     public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $currentUser = auth('api')->user();
+//        $currentUser = auth('api')->user();
         unset($formData['state']);
         $vacancy = JobsVacancy::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {

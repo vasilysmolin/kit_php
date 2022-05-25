@@ -50,14 +50,13 @@ class AdTest extends TestCase
         $ad->sort = 1;
         $ad->profile_id = $user->profile->getKey();
         $ad->update();
-        $sort = $ad->sort;
         $access_token = JWTAuth::fromUser($user);
         $response = $this->withToken($access_token)->put(route('declarations.update', $ad->getKey()), [
             'name' => 'newName',
         ]);
         $ad = CatalogAd::find($ad->id);
         $this->assertEquals('newName', $ad->name);
-        $this->assertNotEquals($ad->sort, $sort);
+        $this->assertEquals($ad->sort, 1);
         $response->assertStatus(204);
     }
 
