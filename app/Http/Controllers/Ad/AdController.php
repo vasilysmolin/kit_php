@@ -110,6 +110,50 @@ class AdController extends Controller
         return response()->json($data);
     }
 
+    public function fullSearch(AdIndexRequest $request): \Illuminate\Http\JsonResponse
+    {
+
+//        $take = $request->take ?? config('settings.take_twenty_five');
+        $skip = $request->skip ?? 0;
+//        $id = isset($request->id) ? explode(',', $request->id) : null;
+        $expand = $request->expand ? explode(',', $request->expand) : null;
+        $files = resolve(Files::class);
+        $user = auth('api')->user();
+//        $categoryID = $request->category_id;
+//        $userID = (int) $request->user_id;
+        $state = $request->state;
+//        $name = $request->name;
+//        $alias = $request->alias;
+        $states = new States();
+//        $catalog = $request->from === 'catalog';
+//        $cabinet = isset($user) && $request->from === 'cabinet';
+
+        $builder = CatalogAd::search($request->get('query'))->
+            when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+                $q->where('state', $state);
+            })
+            ->orderBy('sort', 'ASC');
+
+        $catalogAd = $builder->get();
+
+        $catalogAd->load('image', 'categories')->when(!empty($expand), function ($q) use ($expand) {
+            $q->load($expand);
+        });
+        $count = $builder->count();
+
+        $catalogAd->each(function ($item) use ($files) {
+            if (isset($item->image)) {
+                $item->photo = $files->getFilePath($item->image);
+                $item->makeHidden('image');
+            }
+            $item->title = $item->name;
+        });
+
+        $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
+
+        return response()->json($data);
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();

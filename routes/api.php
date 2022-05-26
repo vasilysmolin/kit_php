@@ -133,6 +133,15 @@ Route::group([
     Route::put('declarations/{declaration}/sort', 'AdController@sort')->name('declarations.sort');
     Route::put('declarations/{declaration}/state', 'AdController@state')->name('declarations.state');
     Route::put('declarations/{declaration}/restore', 'AdController@restore')->name('declarations.restore');
+    Route::get('declarations-full', 'AdController@fullSearch')->name('declarations.full-search');
+    Route::get('category-declarations-full', 'CategoryAdController@fullSearch')->name('category-declarations.full-search');
     Route::apiResource('category-declarations', 'CategoryAdController');
+});
+
+Route::group([
+    'namespace' => 'City',
+], function ($router) {
+    Route::get('cities-full', 'CityController@fullSearch')->name('cities.full-search');
+    Route::apiResource('cities', 'CityController');
 });
 

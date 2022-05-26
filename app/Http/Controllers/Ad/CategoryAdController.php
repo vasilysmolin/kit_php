@@ -52,6 +52,39 @@ class CategoryAdController extends Controller
         return response()->json($data);
     }
 
+    public function fullSearch(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $user = auth('api')->user();
+        $cabinet = isset($user) && $request->from === 'cabinet';
+//        $take = $request->take ?? config('settings.take_twenty_five');
+        $skip = $request->skip ?? 0;
+        $files = resolve(Files::class);
+        $builder = CatalogAdCategory::search($request->get('query'))
+            ->where('active', 1)
+            ->orderBy('id', 'ASC');
+
+        $category = $builder
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $count = $builder->count();
+        $category->load('image', 'categories', 'categoriesParent', 'color');
+
+        $category->each(function ($item) use ($files, $cabinet) {
+            if (isset($item->image)) {
+                $item->photo = $files->getFilePath($item->image);
+                $item->makeHidden('image');
+            }
+            if ($cabinet) {
+                $this->changeName($item->categories);
+            }
+        });
+
+        $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
+
+        return response()->json($data);
+    }
+
     private function changeName($node)
     {
         if ($node->isEmpty()) {
@@ -64,6 +97,9 @@ class CategoryAdController extends Controller
             if ($item->name === 'Купить') {
                 $item->name = 'Продать';
             }
+//            if (!$item->categories->isEmpty()) {
+//                $this->changeName($item->categories);
+//            }
         });
     }
 
