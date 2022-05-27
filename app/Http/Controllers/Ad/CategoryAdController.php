@@ -59,8 +59,12 @@ class CategoryAdController extends Controller
 //        $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $files = resolve(Files::class);
+        $take = $request->take;
         $builder = CatalogAdCategory::search($request->get('query'))
             ->where('active', 1)
+            ->when(!empty($take), function ($query) use ($take) {
+                $query->take((int) $take);
+            })
             ->orderBy('id', 'ASC');
 
         $category = $builder

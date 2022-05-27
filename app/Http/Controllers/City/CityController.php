@@ -25,9 +25,13 @@ class CityController extends Controller
 
         $skip = $request->skip ?? 0;
         $files = resolve(Files::class);
+        $take = $request->take;
 
         $builder = City::search($request->get('query'))
-            ->where('active', 1)
+            ->when(!empty($take), function ($query) use ($take) {
+                $query->take((int) $take);
+            })
+            ->where('active', 'true')
             ->orderBy('sort', 'ASC');
 
         $city = $builder->get();

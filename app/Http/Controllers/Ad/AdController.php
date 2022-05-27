@@ -113,24 +113,20 @@ class AdController extends Controller
     public function fullSearch(AdIndexRequest $request): \Illuminate\Http\JsonResponse
     {
 
-//        $take = $request->take ?? config('settings.take_twenty_five');
+        $take = $request->take;
         $skip = $request->skip ?? 0;
-//        $id = isset($request->id) ? explode(',', $request->id) : null;
         $expand = $request->expand ? explode(',', $request->expand) : null;
         $files = resolve(Files::class);
-        $user = auth('api')->user();
-//        $categoryID = $request->category_id;
-//        $userID = (int) $request->user_id;
+
         $state = $request->state;
-//        $name = $request->name;
-//        $alias = $request->alias;
         $states = new States();
-//        $catalog = $request->from === 'catalog';
-//        $cabinet = isset($user) && $request->from === 'cabinet';
 
         $builder = CatalogAd::search($request->get('query'))->
             when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
+            })
+            ->when(!empty($take), function ($query) use ($take) {
+                $query->take((int) $take);
             })
             ->orderBy('sort', 'ASC');
 
