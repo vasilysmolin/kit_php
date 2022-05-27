@@ -36,6 +36,11 @@ class UsersUpdateRequest extends FormRequest
             'email' => 'email',
             'phone' => 'string|min:10|max:10',
             'inn' => 'string|min:1|max:255',
+            'city_id' => [
+                'exists:cities,id',
+                'integer',
+                'max:999999',
+            ],
         ];
     }
 }

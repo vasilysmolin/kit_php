@@ -108,7 +108,7 @@ class UserController extends Controller
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
         $result = $userData
-            ->only(['name','email','phone'])
+            ->only(['name','email','phone','city_id'])
             ->all();
 
         DB::transaction(function () use ($user, $result, $userData) {

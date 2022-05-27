@@ -31,6 +31,7 @@ class User extends Authenticatable implements JWTSubject
         'phone',
         'state',
         'password',
+        'city_id',
     ];
 
     /**
@@ -70,6 +71,11 @@ class User extends Authenticatable implements JWTSubject
     public function profile()
     {
         return $this->hasOne(Profile::class, 'user_id', 'id');
+    }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function orders()

@@ -42,6 +42,11 @@ class City extends Model
         return $this->hasOne(Timezone::class, 'id', 'timezone_id');
     }
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     /**
      * Get the indexable data array for the model.
      *
@@ -53,13 +58,13 @@ class City extends Model
         return $array;
     }
 
-//    /**
-//     * Get the name of the index associated with the model.
-//     *
-//     * @return string
-//     */
-//    public function searchableAs()
-//    {
-//        return 'cities_index';
-//    }
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'cities_index';
+    }
 }
