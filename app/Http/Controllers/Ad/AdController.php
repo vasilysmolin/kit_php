@@ -45,8 +45,6 @@ class AdController extends Controller
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
 
-        dd($user->city->users);
-
         $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
         })
