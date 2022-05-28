@@ -14,6 +14,7 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use Illuminate\Http\Request;
+use YaGeo;
 
 class AdController extends Controller
 {
@@ -29,7 +30,6 @@ class AdController extends Controller
 
     public function index(AdIndexRequest $request): \Illuminate\Http\JsonResponse
     {
-
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;

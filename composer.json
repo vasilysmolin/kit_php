@@ -24,6 +24,7 @@
         "illuminate/support": "^v8.55.0",
         "intervention/image": "2.*",
         "intervention/imagecache": "^2.4",
+        "jackmartin/laravel-yandex-geocode": "^1.2",
         "khill/lavacharts": "^3.1",
         "laravel-notification-channels/fcm": "~2.2.1",
         "laravel-notification-channels/webpush": "^5.1.1",

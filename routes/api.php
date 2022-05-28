@@ -81,6 +81,13 @@ Route::group([
 });
 
 Route::group([
+    'namespace' => 'External',
+    'prefix' => 'external',
+], function ($router) {
+    Route::get('maps', 'YandexMapController@getAddress')->name('external.address');
+});
+
+Route::group([
     'namespace' => 'Common',
     'prefix' => 'external',
 ], function ($router) {
