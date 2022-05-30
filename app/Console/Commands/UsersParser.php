@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\CatalogAd;
 use App\Models\CatalogAdCategory;
-use App\Models\CatalogMeta;
+use App\Models\CatalogParameter;
 use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
 use App\Models\JobsVacancy;
@@ -130,7 +130,8 @@ class UsersParser extends Command
 //                $meta->active = 1;
 //                $isModel ? $meta->update() : $meta->save();
 //        }
-//
+//        $rooms = CatalogParameter::where('value', '1 комнатные')->first();
+
         $client = new Client();
         $response = $client->get('https://catalog.tapigo.tech/all-ads-json', [
             'verify' => false,
@@ -142,54 +143,160 @@ class UsersParser extends Command
         $contents = $response->getBody()->getContents();
 //        Storage::disk('local')->put('all-ads-json.txt', $contents);
 //        App\\Models\\Catalog\\Flat\\AdFlatProperty
-//
 //Инпуты
 //"total_area": "18", общая объект Area от 1 до 100
 //"kitchen_area": "3", кухня
 //"living_area": "14", жилая
-//
-//
-//
 //"ad_flat_type_id": null,
 //"ad_flat_type_novelty_id": 1, 1 вторичка/2 новостройка
 //"ad_flat_type_seller_id": 1, 1 собственник/2 посредник
 //"ad_flat_type_building_id": 2, 1 панельный 2 кирпичный 3 деревянный 4 шлакоблоки
-
 //"floor": "1", 1 этаж объект Area от 1 до 100
 //"floors_in_house": "5", из 5 объект Floofs от 1 до 20
-
 //"rooms": "1" - комнат объект Rooms от 1 до 7
+
+
         $contents = json_decode($contents, true);
         dd($contents);
+        $i = 1;
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
             if (isset($userDB)  || isset($userDB->profile)) {
                 foreach ($item['ads'] as $relation) {
-                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
+                    $next = true;
+                    if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatProperty") {
+                        $next = false;
+                    }
+                    if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatRentProperty") {
+                        $next = false;
+                    }
+                    if ($next === true) {
                         continue;
                     }
-                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
-                    $isModel = CatalogAd::find($relation['property']['id']);
+                    if ((int) $relation['property']['rooms'] === 0) {
+                        $relation['property']['rooms'] = 1;
+                    }
+                    if ((int) $relation['property']['rooms'] > 5) {
+                        $relation['property']['rooms'] = 5;
+                    }
+                    $title = $relation['property']['rooms'] . ' комнатная';
+                    $alias = Str::slug(Str::limit($title, 10) . ' ' . str_random(7), '-');
+//                    $isModel = CatalogAd::find($relation['category']['id']);
                     if (isset($relation['category'])) {
                         $cats = CatalogAdCategory::find($relation['category']['id']);
                     } else {
                         $cats = null;
                     }
-                    $model = $isModel ?? new CatalogAd();
-                    $model->id = $relation['property']['id'];
+//                    $isModel = CatalogAd::find($relation['id']);
+
+                    $model = new CatalogAd();
+                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
+                        $model->latitude = $relation['location']['lat'];
+                        $model->longitude = $relation['location']['lng'];
+                        $model->street = $relation['location']['street'];
+                        $model->house = $relation['location']['house'];
+                    }
+//                    $model->id = $relation['id'];
                     $model->profile_id = $userDB->profile->getKey();
-                    $model->name = $relation['property']['title'];
+                    $model->name = $title;
                     $model->description = trim($relation['property']['desc']);
                     $model->category_id = isset($cats) ? $cats->id : null;
                     $model->alias = $alias;
+                    $model->state = 'active';
                     $model->price = (int) str_replace(' ', '', $relation['property']['price']);
                     $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
-                    $isModel ? $model->update() : $model->save();
+                    $model->save();
+                    $model->moveToStart();
+                    $string = $title;
 
+                    $rooms = CatalogParameter::where('value', $string)->first();
+                    $livingArea = CatalogParameter::where('value', $relation['property']['living_area'])->whereHas('filter', function ($q) {
+                        $q->where('alias', 'zilaya-ploshhad');
+                    })->first();
+                    $kitArea = CatalogParameter::where('value', $relation['property']['kitchen_area'])->whereHas('filter', function ($q) {
+                        $q->where('alias', 'ploshhad-kuxni');
+                    })->first();
+                    $totalArea = CatalogParameter::where('value', $relation['property']['total_area'])->whereHas('filter', function ($q) {
+                        $q->where('alias', 'obshhaya-ploshhad');
+                    })->first();
+                    $floorsInHouse = CatalogParameter::where('value', $relation['property']['floors_in_house'])->whereHas('filter', function ($q) {
+                        $q->where('alias', 'vsego-etazei');
+                    })->first();
+                    $floor = CatalogParameter::where('value', $relation['property']['floor'])->whereHas('filter', function ($q) {
+                        $q->where('alias', 'etaz');
+                    })->first();
+                    if ($relation['property']['ad_flat_type_building_id'] === 1) {
+                        $dom = CatalogParameter::where('value', 'Панельный')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'dom');
+                        })->first();
+                    } elseif ($relation['property']['ad_flat_type_building_id'] === 2) {
+                        $dom = CatalogParameter::where('value', 'Кирпичный')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'dom');
+                        })->first();
+                    } elseif ($relation['property']['ad_flat_type_building_id'] === 3) {
+                        $dom = CatalogParameter::where('value', 'Деревянный')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'dom');
+                        })->first();
+                    } else {
+                        $dom = CatalogParameter::where('value', 'Шлакоблоки')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'dom');
+                        })->first();
+                    }
+
+                    if ($relation['property']['ad_flat_type_seller_id'] === 1) {
+                        $seller = CatalogParameter::where('value', 'Собственник')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'prodavec');
+                        })->first();
+                    } else {
+                        $seller = CatalogParameter::where('value', 'Посредник')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'prodavec');
+                        })->first();
+                    }
+
+                    if ($relation['property']['ad_flat_type_novelty_id'] === 1) {
+                        $novizna = CatalogParameter::where('value', 'Вторичка')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'novizna');
+                        })->first();
+                    } else {
+                        $novizna = CatalogParameter::where('value', 'Новостройка')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'novizna');
+                        })->first();
+                    }
+                    $arr = collect();
+                    if (!empty($rooms)) {
+                        $arr->add($rooms->getKey());
+                    }
+                    if (!empty($livingArea)) {
+                        $arr->add($livingArea->getKey());
+                    }
+                    if (!empty($kitArea)) {
+                        $arr->add($kitArea->getKey());
+                    }
+                    if (!empty($totalArea)) {
+                        $arr->add($totalArea->getKey());
+                    }
+                    if (!empty($floorsInHouse)) {
+                        $arr->add($floorsInHouse->getKey());
+                    }
+                    if (!empty($floor)) {
+                        $arr->add($floor->getKey());
+                    }
+                    if (!empty($dom)) {
+                        $arr->add($dom->getKey());
+                    }
+                    if (!empty($seller)) {
+                        $arr->add($seller->getKey());
+                    }
+                    if (!empty($novizna)) {
+                        $arr->add($novizna->getKey());
+                    }
+                    $model->adParameters()->attach($arr);
+                    var_dump($i);
+                    $i += 1;
 
 //                    if (!empty($relation['images'])) {
 //                        foreach ($relation['images'] as $image) {
-//                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+//                            $url = 'https://kto_tam:eto_tapigo@catalog.tapigo.tech/images/thumbnails/thumb_' . $image['image_path'];
 //                            $files = resolve(Files::class);
 //                            $files->saveParser($model, $url);
 //                        }
@@ -197,6 +304,42 @@ class UsersParser extends Command
                 }
             }
         }
+//        foreach ($contents as $item) {
+//            $userDB = User::find($item['id']);
+//            if (isset($userDB)  || isset($userDB->profile)) {
+//                foreach ($item['ads'] as $relation) {
+//                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
+//                        continue;
+//                    }
+//                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
+//                    $isModel = CatalogAd::find($relation['property']['id']);
+//                    if (isset($relation['category'])) {
+//                        $cats = CatalogAdCategory::find($relation['category']['id']);
+//                    } else {
+//                        $cats = null;
+//                    }
+//                    $model = $isModel ?? new CatalogAd();
+//                    $model->id = $relation['property']['id'];
+//                    $model->profile_id = $userDB->profile->getKey();
+//                    $model->name = $relation['property']['title'];
+//                    $model->description = trim($relation['property']['desc']);
+//                    $model->category_id = isset($cats) ? $cats->id : null;
+//                    $model->alias = $alias;
+//                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
+//                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
+//                    $isModel ? $model->update() : $model->save();
+//
+//
+////                    if (!empty($relation['images'])) {
+////                        foreach ($relation['images'] as $image) {
+////                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+////                            $files = resolve(Files::class);
+////                            $files->saveParser($model, $url);
+////                        }
+////                    }
+//                }
+//            }
+//        }
 //
 //        $client = new Client();
 //        $response = $client->get('https://user.tapigo.ru/all-up', ['verify' => false]);

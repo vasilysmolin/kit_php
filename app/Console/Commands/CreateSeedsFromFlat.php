@@ -50,23 +50,23 @@ class CreateSeedsFromFlat extends Command
                 'active' => 1,
             ]);
             $filter->parameters()->create([
-                'value' => '1 комнатные',
+                'value' => '1 комнатная',
                 'sort' => 1,
             ]);
             $filter->parameters()->create([
-                'value' => '2 комнатные',
+                'value' => '2 комнатная',
                 'sort' => 2,
             ]);
             $filter->parameters()->create([
-                'value' => '3 комнатные',
+                'value' => '3 комнатная',
                 'sort' => 3,
             ]);
             $filter->parameters()->create([
-                'value' => '4 комнатные',
+                'value' => '4 комнатная',
                 'sort' => 4,
             ]);
             $filter->parameters()->create([
-                'value' => '5 комнатные',
+                'value' => '5 комнатная',
                 'sort' => 5,
             ]);
 
@@ -78,7 +78,7 @@ class CreateSeedsFromFlat extends Command
                 'active' => 1,
             ]);
 
-            for($i = 1; $i <= 100; $i++) {
+            for ($i = 1; $i <= 100; $i++) {
                 $filter->parameters()->create([
                     'value' => $i,
                     'sort' => $i,
@@ -92,7 +92,7 @@ class CreateSeedsFromFlat extends Command
                 'active' => 1,
             ]);
 
-            for($i = 1; $i <= 100; $i++) {
+            for ($i = 1; $i <= 100; $i++) {
                 $filter->parameters()->create([
                     'value' => $i,
                     'sort' => $i,
@@ -159,7 +159,7 @@ class CreateSeedsFromFlat extends Command
                 'active' => 1,
             ]);
 
-            for($i = 1; $i <= 100; $i++) {
+            for ($i = 1; $i <= 100; $i++) {
                 $filter->parameters()->create([
                     'value' => $i,
                     'sort' => $i,
@@ -173,7 +173,7 @@ class CreateSeedsFromFlat extends Command
                 'active' => 1,
             ]);
 
-            for($i = 1; $i <= 100; $i++) {
+            for ($i = 1; $i <= 100; $i++) {
                 $filter->parameters()->create([
                     'value' => $i,
                     'sort' => $i,
@@ -187,14 +187,50 @@ class CreateSeedsFromFlat extends Command
                 'active' => 1,
             ]);
 
-            for($i = 1; $i <= 100; $i++) {
+            for ($i = 1; $i <= 100; $i++) {
                 $filter->parameters()->create([
                     'value' => $i,
                     'sort' => $i,
                 ]);
             }
 
+            $filter = $flatCat->filters()->create([
+                'name' => 'Удобства',
+                'alias' => Str::slug('Удобства'),
+                'sort' => 10,
+                'active' => 1,
+            ]);
 
+
+            $filter->parameters()->create([
+                'value' => 'Телефон',
+                'sort' => 1,
+            ]);
+
+            $filter->parameters()->create([
+                'value' => 'Интернет',
+                'sort' => 2,
+            ]);
+
+            $filter->parameters()->create([
+                'value' => 'Парковка',
+                'sort' => 3,
+            ]);
+
+            $filter->parameters()->create([
+                'value' => 'Два лифта',
+                'sort' => 4,
+            ]);
+
+            $filter->parameters()->create([
+                'value' => 'Консьерж',
+                'sort' => 4,
+            ]);
+
+            $filter->parameters()->create([
+                'value' => 'Балкон',
+                'sort' => 4,
+            ]);
         }
         return 0;
     }

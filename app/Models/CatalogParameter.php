@@ -14,9 +14,9 @@ class CatalogParameter extends Model
         'sort',
     ];
 
-    public function filter(): \Illuminate\Database\Eloquent\Relations\hasOne
+    public function filter(): \Illuminate\Database\Eloquent\Relations\belongsTo
     {
-        return $this->hasOne(CatalogFilter::class, 'filter_id', 'id');
+        return $this->belongsTo(CatalogFilter::class, 'filter_id', 'id');
     }
 
     public function adParameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany
