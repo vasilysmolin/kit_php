@@ -38,6 +38,7 @@ class UsersUpdateRequest extends FormRequest
             'inn' => 'string|min:1|max:255',
             'city_id' => [
                 'exists:cities,id',
+                'nullable',
                 'integer',
                 'max:999999',
             ],
