@@ -17,6 +17,7 @@ class CreateCatalogFiltersTable extends Migration
             $table->id();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->string('name')->nullable();
+            $table->string('type')->default('select');
             $table->string('alias')->nullable()->unique();
             $table->integer('sort')->unsigned()->nullable();
             $table->integer('active')->nullable()->default(1);

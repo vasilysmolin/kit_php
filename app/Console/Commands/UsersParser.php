@@ -133,6 +133,21 @@ class UsersParser extends Command
 //        $rooms = CatalogParameter::where('value', '1 комнатные')->first();
 
         $client = new Client();
+        $response = $client->get('https://catalog.tapigo.tech/all-ads-comfort-json', [
+            'verify' => false,
+            'auth' => [
+                'ktotam',
+                'eto_tapigo',
+            ],
+        ]);
+        $contentsComfort = $response->getBody()->getContents();
+        $contentsComfort = collect(json_decode($contentsComfort, true));
+
+//        $net = $contentsComfort->where('name', 'Два лифта')->first();
+//        $netCollect = collect($net['flats']);
+//        dd($netCollect->count());
+
+        $client = new Client();
         $response = $client->get('https://catalog.tapigo.tech/all-ads-json', [
             'verify' => false,
             'auth' => [
@@ -157,7 +172,7 @@ class UsersParser extends Command
 
 
         $contents = json_decode($contents, true);
-        dd($contents);
+//        dd($contents);
         $i = 1;
         foreach ($contents as $item) {
             $userDB = User::find($item['id']);
@@ -190,7 +205,7 @@ class UsersParser extends Command
 //                    $isModel = CatalogAd::find($relation['id']);
 
                     $model = new CatalogAd();
-                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
+                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] !== 0) {
                         $model->latitude = $relation['location']['lat'];
                         $model->longitude = $relation['location']['lng'];
                         $model->street = $relation['location']['street'];
@@ -262,7 +277,94 @@ class UsersParser extends Command
                             $q->where('alias', 'novizna');
                         })->first();
                     }
+
+                    $phone = $contentsComfort->where('name', 'Телефон')->first();
+                    $phoneCollect = collect($phone['flats']);
+                    $myObj = $phoneCollect->where('id', $relation['property']['id'])->first();
+                    if (!empty($myObj)) {
+                        $comfortPhone = CatalogParameter::where('value', 'Телефон')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'udobstva');
+                        })->first();
+                    } else {
+                        $comfortPhone = null;
+                    }
+
+                    $net = $contentsComfort->where('name', 'Интернет')->first();
+                    $netCollect = collect($net['flats']);
+                    $myObj = $netCollect->where('id', $relation['property']['id'])->first();
+                    if (!empty($myObj)) {
+                        $comfortNet = CatalogParameter::where('value', 'Интернет')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'udobstva');
+                        })->first();
+                    } else {
+                        $comfortNet = null;
+                    }
+
+                    $park = $contentsComfort->where('name', 'Парковка')->first();
+                    $parkCollect = collect($park['flats']);
+                    $myObj = $parkCollect->where('id', $relation['id'])->first();
+                    if (!empty($myObj)) {
+                        $comfortPark = CatalogParameter::where('value', 'Парковка')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'udobstva');
+                        })->first();
+                    } else {
+                        $comfortPark = null;
+                    }
+
+                    $twoLift = $contentsComfort->where('name', 'Два лифта')->first();
+                    $twoLiftCollect = collect($twoLift['flats']);
+                    $myObj = $twoLiftCollect->where('id', $relation['id'])->first();
+                    if (!empty($myObj)) {
+                        $comfortTwoLift = CatalogParameter::where('value', 'Два лифта')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'udobstva');
+                        })->first();
+                    } else {
+                        $comfortTwoLift = null;
+                    }
+
+                    $conseg = $contentsComfort->where('name', 'Консьерж')->first();
+                    $consegCollect = collect($conseg['flats']);
+                    $myObj = $consegCollect->where('id', $relation['id'])->first();
+                    if (!empty($myObj)) {
+                        $comfortCons = CatalogParameter::where('value', 'Консьерж')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'udobstva');
+                        })->first();
+                    } else {
+                        $comfortCons = null;
+                    }
+
+                    $balkon = $contentsComfort->where('name', 'Балкон')->first();
+                    $balkonCollect = collect($balkon['flats']);
+                    $myObj = $balkonCollect->where('id', $relation['id'])->first();
+                    if (!empty($myObj)) {
+                        $comfortBal = CatalogParameter::where('value', 'Балкон')->whereHas('filter', function ($q) {
+                            $q->where('alias', 'udobstva');
+                        })->first();
+                    } else {
+                        $comfortBal = null;
+                    }
+
+
+
                     $arr = collect();
+                    if (!empty($comfortBal)) {
+                        $arr->add($comfortBal->getKey());
+                    }
+                    if (!empty($comfortTwoLift)) {
+                        $arr->add($comfortTwoLift->getKey());
+                    }
+                    if (!empty($comfortCons)) {
+                        $arr->add($comfortCons->getKey());
+                    }
+                    if (!empty($comfortPhone)) {
+                        $arr->add($comfortPhone->getKey());
+                    }
+                    if (!empty($comfortPark)) {
+                        $arr->add($comfortPark->getKey());
+                    }
+                    if (!empty($comfortNet)) {
+                        $arr->add($comfortNet->getKey());
+                    }
                     if (!empty($rooms)) {
                         $arr->add($rooms->getKey());
                     }
@@ -304,42 +406,40 @@ class UsersParser extends Command
                 }
             }
         }
-//        foreach ($contents as $item) {
-//            $userDB = User::find($item['id']);
-//            if (isset($userDB)  || isset($userDB->profile)) {
-//                foreach ($item['ads'] as $relation) {
-//                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
-//                        continue;
+        foreach ($contents as $item) {
+            $userDB = User::find($item['id']);
+            if (isset($userDB)  || isset($userDB->profile)) {
+                foreach ($item['ads'] as $relation) {
+                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
+                        continue;
+                    }
+                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
+                    $isModel = CatalogAd::find($relation['property']['id']);
+                    if (isset($relation['category'])) {
+                        $cats = CatalogAdCategory::find($relation['category']['id']);
+                    } else {
+                        $cats = null;
+                    }
+                    $model = $isModel ?? new CatalogAd();
+                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] !== 0) {
+                        $model->latitude = $relation['location']['lat'];
+                        $model->longitude = $relation['location']['lng'];
+                        $model->street = $relation['location']['street'];
+                        $model->house = $relation['location']['house'];
+                    }
+                    $isModel ? $model->update() : $model;
+
+
+//                    if (!empty($relation['images'])) {
+//                        foreach ($relation['images'] as $image) {
+//                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+//                            $files = resolve(Files::class);
+//                            $files->saveParser($model, $url);
+//                        }
 //                    }
-//                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
-//                    $isModel = CatalogAd::find($relation['property']['id']);
-//                    if (isset($relation['category'])) {
-//                        $cats = CatalogAdCategory::find($relation['category']['id']);
-//                    } else {
-//                        $cats = null;
-//                    }
-//                    $model = $isModel ?? new CatalogAd();
-//                    $model->id = $relation['property']['id'];
-//                    $model->profile_id = $userDB->profile->getKey();
-//                    $model->name = $relation['property']['title'];
-//                    $model->description = trim($relation['property']['desc']);
-//                    $model->category_id = isset($cats) ? $cats->id : null;
-//                    $model->alias = $alias;
-//                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
-//                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
-//                    $isModel ? $model->update() : $model->save();
-//
-//
-////                    if (!empty($relation['images'])) {
-////                        foreach ($relation['images'] as $image) {
-////                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
-////                            $files = resolve(Files::class);
-////                            $files->saveParser($model, $url);
-////                        }
-////                    }
-//                }
-//            }
-//        }
+                }
+            }
+        }
 //
 //        $client = new Client();
 //        $response = $client->get('https://user.tapigo.ru/all-up', ['verify' => false]);

@@ -15,6 +15,7 @@ class CatalogFilter extends Model
         'name',
         'alias',
         'category_id',
+        'type',
     ];
 
     public function category(): \Illuminate\Database\Eloquent\Relations\hasOne

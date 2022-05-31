@@ -45,6 +45,7 @@ class CreateSeedsFromFlat extends Command
         if ($filters->isEmpty()) {
             $filter = $flatCat->filters()->create([
                 'name' => 'Колличество комнат',
+                'type' => 'select',
                 'alias' => Str::slug('Колличество комнат'),
                 'sort' => 1,
                 'active' => 1,
@@ -73,6 +74,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Всего этажей',
+                'type' => 'range',
                 'alias' => Str::slug('Всего этажей'),
                 'sort' => 2,
                 'active' => 1,
@@ -87,6 +89,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Этаж',
+                'type' => 'range',
                 'alias' => Str::slug('Этаж'),
                 'sort' => 3,
                 'active' => 1,
@@ -101,6 +104,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Дом',
+                'type' => 'select',
                 'alias' => Str::slug('Дом'),
                 'sort' => 4,
                 'active' => 1,
@@ -124,6 +128,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Продавец',
+                'type' => 'select',
                 'alias' => Str::slug('Продавец'),
                 'sort' => 5,
                 'active' => 1,
@@ -139,6 +144,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Новизна',
+                'type' => 'select',
                 'alias' => Str::slug('Новизна'),
                 'sort' => 6,
                 'active' => 1,
@@ -154,6 +160,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Общая площадь',
+                'type' => 'range',
                 'alias' => Str::slug('Общая площадь'),
                 'sort' => 7,
                 'active' => 1,
@@ -168,6 +175,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Жилая площадь',
+                'type' => 'range',
                 'alias' => Str::slug('Жилая площадь'),
                 'sort' => 8,
                 'active' => 1,
@@ -182,6 +190,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Площадь кухни',
+                'type' => 'range',
                 'alias' => Str::slug('Площадь кухни'),
                 'sort' => 9,
                 'active' => 1,
@@ -196,6 +205,7 @@ class CreateSeedsFromFlat extends Command
 
             $filter = $flatCat->filters()->create([
                 'name' => 'Удобства',
+                'type' => 'checkbox',
                 'alias' => Str::slug('Удобства'),
                 'sort' => 10,
                 'active' => 1,
