@@ -181,9 +181,11 @@ class UsersParser extends Command
                     $next = true;
                     if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatProperty") {
                         $next = false;
+                        $slug = '-bye';
                     }
                     if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatRentProperty") {
                         $next = false;
+                        $slug = '-rent';
                     }
                     if ($next === true) {
                         continue;
@@ -205,7 +207,7 @@ class UsersParser extends Command
 //                    $isModel = CatalogAd::find($relation['id']);
 
                     $model = new CatalogAd();
-                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] !== 0) {
+                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
                         $model->latitude = $relation['location']['lat'];
                         $model->longitude = $relation['location']['lng'];
                         $model->street = $relation['location']['street'];
@@ -225,56 +227,56 @@ class UsersParser extends Command
                     $string = $title;
 
                     $rooms = CatalogParameter::where('value', $string)->first();
-                    $livingArea = CatalogParameter::where('value', $relation['property']['living_area'])->whereHas('filter', function ($q) {
-                        $q->where('alias', 'zilaya-ploshhad');
+                    $livingArea = CatalogParameter::where('value', $relation['property']['living_area'])->whereHas('filter', function ($q) use ($slug) {
+                        $q->where('alias', 'zilaya-ploshhad'  . $slug);
                     })->first();
-                    $kitArea = CatalogParameter::where('value', $relation['property']['kitchen_area'])->whereHas('filter', function ($q) {
-                        $q->where('alias', 'ploshhad-kuxni');
+                    $kitArea = CatalogParameter::where('value', $relation['property']['kitchen_area'])->whereHas('filter', function ($q) use ($slug) {
+                        $q->where('alias', 'ploshhad-kuxni'  . $slug);
                     })->first();
-                    $totalArea = CatalogParameter::where('value', $relation['property']['total_area'])->whereHas('filter', function ($q) {
-                        $q->where('alias', 'obshhaya-ploshhad');
+                    $totalArea = CatalogParameter::where('value', $relation['property']['total_area'])->whereHas('filter', function ($q) use ($slug) {
+                        $q->where('alias', 'obshhaya-ploshhad'  . $slug);
                     })->first();
-                    $floorsInHouse = CatalogParameter::where('value', $relation['property']['floors_in_house'])->whereHas('filter', function ($q) {
-                        $q->where('alias', 'vsego-etazei');
+                    $floorsInHouse = CatalogParameter::where('value', $relation['property']['floors_in_house'])->whereHas('filter', function ($q) use ($slug) {
+                        $q->where('alias', 'vsego-etazei'  . $slug);
                     })->first();
-                    $floor = CatalogParameter::where('value', $relation['property']['floor'])->whereHas('filter', function ($q) {
-                        $q->where('alias', 'etaz');
+                    $floor = CatalogParameter::where('value', $relation['property']['floor'])->whereHas('filter', function ($q) use ($slug) {
+                        $q->where('alias', 'etaz'  . $slug);
                     })->first();
                     if ($relation['property']['ad_flat_type_building_id'] === 1) {
-                        $dom = CatalogParameter::where('value', 'Панельный')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'dom');
+                        $dom = CatalogParameter::where('value', 'Панельный')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
                         })->first();
                     } elseif ($relation['property']['ad_flat_type_building_id'] === 2) {
-                        $dom = CatalogParameter::where('value', 'Кирпичный')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'dom');
+                        $dom = CatalogParameter::where('value', 'Кирпичный')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
                         })->first();
                     } elseif ($relation['property']['ad_flat_type_building_id'] === 3) {
-                        $dom = CatalogParameter::where('value', 'Деревянный')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'dom');
+                        $dom = CatalogParameter::where('value', 'Деревянный')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
                         })->first();
                     } else {
-                        $dom = CatalogParameter::where('value', 'Шлакоблоки')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'dom');
+                        $dom = CatalogParameter::where('value', 'Шлакоблоки')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
                         })->first();
                     }
 
                     if ($relation['property']['ad_flat_type_seller_id'] === 1) {
-                        $seller = CatalogParameter::where('value', 'Собственник')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'prodavec');
+                        $seller = CatalogParameter::where('value', 'Собственник')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'prodavec'  . $slug  . $slug);
                         })->first();
                     } else {
-                        $seller = CatalogParameter::where('value', 'Посредник')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'prodavec');
+                        $seller = CatalogParameter::where('value', 'Посредник')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'prodavec'  . $slug  . $slug);
                         })->first();
                     }
 
                     if ($relation['property']['ad_flat_type_novelty_id'] === 1) {
-                        $novizna = CatalogParameter::where('value', 'Вторичка')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'novizna');
+                        $novizna = CatalogParameter::where('value', 'Вторичка')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'novizna'  . $slug  . $slug);
                         })->first();
                     } else {
-                        $novizna = CatalogParameter::where('value', 'Новостройка')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'novizna');
+                        $novizna = CatalogParameter::where('value', 'Новостройка')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'novizna'  . $slug  . $slug);
                         })->first();
                     }
 
@@ -282,8 +284,8 @@ class UsersParser extends Command
                     $phoneCollect = collect($phone['flats']);
                     $myObj = $phoneCollect->where('id', $relation['property']['id'])->first();
                     if (!empty($myObj)) {
-                        $comfortPhone = CatalogParameter::where('value', 'Телефон')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'udobstva');
+                        $comfortPhone = CatalogParameter::where('value', 'Телефон')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'udobstva'  . $slug);
                         })->first();
                     } else {
                         $comfortPhone = null;
@@ -293,8 +295,8 @@ class UsersParser extends Command
                     $netCollect = collect($net['flats']);
                     $myObj = $netCollect->where('id', $relation['property']['id'])->first();
                     if (!empty($myObj)) {
-                        $comfortNet = CatalogParameter::where('value', 'Интернет')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'udobstva');
+                        $comfortNet = CatalogParameter::where('value', 'Интернет')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'udobstva'  . $slug);
                         })->first();
                     } else {
                         $comfortNet = null;
@@ -304,8 +306,8 @@ class UsersParser extends Command
                     $parkCollect = collect($park['flats']);
                     $myObj = $parkCollect->where('id', $relation['id'])->first();
                     if (!empty($myObj)) {
-                        $comfortPark = CatalogParameter::where('value', 'Парковка')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'udobstva');
+                        $comfortPark = CatalogParameter::where('value', 'Парковка')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'udobstva'  . $slug);
                         })->first();
                     } else {
                         $comfortPark = null;
@@ -315,8 +317,8 @@ class UsersParser extends Command
                     $twoLiftCollect = collect($twoLift['flats']);
                     $myObj = $twoLiftCollect->where('id', $relation['id'])->first();
                     if (!empty($myObj)) {
-                        $comfortTwoLift = CatalogParameter::where('value', 'Два лифта')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'udobstva');
+                        $comfortTwoLift = CatalogParameter::where('value', 'Два лифта')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'udobstva'  . $slug);
                         })->first();
                     } else {
                         $comfortTwoLift = null;
@@ -326,8 +328,8 @@ class UsersParser extends Command
                     $consegCollect = collect($conseg['flats']);
                     $myObj = $consegCollect->where('id', $relation['id'])->first();
                     if (!empty($myObj)) {
-                        $comfortCons = CatalogParameter::where('value', 'Консьерж')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'udobstva');
+                        $comfortCons = CatalogParameter::where('value', 'Консьерж')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'udobstva'  . $slug);
                         })->first();
                     } else {
                         $comfortCons = null;
@@ -337,8 +339,8 @@ class UsersParser extends Command
                     $balkonCollect = collect($balkon['flats']);
                     $myObj = $balkonCollect->where('id', $relation['id'])->first();
                     if (!empty($myObj)) {
-                        $comfortBal = CatalogParameter::where('value', 'Балкон')->whereHas('filter', function ($q) {
-                            $q->where('alias', 'udobstva');
+                        $comfortBal = CatalogParameter::where('value', 'Балкон')->whereHas('filter', function ($q) use ($slug) {
+                            $q->where('alias', 'udobstva'  . $slug);
                         })->first();
                     } else {
                         $comfortBal = null;
@@ -421,7 +423,7 @@ class UsersParser extends Command
                         $cats = null;
                     }
                     $model = $isModel ?? new CatalogAd();
-                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] !== 0) {
+                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
                         $model->latitude = $relation['location']['lat'];
                         $model->longitude = $relation['location']['lng'];
                         $model->street = $relation['location']['street'];
