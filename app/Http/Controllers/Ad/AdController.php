@@ -44,6 +44,7 @@ class AdController extends Controller
         $states = new States();
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
+        $filters = $request->filter;
 
         $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
@@ -51,6 +52,11 @@ class AdController extends Controller
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
+                });
+            })
+            ->when(isset($filters), function ($q) use ($filters) {
+                $q->whereHas('adParameters', function ($q) use ($filters) {
+                    $q->where('id', $filters);
                 });
             })
             ->when(!empty($alias), function ($query) use ($alias) {

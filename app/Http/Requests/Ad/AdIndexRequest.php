@@ -38,6 +38,7 @@ class AdIndexRequest extends FormRequest
             'from' => [
                 Rule::in(['cabinet','catalog']),
             ],
+            'filter' => 'array',
             'category_id' => [
                 'exists:catalog_ad_categories,id',
                 'integer',
