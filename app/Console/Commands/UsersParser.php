@@ -398,13 +398,13 @@ class UsersParser extends Command
                     var_dump($i);
                     $i += 1;
 
-//                    if (!empty($relation['images'])) {
-//                        foreach ($relation['images'] as $image) {
-//                            $url = 'https://kto_tam:eto_tapigo@catalog.tapigo.tech/images/thumbnails/thumb_' . $image['image_path'];
-//                            $files = resolve(Files::class);
-//                            $files->saveParser($model, $url);
-//                        }
-//                    }
+                    if (!empty($relation['images'])) {
+                        foreach ($relation['images'] as $image) {
+                            $url = 'https://kto_tam:eto_tapigo@catalog.tapigo.tech/images/thumbnails/thumb_' . $image['image_path'];
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, $url);
+                        }
+                    }
                 }
             }
         }

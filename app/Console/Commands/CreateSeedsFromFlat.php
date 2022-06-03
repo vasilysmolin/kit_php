@@ -43,9 +43,11 @@ class CreateSeedsFromFlat extends Command
         $flatCats = CatalogAdCategory::whereIn('id', [12, 383])->get();
         foreach ($flatCats as $flatCat) {
             $filters = $flatCat->filters;
-            $slug = '-bye';
             if ($flatCat->getKey() === 383) {
                 $slug = '-rent';
+            }
+            if ($flatCat->getKey() === 12) {
+                $slug = '-bye';
             }
             if ($filters->isEmpty()) {
                 $filter = $flatCat->filters()->create([
