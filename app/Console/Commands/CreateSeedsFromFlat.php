@@ -175,7 +175,7 @@ class CreateSeedsFromFlat extends Command
 
                 for ($i = 1; $i <= 100; $i++) {
                     $filter->parameters()->create([
-                        'value' => $i,
+                        'value' => "{$i}м2",
                         'sort' => $i,
                     ]);
                 }
@@ -190,7 +190,7 @@ class CreateSeedsFromFlat extends Command
 
                 for ($i = 1; $i <= 100; $i++) {
                     $filter->parameters()->create([
-                        'value' => $i,
+                        'value' => "{$i}м2",
                         'sort' => $i,
                     ]);
                 }
@@ -205,7 +205,7 @@ class CreateSeedsFromFlat extends Command
 
                 for ($i = 1; $i <= 100; $i++) {
                     $filter->parameters()->create([
-                        'value' => $i,
+                        'value' => "{$i}м2",
                         'sort' => $i,
                     ]);
                 }
