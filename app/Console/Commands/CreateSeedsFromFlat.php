@@ -251,6 +251,141 @@ class CreateSeedsFromFlat extends Command
             }
         }
 
+        $items = CatalogAdCategory::whereIn('id', [2])->get();
+        foreach ($items as $item) {
+            $filters = $item->filters;
+
+            if ($filters->isEmpty()) {
+                $filter = $item->filters()->create([
+                    'name' => 'Продавец',
+                    'type' => 'select',
+                    'alias' => Str::slug('Продавец машин'),
+                    'sort' => 1,
+                    'active' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Собственник',
+                    'sort' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Автосалон',
+                    'sort' => 2,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Посредник',
+                    'sort' => 3,
+                ]);
+
+                $filter = $item->filters()->create([
+                    'name' => 'Двигатель',
+                    'type' => 'select',
+                    'alias' => Str::slug('Двигатель'),
+                    'sort' => 2,
+                    'active' => 1,
+                ]);
+                    $filter->parameters()->create([
+                        'value' => 'Дизель',
+                        'sort' => 1,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Гибрид',
+                        'sort' => 2,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Электро',
+                        'sort' => 3,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Газ',
+                        'sort' => 4,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Бензин',
+                        'sort' => 5,
+                    ]);
+
+                $filter = $item->filters()->create([
+                    'name' => 'Состояние',
+                    'type' => 'select',
+                    'alias' => Str::slug('Состояние'),
+                    'sort' => 3,
+                    'active' => 1,
+                ]);
+                    $filter->parameters()->create([
+                        'value' => 'Не битый',
+                        'sort' => 1,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Битый',
+                        'sort' => 2,
+                    ]);
+
+                $filter = $item->filters()->create([
+                    'name' => 'Ремонт',
+                    'type' => 'select',
+                    'alias' => Str::slug('Ремонт'),
+                    'sort' => 4,
+                    'active' => 1,
+                ]);
+                    $filter->parameters()->create([
+                        'value' => 'Требуется',
+                        'sort' => 1,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Не требуется',
+                        'sort' => 2,
+                    ]);
+
+                $filter = $item->filters()->create([
+                    'name' => 'Птс',
+                    'type' => 'select',
+                    'alias' => Str::slug('Птс'),
+                    'sort' => 5,
+                    'active' => 1,
+                ]);
+                    $filter->parameters()->create([
+                        'value' => 'Копия',
+                        'sort' => 1,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Оригинал',
+                        'sort' => 2,
+                    ]);
+
+                $filter = $item->filters()->create([
+                    'name' => 'Дтп',
+                    'type' => 'select',
+                    'alias' => Str::slug('Дтп'),
+                    'sort' => 6,
+                    'active' => 1,
+                ]);
+                    $filter->parameters()->create([
+                        'value' => 'Участвовал',
+                        'sort' => 1,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Не участвовал',
+                        'sort' => 2,
+                    ]);
+
+                $filter = $item->filters()->create([
+                    'name' => 'Кредит',
+                    'type' => 'select',
+                    'alias' => Str::slug('Кредит'),
+                    'sort' => 6,
+                    'active' => 1,
+                ]);
+                    $filter->parameters()->create([
+                        'value' => 'В залоге',
+                        'sort' => 1,
+                    ]);
+                    $filter->parameters()->create([
+                        'value' => 'Не в залоге',
+                        'sort' => 2,
+                    ]);
+            }
+        }
+
         return 0;
     }
 }
