@@ -244,39 +244,39 @@ class UsersParser extends Command
                     })->first();
                     if ($relation['property']['ad_flat_type_building_id'] === 1) {
                         $dom = CatalogParameter::where('value', 'Панельный')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
+                            $q->where('alias', 'dom'  . $slug);
                         })->first();
                     } elseif ($relation['property']['ad_flat_type_building_id'] === 2) {
                         $dom = CatalogParameter::where('value', 'Кирпичный')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
+                            $q->where('alias', 'dom'  . $slug);
                         })->first();
                     } elseif ($relation['property']['ad_flat_type_building_id'] === 3) {
                         $dom = CatalogParameter::where('value', 'Деревянный')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
+                            $q->where('alias', 'dom'  . $slug);
                         })->first();
                     } else {
                         $dom = CatalogParameter::where('value', 'Шлакоблоки')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug  . $slug  . $slug);
+                            $q->where('alias', 'dom'  . $slug);
                         })->first();
                     }
 
                     if ($relation['property']['ad_flat_type_seller_id'] === 1) {
                         $seller = CatalogParameter::where('value', 'Собственник')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'prodavec'  . $slug  . $slug);
+                            $q->where('alias', 'prodavec'  . $slug);
                         })->first();
                     } else {
                         $seller = CatalogParameter::where('value', 'Посредник')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'prodavec'  . $slug  . $slug);
+                            $q->where('alias', 'prodavec'  . $slug);
                         })->first();
                     }
 
                     if ($relation['property']['ad_flat_type_novelty_id'] === 1) {
                         $novizna = CatalogParameter::where('value', 'Вторичка')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'novizna'  . $slug  . $slug);
+                            $q->where('alias', 'novizna'  . $slug);
                         })->first();
                     } else {
                         $novizna = CatalogParameter::where('value', 'Новостройка')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'novizna'  . $slug  . $slug);
+                            $q->where('alias', 'novizna'  . $slug);
                         })->first();
                     }
 
@@ -408,40 +408,40 @@ class UsersParser extends Command
                 }
             }
         }
-        foreach ($contents as $item) {
-            $userDB = User::find($item['id']);
-            if (isset($userDB)  || isset($userDB->profile)) {
-                foreach ($item['ads'] as $relation) {
-                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
-                        continue;
-                    }
-                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
-                    $isModel = CatalogAd::find($relation['property']['id']);
-                    if (isset($relation['category'])) {
-                        $cats = CatalogAdCategory::find($relation['category']['id']);
-                    } else {
-                        $cats = null;
-                    }
-                    $model = $isModel ?? new CatalogAd();
-                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
-                        $model->latitude = $relation['location']['lat'];
-                        $model->longitude = $relation['location']['lng'];
-                        $model->street = $relation['location']['street'];
-                        $model->house = $relation['location']['house'];
-                    }
-                    $isModel ? $model->update() : $model;
-
-
-//                    if (!empty($relation['images'])) {
-//                        foreach ($relation['images'] as $image) {
-//                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
-//                            $files = resolve(Files::class);
-//                            $files->saveParser($model, $url);
-//                        }
+//        foreach ($contents as $item) {
+//            $userDB = User::find($item['id']);
+//            if (isset($userDB)  || isset($userDB->profile)) {
+//                foreach ($item['ads'] as $relation) {
+//                    if ($relation['property'] === null || !isset($relation['property']['title'])) {
+//                        continue;
 //                    }
-                }
-            }
-        }
+//                    $alias = Str::slug(Str::limit($relation['property']['title'], 10) . ' ' . str_random(5), '-');
+//                    $isModel = CatalogAd::find($relation['property']['id']);
+//                    if (isset($relation['category'])) {
+//                        $cats = CatalogAdCategory::find($relation['category']['id']);
+//                    } else {
+//                        $cats = null;
+//                    }
+//                    $model = $isModel ?? new CatalogAd();
+//                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
+//                        $model->latitude = $relation['location']['lat'];
+//                        $model->longitude = $relation['location']['lng'];
+//                        $model->street = $relation['location']['street'];
+//                        $model->house = $relation['location']['house'];
+//                    }
+//                    $isModel ? $model->update() : $model;
+//
+//
+////                    if (!empty($relation['images'])) {
+////                        foreach ($relation['images'] as $image) {
+////                            $url = 'https://catalog.tapigo.ru/images/thumbnails/thumb_' . $image['image_path'];
+////                            $files = resolve(Files::class);
+////                            $files->saveParser($model, $url);
+////                        }
+////                    }
+//                }
+//            }
+//        }
 //
 //        $client = new Client();
 //        $response = $client->get('https://user.tapigo.ru/all-up', ['verify' => false]);
