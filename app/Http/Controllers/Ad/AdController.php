@@ -162,6 +162,7 @@ class AdController extends Controller
 
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
+        $filters = $request->filter;
 
         unset($formData['category_id']);
         $catalogAd = new CatalogAd();
@@ -179,6 +180,9 @@ class AdController extends Controller
         }
 
         $files->save($catalogAd, $request['files']);
+        if (!empty($filters)) {
+            $catalogAd->adParameters()->sync($filters);
+        }
 
         return response()->json([], 201, ['Location' => "/declarations/$catalogAd->id"]);
     }
@@ -251,6 +255,7 @@ class AdController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
+        $filters = $request->filter;
         $currentUser = auth('api')->user();
         unset($formData['category_id']);
 
@@ -269,6 +274,9 @@ class AdController extends Controller
 //        }
 
         $catalogAd->update();
+        if (!empty($filters)) {
+            $catalogAd->adParameters()->sync($filters);
+        }
 
 
         $files = resolve(Files::class);
