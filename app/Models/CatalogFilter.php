@@ -25,6 +25,7 @@ class CatalogFilter extends Model
 
     public function parameters(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(CatalogParameter::class, 'filter_id', 'id');
+        return $this->hasMany(CatalogParameter::class, 'filter_id', 'id')
+            ->orderBy('sort');
     }
 }

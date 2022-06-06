@@ -36,7 +36,8 @@ class CatalogAdCategory extends Model
 
     public function filters(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany(CatalogFilter::class, 'category_id', 'id');
+        return $this->hasMany(CatalogFilter::class, 'category_id', 'id')
+            ->orderBy('sort');
     }
 
     public function color(): \Illuminate\Database\Eloquent\Relations\BelongsTo

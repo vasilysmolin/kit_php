@@ -90,6 +90,6 @@ class CatalogAd extends Model
             'catalog_ad_parameters',
             'ad_id',
             'parameter_id'
-        );
+        )->orderBy('catalog_parameters.sort');
     }
 }
