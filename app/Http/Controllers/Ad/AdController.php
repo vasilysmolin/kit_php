@@ -212,7 +212,7 @@ class AdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images', 'adParameters.filter')
+            ->with('image', 'images', 'adParameters.filter', 'city')
             ->when($cabinet !== false, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->getKey());

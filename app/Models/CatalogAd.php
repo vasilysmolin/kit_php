@@ -31,6 +31,9 @@ class CatalogAd extends Model
         'alias',
         'address',
         'profile_id',
+        'city_id',
+        'latitude',
+        'longitude',
         'category_id',
     ];
 
@@ -56,6 +59,11 @@ class CatalogAd extends Model
     public function categories()
     {
         return $this->hasOne(CatalogAdCategory::class, 'id', 'category_id');
+    }
+
+    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(City::class);
     }
 
     public function images()
