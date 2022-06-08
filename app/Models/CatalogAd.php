@@ -34,6 +34,8 @@ class CatalogAd extends Model
         'city_id',
         'latitude',
         'longitude',
+        'street',
+        'house',
         'category_id',
     ];
 

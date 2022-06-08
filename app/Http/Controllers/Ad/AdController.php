@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Ad;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\External\YandexMapController;
 use App\Http\Middleware\AdMiddleware;
 use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
@@ -14,7 +15,6 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use Illuminate\Http\Request;
-use YaGeo;
 
 class AdController extends Controller
 {
@@ -164,6 +164,13 @@ class AdController extends Controller
         $formData['active'] = true;
         $filters = $request->filter;
 
+        if (isset($formData['longitude']) && isset($formData['latitude'])) {
+            $yandexMap = resolve(YandexMapController::class);
+            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
+            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
+            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
+        }
+
         unset($formData['category_id']);
         $catalogAd = new CatalogAd();
         $catalogAd->fill($formData);
@@ -256,8 +263,14 @@ class AdController extends Controller
     {
         $formData = $request->all();
         $filters = $request->filter;
-        $currentUser = auth('api')->user();
+//      $currentUser = auth('api')->user();
         unset($formData['category_id']);
+        if (isset($formData['longitude']) && isset($formData['latitude'])) {
+            $yandexMap = resolve(YandexMapController::class);
+            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
+            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
+            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
+        }
 
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
