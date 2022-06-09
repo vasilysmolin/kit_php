@@ -129,6 +129,21 @@ class UserController extends Controller
                 }
             }
         }, 3);
+        $states = new States();
+        if ($user->state === $states->step()) {
+            if ($user->profile->isPerson === false) {
+                if (!empty($user->name) && !empty($user->phone)) {
+                    $user->state = $states->new();
+                    $user->update();
+                }
+            } else {
+                if (!empty($user->profile->person->inn) && !empty($user->phone)) {
+                    $user->state = $states->new();
+                    $user->update();
+                }
+            }
+        }
+
 
 
         return response()->json([], 204);

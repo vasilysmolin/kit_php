@@ -61,6 +61,11 @@ class States implements ScheduleInterface
         return collect($this->states)->keys();
     }
 
+    public function step(): string
+    {
+        return self::STEP;
+    }
+
     public function new(): string
     {
         return self::NEW;
