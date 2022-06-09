@@ -16,7 +16,8 @@ class CatalogParameter extends Model
 
     public function filter(): \Illuminate\Database\Eloquent\Relations\belongsTo
     {
-        return $this->belongsTo(CatalogFilter::class, 'filter_id', 'id');
+        return $this->belongsTo(CatalogFilter::class, 'filter_id', 'id')
+            ->orderBy('sort');
     }
 
     public function adParameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany

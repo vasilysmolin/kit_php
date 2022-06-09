@@ -14,7 +14,7 @@ class AddColumnModerationStateAll extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('state', 100)->after('email')->default('new');
+            $table->string('state', 100)->after('email')->default('step');
         });
         Schema::table('jobs_vacancy_categories', function (Blueprint $table) {
             $table->string('state', 100)->after('name')->default('new');

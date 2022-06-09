@@ -96,7 +96,7 @@ class AdController extends Controller
         $catalogAd = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories')
+            ->with('image', 'categories', 'adParameters.filter')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
