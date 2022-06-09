@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 
 class States implements ScheduleInterface
 {
+    private const STEP = 'step';
     private const NEW = 'new';
     private const IN_PROGRESS = 'in_progress';
     private const BLOCK = 'block';
@@ -15,6 +16,7 @@ class States implements ScheduleInterface
     private const PAUSE = 'pause';
 
     private $states = [
+        self::STEP => 'На шагах',
         self::NEW => 'Новый',
         self::IN_PROGRESS => 'На проверке',
         self::BLOCK => 'Заблокирован',
