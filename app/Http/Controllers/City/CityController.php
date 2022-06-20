@@ -27,7 +27,7 @@ class CityController extends Controller
         $files = resolve(Files::class);
         $take = $request->take;
 
-        $builder = City::search($request->get('query'))
+        $builder = City::search($request->get('querySearch'))
             ->when(!empty($take), function ($query) use ($take) {
                 $query->take((int) $take);
             })

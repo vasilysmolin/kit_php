@@ -60,7 +60,7 @@ class CategoryAdController extends Controller
         $skip = $request->skip ?? 0;
         $files = resolve(Files::class);
         $take = $request->take;
-        $builder = CatalogAdCategory::search($request->get('query'))
+        $builder = CatalogAdCategory::search($request->get('querySearch'))
             ->where('active', 1)
             ->when(!empty($take), function ($query) use ($take) {
                 $query->take((int) $take);

@@ -44,6 +44,15 @@ class AdIndexRequest extends FormRequest
                 'integer',
                 'max:255',
             ],
+            'alias' => [
+                'exists:catalog_ad_categories,alias',
+                'string',
+                'max:255',
+            ],
+            'querySearch' => [
+                'max:255',
+                'string',
+            ],
         ];
     }
 }

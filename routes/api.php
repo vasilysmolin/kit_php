@@ -56,6 +56,10 @@ Route::group([
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
     Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
+
+    Route::apiResource('search-logs', 'Logs\SearchLogsController')
+        ->only('index')
+        ->middleware('role:admin');
 });
 
 

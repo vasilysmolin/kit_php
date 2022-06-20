@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Ad;
 
+use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\External\YandexMapController;
 use App\Http\Middleware\AdMiddleware;
@@ -14,6 +15,7 @@ use App\Models\CatalogAdCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
+use App\Objects\TypeModules\TypeModules;
 use Illuminate\Http\Request;
 
 class AdController extends Controller
@@ -45,10 +47,25 @@ class AdController extends Controller
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
         $filters = $request->filter;
+        $querySearch = $request->querySearch;
+        $catalogAdIds = [];
+
+        if (!empty($querySearch)) {
+            event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
+
+            $builder = CatalogAd::search($querySearch)
+                ->take(100000)
+                ->orderBy('sort', 'ASC');
+
+            $catalogAdIds = $builder->get()->pluck('id');
+        }
 
         $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
         })
+            ->when(!empty($catalogAdIds), function ($query) use ($catalogAdIds) {
+                $query->whereIn('id', $catalogAdIds);
+            })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
@@ -63,11 +80,12 @@ class AdController extends Controller
                 $category = CatalogAdCategory::where('alias', $alias)
                     ->with('categories')
                     ->first();
-
-                $categoriesID = $this->iter($category, []);
-                $query->whereHas('categories', function ($q) use ($categoriesID) {
-                    $q->whereIn('id', $categoriesID);
-                });
+                if (!empty($category)) {
+                    $categoriesID = $this->iter($category, []);
+                    $query->whereHas('categories', function ($q) use ($categoriesID) {
+                        $q->whereIn('id', $categoriesID);
+                    });
+                }
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
@@ -92,7 +110,7 @@ class AdController extends Controller
             })
             ->orderBy('sort', 'ASC');
 
-
+        $builderCount = clone $builder;
         $catalogAd = $builder
             ->take((int) $take)
             ->skip((int) $skip)
@@ -101,7 +119,7 @@ class AdController extends Controller
                 $q->with($expand);
             })
             ->get();
-        $count = $builder->count();
+        $count = $builderCount->count();
 
         $catalogAd->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -127,7 +145,7 @@ class AdController extends Controller
         $state = $request->state;
         $states = new States();
 
-        $builder = CatalogAd::search($request->get('query'))->
+        $builder = CatalogAd::search($request->get('querySearch'))->
             when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
             })
