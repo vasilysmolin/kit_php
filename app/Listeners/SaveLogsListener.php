@@ -29,7 +29,7 @@ class SaveLogsListener implements ShouldQueue
      */
     public function handle(SaveLogsEvent $event)
     {
-        if (Str::length($event->query) >= 4) {
+        if (Str::length($event->query) >= 3) {
             $log = new SearchLogs();
             $log->text = $event->query;
             $log->user_id = isset($event->user) ? $event->user->getKey() : null;
