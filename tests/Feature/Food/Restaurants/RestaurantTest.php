@@ -69,7 +69,7 @@ class RestaurantTest extends TestCase
     public function testDestroyRestaurant()
     {
         $restaraunt = FoodRestaurant::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this

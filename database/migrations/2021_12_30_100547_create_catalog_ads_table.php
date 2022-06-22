@@ -21,6 +21,7 @@ class CreateCatalogAdsTable extends Migration
             $table->string('article')->nullable();
             $table->integer('sort')->nullable();
             $table->string('name')->nullable();
+            $table->string('title', 1000)->nullable();
             $table->text('description')->nullable();
             $table->string('alias')->nullable()->unique();
             $table->integer('active')->unsigned()->default(1);

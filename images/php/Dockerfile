@@ -42,7 +42,7 @@ RUN set -xe \
 RUN apk add --no-cache supervisor tzdata
 ENV TZ Europe/Moscow
 
-RUN if [ "$ENV" = "local" ]; \
+RUN if [ "$ENV" = "development" ]; \
 	then pecl install xdebug && docker-php-ext-enable xdebug;  \
 	else echo "$ENV"; \
 	fi

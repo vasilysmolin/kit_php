@@ -27,6 +27,7 @@ class JobsVacancyFactory extends Factory
             'description' => $this->faker->text(),
             'active' => 1,
             'alias' => $this->faker->slug(6),
+            'sort' => $this->faker->numberBetween(0, 1500),
             'profile_id' => Profile::factory(),
             'min_price' => $this->faker->numberBetween(0, 1500),
             'max_price' => $this->faker->numberBetween(0, 1500),

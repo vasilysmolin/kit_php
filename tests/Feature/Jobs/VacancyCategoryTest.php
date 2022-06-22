@@ -64,7 +64,7 @@ class VacancyCategoryTest extends TestCase
     public function testDestroyVacancyCategory()
     {
         $categoryResume = JobsVacancyCategory::factory()->create();
-        $user = User::factory()->create();
+        $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
 
         $response = $this

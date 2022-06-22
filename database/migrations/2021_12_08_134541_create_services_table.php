@@ -28,7 +28,7 @@ class CreateServicesTable extends Migration
             $table->boolean('guarantee')->default(0);
             $table->boolean('hourly_payment')->default(0);
             $table->boolean('consultation')->default(0);
-            $table->boolean('sort')->nullable();
+            $table->integer('sort')->nullable();
             $table->float('latitude', 10, 0)->nullable();
             $table->float('longitude', 10, 0)->nullable();
             $table->string('phone', 255)->nullable();

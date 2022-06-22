@@ -32,7 +32,7 @@ class CreateJobsVacanciesTable extends Migration
             $table->string('alias', 255)->unique();
             $table->string('salary_type')->nullable();
             $table->boolean('active')->default(0);
-            $table->boolean('sort')->nullable();
+            $table->integer('sort')->nullable();
             $table->float('latitude', 10, 0)->nullable();
             $table->float('longitude', 10, 0)->nullable();
             $table->integer('work_experience')->default(0);

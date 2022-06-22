@@ -4,10 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\EloquentSortable\SortableTrait;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+use Spatie\Translatable\HasTranslations;
 
 class JobsVacancy extends Model
 {
     use HasFactory;
+    use HasSlug;
+    use SoftDeletes;
+    use SortableTrait;
 
     /**
      * The attributes that are mass assignable.
@@ -19,6 +27,7 @@ class JobsVacancy extends Model
         'title',
         'name',
         'price',
+        'state',
         'description',
         'education',
         'experience',
@@ -36,6 +45,30 @@ class JobsVacancy extends Model
         'min_price',
         'max_price',
     ];
+
+    /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+//        'created_at',
+//        'updated_at',
+        'deleted_at',
+    ];
+
+    /**
+     * Get the options for generating the slug.
+     *
+     * @return \Spatie\Sluggable\SlugOptions
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->doNotGenerateSlugsOnUpdate()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('alias');
+    }
 
     public function categories(): \Illuminate\Database\Eloquent\Relations\HasOne
     {

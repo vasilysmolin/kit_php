@@ -15,46 +15,104 @@ class CategoryAdController extends Controller
 {
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-
+        $user = auth('api')->user();
+        $cabinet = isset($user) && $request->from === 'cabinet';
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
-
-        $category = CatalogAdCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = CatalogAdCategory::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->with('image')
-            ->where('active', 1)
+            ->whereNull('parent_id')
+            ->where('active', 1);
+
+        $category = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
+            ->with('image', 'categories', 'categoriesParent', 'color')
+            ->orderBy('id', 'ASC')
             ->get();
 
+        $count = $builder->count();
 
-        $category->each(function ($item) use ($files) {
+        $category->each(function ($item) use ($files, $cabinet) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
+            if ($cabinet) {
+                $this->changeName($item->categories);
+            }
         });
-
-        $count = CatalogAdCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
 
         return response()->json($data);
     }
 
+    public function fullSearch(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $user = auth('api')->user();
+        $cabinet = isset($user) && $request->from === 'cabinet';
+//        $take = $request->take ?? config('settings.take_twenty_five');
+        $skip = $request->skip ?? 0;
+        $files = resolve(Files::class);
+        $take = $request->take;
+        $builder = CatalogAdCategory::search($request->get('querySearch'))
+            ->where('active', 1)
+            ->when(!empty($take), function ($query) use ($take) {
+                $query->take((int) $take);
+            })
+            ->orderBy('id', 'ASC');
+
+        $category = $builder
+            ->orderBy('id', 'ASC')
+            ->get();
+
+        $count = $builder->count();
+        $category->load('image', 'categories', 'categoriesParent', 'color');
+
+        $category->each(function ($item) use ($files, $cabinet) {
+            if (isset($item->image)) {
+                $item->photo = $files->getFilePath($item->image);
+                $item->makeHidden('image');
+            }
+            if ($cabinet) {
+                $this->changeName($item->categories);
+            }
+        });
+
+        $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
+
+        return response()->json($data);
+    }
+
+    private function changeName($node)
+    {
+        if ($node->isEmpty()) {
+            return;
+        }
+        $node->each(function ($item) {
+            if ($item->name === 'Снять') {
+                $item->name = 'Сдать';
+            }
+            if ($item->name === 'Купить') {
+                $item->name = 'Продать';
+            }
+//            if (!$item->categories->isEmpty()) {
+//                $this->changeName($item->categories);
+//            }
+        });
+    }
+
     public function store(Request $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-
+        if ((int) $formData['color_id'] === 0) {
+            $formData['color_id'] = null;
+        }
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
@@ -68,17 +126,18 @@ class CategoryAdController extends Controller
 
         $files->save($category, $request['files']);
 
-        return response()->json([], 201, ['Location' => "/category-ads/$category->id"]);
+        return response()->json([], 201, ['Location' => "/category-declarations/$category->id"]);
     }
 
     public function show(Request $request, $id): \Illuminate\Http\JsonResponse
     {
 
         $category = CatalogAdCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
-            ->with('image')
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->with('image', 'categories', 'categoriesParent', 'color', 'filters.parameters')
             ->first();
-
         $files = resolve(Files::class);
         if (isset($category->image)) {
             $category->photo = $files->getFilePath($category->image);
@@ -92,16 +151,14 @@ class CategoryAdController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $formData['profile_id'] = auth('api')->user()->profile->id;
-
-        if (isset($formData['name'])) {
-            $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
+        if ((int) $formData['color_id'] === 0) {
+            $formData['color_id'] = null;
         }
-
         $category = CatalogAdCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->first();
-
         if (!isset($category)) {
             throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
         }
@@ -121,7 +178,10 @@ class CategoryAdController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         CatalogAdCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete();
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete();
         return response()->json([], 204);
     }
 }

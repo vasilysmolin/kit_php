@@ -21,15 +21,17 @@ class CategoryServiceController extends Controller
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
 
-        $serviceCategory = ServiceCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
+        $builder = ServiceCategory::
+            when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
-            ->with('image')
-            ->where('active', 1)
+            ->where('active', 1);
+        $serviceCategory = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
+            ->with('image', 'categories')
             ->get();
-
+        $count = $builder->count();
 
         $serviceCategory->each(function ($item) use ($files) {
             if (isset($item->image)) {
@@ -37,14 +39,6 @@ class CategoryServiceController extends Controller
                 $item->makeHidden('image');
             }
         });
-
-        $count = ServiceCategory::take((int) $take)
-            ->skip((int) $skip)
-            ->when(!empty($id) && is_array($id), function ($query) use ($id) {
-                $query->whereIn('id', $id);
-            })
-            ->where('active', 1)
-            ->count();
 
         $data = (new JsonHelper())->getIndexStructure(new ServiceCategory(), $serviceCategory, $count, (int) $skip);
 
@@ -75,8 +69,10 @@ class CategoryServiceController extends Controller
     {
 
         $serviceCategory = ServiceCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
-            ->with('image')
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->with('image', 'categories')
             ->first();
 
         $files = resolve(Files::class);
@@ -99,7 +95,9 @@ class CategoryServiceController extends Controller
         }
 
         $serviceCategory = ServiceCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
             ->first();
 
         if (!isset($serviceCategory)) {
@@ -121,7 +119,10 @@ class CategoryServiceController extends Controller
     public function destroy($id): \Illuminate\Http\JsonResponse
     {
         ServiceCategory::where('alias', $id)
-            ->orWhere('id', (int) $id)->delete();
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->delete();
         return response()->json([], 204);
     }
 }

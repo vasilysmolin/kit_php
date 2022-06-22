@@ -18,6 +18,24 @@ class JobsResumeCategory extends Model
         'sort',
     ];
 
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+    ];
+
+    public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JobsResumeCategory::class, 'parent_id', 'id')
+            ->with('categories');
+    }
+
+    public function childrenCategories(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(JobsResumeCategory::class, 'parent_id', 'id')
+            ->with('categories');
+    }
+
     public function images()
     {
         return $this->morphMany(Image::class, 'imageable');

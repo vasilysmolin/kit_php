@@ -14,11 +14,11 @@ class CreateCatalogAdParameterTable extends Migration
     public function up()
     {
         Schema::create('catalog_ad_parameters', function (Blueprint $table) {
-            $table->unsignedBigInteger('filter_id')->nullable();
+            $table->unsignedBigInteger('parameter_id')->nullable();
             $table->unsignedBigInteger('ad_id')->nullable();
-            $table->foreign('filter_id', 'FK_catalog_filters_catalog_ad_parameters')
+            $table->foreign('parameter_id', 'FK_catalog_filters_catalog_ad_parameters')
                 ->references('id')
-                ->on('catalog_filters')
+                ->on('catalog_parameters')
                 ->onUpdate('RESTRICT')
                 ->onDelete('CASCADE');
             $table->foreign('ad_id', 'FK_catalog_ads_catalog_ad_parameters')

@@ -19,11 +19,19 @@ api from tapigo
 * make >= 4
 
 ## Install and start project
-* `host write 127.0.0.1 tapigol.ru`
+* `host write 127.0.0.1 tapigol.ru api.tapigol.ru hub.tapigol.ru jobs.tapigol.ru catalog.tapigol.ru`
 
-* `добавить сертификаты в nginx`
+##№ для продакшена
+* `сертификаты в image/nginx/ssl закинуть`
+* `выставить среду production`
+
+##№ для локальной разработки
+* `выставить среду local`
+* `сертификаты сделаются самоподписанные при сборке докера`
 
 * `проверить env файл`
+- uid пользователя должен соответствовать uid текущего пользователя в системе
+- проверить ssl сертификаты и среду. Место положение сертификатов зависит от среды. Это касает dev и prod режима. кально делаются самоподписанные сертификаты и кладуться сами.
 
 * `docker-compose up -d --build`
 
@@ -45,6 +53,10 @@ api from tapigo
 
   SELECT setval(pg_get_serial_sequence('profiles', 'id'), coalesce(max(id)+1, 1), false) FROM profiles;
 
+
+#basic auth from dev
+ktotam
+eto_tapigo
 
 
 ## Tests and lint

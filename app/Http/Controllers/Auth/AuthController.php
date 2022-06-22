@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Auth\AuthRequest;
 use App\Models\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -25,9 +27,27 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function login()
+    public function login(AuthRequest $request)
     {
-        $credentials = request(['email', 'password']);
+//        $credentials = request(['email', 'password']);
+
+        $email = Str::lower($request->email);
+        $credentials = [
+            'email' => $email,
+            'password' => $request->password,
+        ];
+//        $user = User::where('email', $request->email)->first();
+//        $oldPassword = $user->password;
+//        $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
+//        $user->update();
+//        $credentials = [
+//            'email' => $request->email,
+//            'password' => $request->password,
+//        ];
+//        $auth = auth('api');
+//        $token = $auth->attempt($credentials);
+//        $user->password = $oldPassword;
+//        $user->update();
 
         $token = auth('api')->attempt($credentials);
         if ($token === false) {
@@ -99,19 +119,29 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function register(Request $request)
+    public function register(AuthRequest $request)
     {
-        $credentials = request(['email', 'password']);
+//        $credentials = request(['email', 'password']);
 
-        $model = User::where('email', request('email'))->first();
+        $email = Str::lower($request->email);
+        $credentials = [
+            'email' => $email,
+            'password' => $request->password,
+        ];
+
+        $model = User::where('email', $email)->first();
 
 
         if (!isset($model)) {
             $user = new User();
-            $user->email = request('email');
+            $user->email = $email;
             $user->password = bcrypt(request('password'));
             $user->save();
             $user->profile()->create();
+            if (isset($request->is_person) && !empty($request->is_person)) {
+                $user->profile->isPerson = true;
+                $user->profile->update();
+            }
             if (isset($request->inn) && !empty($request->inn)) {
                 $user->profile->isPerson = true;
                 $user->profile->update();
@@ -148,8 +178,11 @@ class AuthController extends Controller
     public function user()
     {
         $user = auth('api')->user();
-        $user->profile()->create();
-        return response()->json($user->load('profile.restaurant'));
+        if (!isset($user->profile)) {
+            $user->profile()->create();
+        }
+        $user->setAttribute('role', $user->getRoleNames()->first());
+        return response()->json($user->load(['profile.restaurant', 'profile.person','city']));
     }
 
     /**

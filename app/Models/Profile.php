@@ -15,7 +15,7 @@ class Profile extends Model
      * @var array
      */
     protected $fillable = [
-        'entity',
+        'isPerson',
     ];
 
     /**
@@ -23,7 +23,10 @@ class Profile extends Model
      *
      * @var array
      */
-    protected $hidden = [];
+    protected $hidden = [
+        'created_at',
+        'updated_at',
+    ];
 
     /**
      * The attributes that should be cast to native types.
@@ -45,6 +48,21 @@ class Profile extends Model
     public function vacancy()
     {
         return $this->hasMany(JobsVacancy::class, 'profile_id', 'id');
+    }
+
+    public function vacancies()
+    {
+        return $this->hasMany(JobsVacancy::class, 'profile_id', 'id');
+    }
+
+    public function ads()
+    {
+        return $this->hasMany(CatalogAd::class, 'profile_id', 'id');
+    }
+
+    public function service()
+    {
+        return $this->hasMany(Service::class, 'profile_id', 'id');
     }
 
     public function resume()
