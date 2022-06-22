@@ -76,7 +76,7 @@ class AdController extends Controller
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
 
-        return response()->json($data);
+        return response()->json(1);
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse

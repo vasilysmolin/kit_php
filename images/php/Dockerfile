@@ -1,5 +1,5 @@
 FROM composer:2 AS composer
-FROM php:7.4-fpm-alpine
+FROM php:8.1.1-fpm-alpine
 
 ARG DOMAIN
 ARG DOCKER_ENV
