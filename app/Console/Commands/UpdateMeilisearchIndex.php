@@ -39,9 +39,12 @@ class UpdateMeilisearchIndex extends Command
     public function handle()
     {
         $client = new Client(config('scout.meilisearch.host'));
+
         $this->updateSortableAttributes($client);
 
         $this->updateFilterableAttributes($client);
+
+        $this->updateSearchableAttributes($client);
 
         return Command::SUCCESS;
     }
@@ -53,12 +56,27 @@ class UpdateMeilisearchIndex extends Command
             'sort',
         ]);
 
+
         $client->index('cities_index')->updateSortableAttributes([
             'name',
             'sort',
         ]);
 
         $this->info('Updated sortable attributes...');
+    }
+
+    protected function updateSearchableAttributes(Client $client): void
+    {
+        $client->index('catalog_ads')->updateSearchableAttributes([
+            'name',
+        ]);
+
+
+        $client->index('cities_index')->updateSearchableAttributes([
+            'name',
+        ]);
+
+        $this->info('Updated searchable attributes...');
     }
 
     protected function updateFilterableAttributes(Client $client): void
