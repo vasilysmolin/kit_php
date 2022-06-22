@@ -17,28 +17,32 @@ class CityController extends Controller
      */
     public function index()
     {
-        //
     }
 
     public function fullSearch(Request $request): \Illuminate\Http\JsonResponse
     {
 
-        $skip = $request->skip ?? 0;
         $files = resolve(Files::class);
         $take = $request->take;
+        $skip = $request->skip ?? 0;
 
-        $builder = City::search($request->get('querySearch'))
+        $builder = City::search($request->get('querySearch'), function ($meilisearch, $query, $options) use ($skip) {
+            if (!empty($skip)) {
+                $options['offset'] = (int) $skip;
+            }
+            return $meilisearch->search($query, $options);
+        })
             ->when(!empty($take), function ($query) use ($take) {
                 $query->take((int) $take);
             })
             ->where('active', 'true')
             ->orderBy('sort', 'ASC');
 
-        $city = $builder->get();
+        $cities = $builder->get();
 
         $count = $builder->count();
 
-        $city->each(function ($item) use ($files) {
+        $cities->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
@@ -46,7 +50,7 @@ class CityController extends Controller
             $item->title = $item->name;
         });
 
-        $data = (new JsonHelper())->getIndexStructure(new City(), $city, $count, (int) $skip);
+        $data = (new JsonHelper())->getIndexStructure(new City(), $cities, $count, (int) $skip);
 
         return response()->json($data);
     }
@@ -58,7 +62,6 @@ class CityController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -69,7 +72,6 @@ class CityController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -80,7 +82,6 @@ class CityController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -91,7 +92,6 @@ class CityController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -103,7 +103,6 @@ class CityController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -114,6 +113,5 @@ class CityController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

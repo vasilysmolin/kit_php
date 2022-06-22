@@ -53,8 +53,13 @@ class AdController extends Controller
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
 
-            $builder = CatalogAd::search($querySearch)
-                ->take(100000)
+            $builder = CatalogAd::search($querySearch, function ($meilisearch, $query, $options) use ($skip) {
+                if (!empty($skip)) {
+                    $options['offset'] = (int) $skip;
+                }
+                return $meilisearch->search($query, $options);
+            })
+                ->take((int) $take)
                 ->orderBy('sort', 'ASC');
 
             $catalogAdIds = $builder->get()->pluck('id');
@@ -145,8 +150,13 @@ class AdController extends Controller
         $state = $request->state;
         $states = new States();
 
-        $builder = CatalogAd::search($request->get('querySearch'))->
-            when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+        $builder = CatalogAd::search($request->get('querySearch'), function ($meilisearch, $query, $options) use ($skip) {
+            if (!empty($skip)) {
+                $options['offset'] = (int) $skip;
+            }
+            return $meilisearch->search($query, $options);
+        })
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
             })
             ->when(!empty($take), function ($query) use ($take) {
@@ -171,7 +181,7 @@ class AdController extends Controller
 
         $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
 
-        return response()->json(1);
+        return response()->json($data);
     }
 
     public function store(Request $request): \Illuminate\Http\JsonResponse
