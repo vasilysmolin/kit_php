@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\External;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\RequestException;
 use Illuminate\Http\Request;
 use YaGeo;
 
@@ -27,10 +29,14 @@ class YandexMapController extends Controller
 
     public function getAddressByCoords($longitude, $latitude): array
     {
-        $data = YaGeo::setPoint($longitude, $latitude)
-            ->load()
-            ->getResponse()
-            ->getData();
+        try {
+            $data = YaGeo::setPoint($longitude, $latitude)
+                ->load()
+                ->getResponse()
+                ->getData();
+        } catch (ConnectionException | RequestException $error) {
+            return [];
+        }
 
         return $data;
     }
