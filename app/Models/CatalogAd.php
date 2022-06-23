@@ -102,4 +102,26 @@ class CatalogAd extends Model
             'parameter_id'
         )->orderBy('catalog_parameters.sort');
     }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $array = $this->only(['name','description', 'state', 'street']);
+        $array['filter'] = $this->adParameters->pluck('value')->join(', ');
+        return $array;
+    }
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'catalog_ads';
+    }
 }

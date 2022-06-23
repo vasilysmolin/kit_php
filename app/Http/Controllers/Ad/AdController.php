@@ -54,17 +54,16 @@ class AdController extends Controller
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
 
             $builder = CatalogAd::search($querySearch, function ($meilisearch, $query, $options) use ($skip) {
-                if (!empty($skip)) {
-                    $options['offset'] = (int) $skip;
-                }
+//                if (!empty($skip)) {
+//                    $options['offset'] = (int) $skip;
+//                }
                 return $meilisearch->search($query, $options);
             })
-                ->take((int) $take)
+                ->take(10000)
                 ->orderBy('sort', 'ASC');
 
             $catalogAdIds = $builder->get()->pluck('id');
         }
-
         $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
         })

@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 use MeiliSearch\Client;
+use MeiliSearch\Exceptions\ApiException;
 
 class UpdateMeilisearchIndex extends Command
 {
@@ -40,6 +41,8 @@ class UpdateMeilisearchIndex extends Command
     {
         $client = new Client(config('scout.meilisearch.host'));
 
+        $this->createIndexes($client);
+
         $this->updateSortableAttributes($client);
 
         $this->updateFilterableAttributes($client);
@@ -49,6 +52,24 @@ class UpdateMeilisearchIndex extends Command
         return Command::SUCCESS;
     }
 
+    protected function createIndexes(Client $client): void
+    {
+        try {
+            $client->createIndex('catalog_ads');
+        } catch (ApiException $exception) {
+        }
+        try {
+            $client->createIndex('cities');
+        } catch (ApiException $exception) {
+        }
+        try {
+            $client->createIndex('catalog_ad_categories');
+        } catch (ApiException $exception) {
+        }
+
+        $this->info('Indexes create...');
+    }
+
     protected function updateSortableAttributes(Client $client): void
     {
         $client->index('catalog_ads')->updateSortableAttributes([
@@ -56,8 +77,13 @@ class UpdateMeilisearchIndex extends Command
             'sort',
         ]);
 
+        $client->index('catalog_ad_categories')->updateSortableAttributes([
+            'name',
+            'sort',
+        ]);
 
-        $client->index('cities_index')->updateSortableAttributes([
+
+        $client->index('cities')->updateSortableAttributes([
             'name',
             'sort',
         ]);
@@ -69,10 +95,17 @@ class UpdateMeilisearchIndex extends Command
     {
         $client->index('catalog_ads')->updateSearchableAttributes([
             'name',
+            'description',
+            'filter',
+            'street',
+        ]);
+
+        $client->index('catalog_ad_categories')->updateSearchableAttributes([
+            'name',
         ]);
 
 
-        $client->index('cities_index')->updateSearchableAttributes([
+        $client->index('cities')->updateSearchableAttributes([
             'name',
         ]);
 
@@ -86,8 +119,14 @@ class UpdateMeilisearchIndex extends Command
             'name',
         ]);
 
-        $client->index('cities_index')->updateFilterableAttributes([
+        $client->index('catalog_ad_categories')->updateFilterableAttributes([
             'active',
+            'name',
+        ]);
+
+        $client->index('cities')->updateFilterableAttributes([
+            'active',
+            'name',
         ]);
 
         $this->info('Updated filterable attributes...');
