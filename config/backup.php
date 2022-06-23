@@ -164,12 +164,13 @@ return [
     'notifications' => [
 
         'notifications' => [
-            \Spatie\Backup\Notifications\Notifications\BackupHasFailed::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\UnhealthyBackupWasFound::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\CleanupHasFailed::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\BackupWasSuccessful::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\HealthyBackupWasFound::class => ['mail'],
-            \Spatie\Backup\Notifications\Notifications\CleanupWasSuccessful::class => ['mail'],
+            \Spatie\Backup\Events\BackupHasFailed::class => ['mail'],
+//            \Spatie\Backup\Notifications\Notifications\BackupHasFailed::class => ['mail'],
+//            \Spatie\Backup\Notifications\Notifications\UnhealthyBackupWasFound::class => ['mail'],
+//            \Spatie\Backup\Notifications\Notifications\CleanupHasFailed::class => ['mail'],
+//            \Spatie\Backup\Notifications\Notifications\BackupWasSuccessful::class => ['mail'],
+//            \Spatie\Backup\Notifications\Notifications\HealthyBackupWasFound::class => ['mail'],
+//            \Spatie\Backup\Notifications\Notifications\CleanupWasSuccessful::class => ['mail'],
         ],
 
         /*
@@ -179,11 +180,11 @@ return [
         'notifiable' => \Spatie\Backup\Notifications\Notifiable::class,
 
         'mail' => [
-            'to' => env('MAIL_MODERATOR', 'hello@example.com'),
+            'to' => env('MAIL_ERRORS', 'hello@example.com'),
 
             'from' => [
-                'address' => env('MAIL_ADMIN', 'hello@example.com'),
-                'name' => env('MAIL_FROM_NAME', 'Example'),
+                'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+                'name' => env('MAIL_FROM_NAME', 'Backup failed'),
             ],
         ],
 
