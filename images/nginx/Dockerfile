@@ -25,6 +25,7 @@ RUN mkdir -p /var/lib/nginx/cache \
     && chmod 700 /var/lib/nginx/cache
 
 COPY /nginx.conf /etc/nginx/
+COPY /mime.types /etc/nginx/
 COPY /ssl /etc/nginx/ssl/
 COPY /nginx-entrypoint.sh /nginx-entrypoint.sh
 

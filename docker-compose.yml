@@ -2,12 +2,13 @@ version: '3'
 
 services:
 
+  # PHP -----------------------------------------------
   php:
     build:
       context: images/php
       dockerfile: Dockerfile
       args:
-        - ENV=${APP_ENV}
+        - ENV=${DOCKER_ENV}
         - USER=${USER}
         - UID=${UID}
     container_name: ${BB_PHP_WORKDIR}
@@ -19,6 +20,8 @@ services:
       - .:/var/www/${BB_PHP_WORKDIR}
     depends_on:
       - database
+
+  # Nginx -----------------------------------------------
   nginx:
     build:
       context: images/nginx
@@ -38,6 +41,8 @@ services:
       - .:/var/www/${BB_NGINX_WORKDIR}
     depends_on:
       - php
+
+  # Redis -------------------------------------------------
   redis:
     image: redis:6-alpine
     container_name: ${BB_REDIS_WORKDIR}
@@ -48,6 +53,8 @@ services:
       - php
       - database
     command: [ "redis-server", "/redis.conf" ]
+
+  # Database -------------------------------------------------
   database:
     build:
       context: images/postgres
@@ -62,13 +69,13 @@ services:
     ports:
       - '5432:5432'
   meilisearch:
-      image: getmeili/meilisearch:v0.17.0
+      image: getmeili/meilisearch:v0.23.1
       restart: always
       volumes:
           - /data.ms:/data.ms
       environment:
           - MEILI_NO_ANALYTICS=true
           - MEILI_NO_SENTRY=true
-          - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
+#          - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
       ports:
           - "7700:7700"

@@ -54,7 +54,7 @@ class City extends Model
      */
     public function toSearchableArray()
     {
-        $array = $this->toArray();
+        $array = $this->only(['name', 'active']);
         return $array;
     }
 
@@ -65,6 +65,6 @@ class City extends Model
      */
     public function searchableAs()
     {
-        return 'cities_index';
+        return 'cities';
     }
 }

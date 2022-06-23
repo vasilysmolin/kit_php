@@ -53,13 +53,17 @@ class AdController extends Controller
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
 
-            $builder = CatalogAd::search($querySearch)
-                ->take(100000)
+            $builder = CatalogAd::search($querySearch, function ($meilisearch, $query, $options) use ($skip) {
+//                if (!empty($skip)) {
+//                    $options['offset'] = (int) $skip;
+//                }
+                return $meilisearch->search($query, $options);
+            })
+                ->take(10000)
                 ->orderBy('sort', 'ASC');
 
             $catalogAdIds = $builder->get()->pluck('id');
         }
-
         $builder = CatalogAd::when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
         })
@@ -145,8 +149,13 @@ class AdController extends Controller
         $state = $request->state;
         $states = new States();
 
-        $builder = CatalogAd::search($request->get('querySearch'))->
-            when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+        $builder = CatalogAd::search($request->get('querySearch'), function ($meilisearch, $query, $options) use ($skip) {
+            if (!empty($skip)) {
+                $options['offset'] = (int) $skip;
+            }
+            return $meilisearch->search($query, $options);
+        })
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
             })
             ->when(!empty($take), function ($query) use ($take) {

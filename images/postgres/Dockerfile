@@ -1,4 +1,4 @@
-FROM postgres:13-alpine3.15
+FROM postgres:13-alpine
 
 COPY /postgresql.conf      /tmp/postgresql.conf
 COPY /postgresql.conf      /var/lib/postgresql/data/pgdata/postgresql.conf

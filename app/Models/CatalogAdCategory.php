@@ -76,4 +76,25 @@ class CatalogAdCategory extends Model
     {
         return $this->morphOne(Image::class, 'imageable')->oldestOfMany();
     }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        $array = $this->only(['name','active']);
+        return $array;
+    }
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'catalog_ad_categories';
+    }
 }
