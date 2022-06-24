@@ -8,6 +8,7 @@ use App\Objects\SalaryType\Constants\SalaryType;
 use App\Objects\Schedule\Constants\Schedule;
 use App\Objects\States\States;
 use App\Objects\Time\Constants\TimeArray;
+use App\Objects\TypeJobs\TypeJobs;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Tests\TestCase;
 
@@ -74,6 +75,16 @@ class SelectTest extends TestCase
         $response = $this->get(route('select.reasons'));
         $resp = json_decode($response->getContent(), true);
         $data = (new Reasons())->get();
+
+        $response->assertStatus(200);
+        $this->assertEquals($data, $resp);
+    }
+
+    public function testTypeJobs()
+    {
+        $response = $this->get(route('select.type-jobs'));
+        $resp = json_decode($response->getContent(), true);
+        $data = (new TypeJobs())->get();
 
         $response->assertStatus(200);
         $this->assertEquals($data, $resp);
