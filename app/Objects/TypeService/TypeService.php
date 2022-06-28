@@ -1,18 +1,18 @@
 <?php
 
-namespace App\Objects\TypeJobs;
+namespace App\Objects\TypeService;
 
 use App\Objects\Schedule\Contract\ScheduleInterface;
 use Illuminate\Support\Collection;
 
-class TypeJobs implements ScheduleInterface
+class TypeService implements ScheduleInterface
 {
     private const MY = 'my';
     private const NEED = 'need';
 
     private $types = [
-        self::MY => 'Моё резюме',
-        self::NEED => 'Мне нужен',
+        self::MY => 'Я предлагаю',
+        self::NEED => 'Хочу найти',
     ];
 
     public function __construct(?string $key = null, ?string $value = null)

@@ -42,6 +42,7 @@ class Service extends Model
         'additionally',
         'contract',
         'work_experience',
+        'type',
     ];
     /**
      * The attributes that should be hidden for arrays.

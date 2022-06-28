@@ -9,7 +9,7 @@ use App\Objects\SalaryType\Constants\SalaryType;
 use App\Objects\Schedule\Constants\Schedule;
 use App\Objects\States\States;
 use App\Objects\Time\Constants\TimeArray;
-use App\Objects\TypeJobs\TypeJobs;
+use App\Objects\TypeService\TypeService;
 
 class SelectController extends Controller
 {
@@ -49,9 +49,9 @@ class SelectController extends Controller
         return response()->json($data);
     }
 
-    public function typeJobs(): \Illuminate\Http\JsonResponse
+    public function typeServices(): \Illuminate\Http\JsonResponse
     {
-        $data = (new TypeJobs())->get();
+        $data = (new TypeService())->get();
         return response()->json($data);
     }
 }

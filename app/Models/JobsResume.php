@@ -36,7 +36,6 @@ class JobsResume extends Model
         'demands',
         'additionally',
         'price',
-        'type',
     ];
 
     /**

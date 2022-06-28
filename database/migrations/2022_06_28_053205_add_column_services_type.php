@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('jobs_resumes', function (Blueprint $table) {
+        Schema::table('services', function (Blueprint $table) {
             $table->string('type')->default('my');
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::table('jobs_resumes', function (Blueprint $table) {
+        Schema::table('services', function (Blueprint $table) {
             $table->dropColumn('type');
         });
     }

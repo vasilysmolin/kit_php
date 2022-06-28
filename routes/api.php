@@ -82,7 +82,7 @@ Route::group([
     Route::get('salary', 'Select\SelectController@salary')->name('select.salary');
     Route::get('states', 'Select\SelectController@states')->name('select.states');
     Route::get('reasons', 'Select\SelectController@reasons')->name('select.reasons');
-    Route::get('type-jobs', 'Select\SelectController@typeJobs')->name('select.type-jobs');
+    Route::get('type-services', 'Select\SelectController@typeServices')->name('select.type-services');
 });
 
 Route::group([
