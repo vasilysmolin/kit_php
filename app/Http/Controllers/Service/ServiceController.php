@@ -8,6 +8,7 @@ use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Service\ServiceIndexRequest;
 use App\Http\Requests\Service\ServiceShowRequest;
+use App\Models\CatalogAdCategory;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
@@ -41,9 +42,10 @@ class ServiceController extends Controller
         $categoryID = $request->category_id;
         $name = $request->name;
         $catalog = $request->from === 'catalog';
-$cabinet = isset($user) && $request->from === 'cabinet';
+        $cabinet = isset($user) && $request->from === 'cabinet';
         $userID = (int) $request->user_id;
         $state = $request->state;
+        $alias = $request->alias;
         $states = new States();
 
         $builder = Service::
@@ -75,6 +77,17 @@ $cabinet = isset($user) && $request->from === 'cabinet';
                 $q ->whereHas('profile.user', function ($q) use ($states) {
                     $q->where('state', $states->active());
                 });
+            })
+            ->when(!empty($alias), function ($query) use ($alias) {
+                $category = ServiceCategory::where('alias', $alias)
+                    ->with('categories')
+                    ->first();
+                if (!empty($category)) {
+                    $categoriesID = $this->iter($category, []);
+                    $query->whereHas('categories', function ($q) use ($categoriesID) {
+                        $q->whereIn('id', $categoriesID);
+                    });
+                }
             })
             ->orderBy('sort', 'ASC');
 
@@ -262,5 +275,18 @@ $cabinet = isset($user) && $request->from === 'cabinet';
             $service->restore();
         }
         return response()->json([], 204);
+    }
+
+    private function iter($item, $acc)
+    {
+        array_push($acc, $item->getKey());
+        if (empty($item->categories)) {
+            return array_values($acc);
+        }
+        return $item->categories->reduce(function ($carry, $category) {
+            $carry[] = $category->getKey();
+            $carry = array_unique($carry);
+            return $this->iter($category, $carry);
+        }, $acc);
     }
 }
