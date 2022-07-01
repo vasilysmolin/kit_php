@@ -7,6 +7,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'mail_errors' => env('MAIL_ERRORS', 'errors@tapigo.ru'),
+
     'debug' => (bool) env('APP_DEBUG', false),
 
     'url' => env('APP_URL', 'http://localhost'),

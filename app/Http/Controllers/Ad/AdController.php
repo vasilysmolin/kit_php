@@ -242,6 +242,10 @@ class AdController extends Controller
         $states = new States();
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
+        $querySearch = $request->querySearch;
+        if (!empty($querySearch)) {
+            event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
+        }
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
