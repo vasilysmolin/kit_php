@@ -54,7 +54,7 @@ class ResumeController extends Controller
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
 
-            $builder = Service::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
+            $builder = JobsResume::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
                 if (!empty($skip)) {
                     $options['offset'] = (int) $skipFromFull;
                 }

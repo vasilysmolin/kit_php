@@ -54,7 +54,7 @@ class VacancyController extends Controller
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
 
-            $builder = Service::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
+            $builder = JobsVacancy::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
                 if (!empty($skip)) {
                     $options['offset'] = (int) $skipFromFull;
                 }
@@ -65,7 +65,6 @@ class VacancyController extends Controller
 
             $vacancyIds = $builder->get()->pluck('id');
         }
-
         $buidler = JobsVacancy::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
