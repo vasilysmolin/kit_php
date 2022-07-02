@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Laravel\Scout\Searchable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
@@ -15,6 +16,7 @@ class JobsResume extends Model
     use HasSlug;
     use SoftDeletes;
     use SortableTrait;
+    use Searchable;
 
     protected $fillable = [
         'id',
@@ -90,5 +92,35 @@ class JobsResume extends Model
     public function profile()
     {
         return $this->belongsTo(Profile::class, 'profile_id', 'id');
+    }
+
+    /**
+     * Get the indexable data array for the model.
+     *
+     * @return array
+     */
+    public function toSearchableArray()
+    {
+        return $this->only([
+            'name',
+            'state',
+            'description',
+            'education',
+            'duties',
+            'demands',
+            'additionally',
+            'sort'
+        ]);
+    }
+
+
+    /**
+     * Get the name of the index associated with the model.
+     *
+     * @return string
+     */
+    public function searchableAs()
+    {
+        return 'resumes';
     }
 }

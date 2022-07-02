@@ -110,7 +110,7 @@ class CatalogAd extends Model
      */
     public function toSearchableArray()
     {
-        $array = $this->only(['name','description', 'state', 'street']);
+        $array = $this->only(['name','description', 'state', 'street', 'sort']);
         $array['filter'] = $this->adParameters->pluck('value')->join(', ');
         return $array;
     }
