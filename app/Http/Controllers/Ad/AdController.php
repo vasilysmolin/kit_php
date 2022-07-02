@@ -47,16 +47,17 @@ class AdController extends Controller
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
         $filters = $request->filter;
+        $skipFromFull = $request->skipFromFull;
         $querySearch = $request->querySearch;
         $catalogAdIds = [];
 
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
 
-            $builder = CatalogAd::search($querySearch, function ($meilisearch, $query, $options) use ($skip) {
-//                if (!empty($skip)) {
-//                    $options['offset'] = (int) $skip;
-//                }
+            $builder = CatalogAd::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
+                if (!empty($skip)) {
+                    $options['offset'] = (int) $skipFromFull;
+                }
                 return $meilisearch->search($query, $options);
             })
                 ->take(10000)

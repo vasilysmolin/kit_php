@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Job;
 
+use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ResumeMiddleware;
 use App\Http\Middleware\StateMiddleware;
@@ -10,9 +11,11 @@ use App\Http\Requests\Job\ResumeIndexRequest;
 use App\Http\Requests\Job\ResumeShowRequest;
 use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
+use App\Models\Service;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
+use App\Objects\TypeModules\TypeModules;
 use Illuminate\Http\Request;
 
 class ResumeController extends Controller
@@ -44,10 +47,32 @@ class ResumeController extends Controller
         $states = new States();
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
+        $skipFromFull = $request->skipFromFull;
+        $querySearch = $request->querySearch;
+        $resumeIds = [];
+
+        if (!empty($querySearch)) {
+            event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
+
+            $builder = Service::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
+                if (!empty($skip)) {
+                    $options['offset'] = (int) $skipFromFull;
+                }
+                return $meilisearch->search($query, $options);
+            })
+                ->take(10000)
+                ->orderBy('sort', 'ASC');
+
+            $resumeIds = $builder->get()->pluck('id');
+        }
+
 
         $builder = JobsResume::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
+            })
+            ->when(!empty($resumeIds), function ($query) use ($resumeIds) {
+                $query->whereIn('id', $resumeIds);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {

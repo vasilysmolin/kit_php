@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Job;
 
+use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\VacanciesMiddleware;
@@ -13,9 +14,11 @@ use App\Http\Requests\Job\VacancyStoreRequest;
 use App\Http\Requests\Job\VacancyUpdateRequest;
 use App\Models\JobsVacancy;
 use App\Models\JobsVacancyCategory;
+use App\Models\Service;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
+use App\Objects\TypeModules\TypeModules;
 
 class VacancyController extends Controller
 {
@@ -43,10 +46,32 @@ class VacancyController extends Controller
         $state = $request->state;
         $states = new States();
         $catalog = $request->from === 'catalog';
-$cabinet = isset($user) && $request->from === 'cabinet';
+        $cabinet = isset($user) && $request->from === 'cabinet';
+        $skipFromFull = $request->skipFromFull;
+        $querySearch = $request->querySearch;
+        $vacancyIds = [];
+
+        if (!empty($querySearch)) {
+            event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
+
+            $builder = Service::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
+                if (!empty($skip)) {
+                    $options['offset'] = (int) $skipFromFull;
+                }
+                return $meilisearch->search($query, $options);
+            })
+                ->take(10000)
+                ->orderBy('sort', 'ASC');
+
+            $vacancyIds = $builder->get()->pluck('id');
+        }
+
         $buidler = JobsVacancy::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
+            })
+            ->when(!empty($vacancyIds), function ($query) use ($vacancyIds) {
+                $query->whereIn('id', $vacancyIds);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {

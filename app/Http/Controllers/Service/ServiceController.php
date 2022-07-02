@@ -2,18 +2,21 @@
 
 namespace App\Http\Controllers\Service;
 
+use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\ServiceMiddleware;
 use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Service\ServiceIndexRequest;
 use App\Http\Requests\Service\ServiceShowRequest;
+use App\Models\CatalogAd;
 use App\Models\CatalogAdCategory;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
+use App\Objects\TypeModules\TypeModules;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -47,10 +50,31 @@ class ServiceController extends Controller
         $state = $request->state;
         $alias = $request->alias;
         $states = new States();
+        $skipFromFull = $request->skipFromFull;
+        $querySearch = $request->querySearch;
+        $serviceIds = [];
+
+        if (!empty($querySearch)) {
+            event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
+
+            $builder = Service::search($querySearch, function ($meilisearch, $query, $options) use ($skipFromFull) {
+                if (!empty($skip)) {
+                    $options['offset'] = (int) $skipFromFull;
+                }
+                return $meilisearch->search($query, $options);
+            })
+                ->take(10000)
+                ->orderBy('sort', 'ASC');
+
+            $serviceIds = $builder->get()->pluck('id');
+        }
 
         $builder = Service::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
+            })
+            ->when(!empty($serviceIds), function ($query) use ($serviceIds) {
+                $query->whereIn('id', $serviceIds);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
