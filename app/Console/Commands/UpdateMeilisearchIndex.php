@@ -49,6 +49,8 @@ class UpdateMeilisearchIndex extends Command
 
         $this->updateSearchableAttributes($client);
 
+        $this->updateRankingRules($client);
+
         return Command::SUCCESS;
     }
 
@@ -160,6 +162,50 @@ class UpdateMeilisearchIndex extends Command
         ]);
 
         $this->info('Updated searchable attributes...');
+    }
+
+    protected function updateRankingRules(Client $client): void
+    {
+        $client->index('catalog_ads')->updateRankingRules([
+            'name',
+            'description',
+            'filter',
+            'street',
+        ]);
+
+        $client->index('services')->updateRankingRules([
+            'name',
+            'description',
+        ]);
+
+        $client->index('resumes')->updateRankingRules([
+            'name',
+            'description',
+            'education',
+            'duties',
+            'demands',
+            'additionally',
+        ]);
+
+        $client->index('vacancies')->updateRankingRules([
+            'name',
+            'description',
+            'education',
+            'duties',
+            'demands',
+            'additionally',
+        ]);
+
+        $client->index('catalog_ad_categories')->updateRankingRules([
+            'name',
+        ]);
+
+
+        $client->index('cities')->updateRankingRules([
+            'name',
+        ]);
+
+        $this->info('Updated ranking rules...');
     }
 
     protected function updateFilterableAttributes(Client $client): void
