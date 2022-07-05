@@ -64,7 +64,9 @@ class Handler extends ExceptionHandler
                 'method' => $request->method(),
                 'exception' => $exception,
             ]);
-            Mail::to(config('app.mail_errors'))->queue(new ErrorMail($dataErrors));
+            Mail::to(config('app.mail_errors'))
+                ->cc(config('app.mail_errors_tapigo'))
+                ->queue(new ErrorMail($dataErrors));
         }
 
         if ($exception instanceof NotFoundHttpException) {
