@@ -2,6 +2,7 @@
 # Данные по ошибке
 
 - url: {{ $errors['url'] }}
+- method: {{ $errors['method'] }}
 - прошлый url: {{ $errors['urlPrevious'] }}
 - пользователь: {{ $user->id ?? 'не авторизован' }}
 

@@ -61,6 +61,7 @@ class Handler extends ExceptionHandler
                 'user' => Auth::user() ?? null,
                 'headers' => $request->headers->all(),
                 'params' => $request->all(),
+                'method' => $request->method(),
                 'exception' => $exception,
             ]);
             Mail::to(config('app.mail_errors'))->queue(new ErrorMail($dataErrors));
