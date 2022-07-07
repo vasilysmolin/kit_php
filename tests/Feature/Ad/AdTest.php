@@ -3,6 +3,7 @@
 namespace Tests\Feature\Ad;
 
 use App\Models\CatalogAd;
+use App\Models\CatalogAdCategory;
 use App\Models\Profile;
 use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
@@ -83,11 +84,14 @@ class AdTest extends TestCase
 
         $user = User::factory()->has(Profile::factory())->create();
         $access_token = JWTAuth::fromUser($user);
+        $cat = CatalogAdCategory::factory()->create();
 
         $response = $this
             ->withToken($access_token)
             ->json('POST', route('declarations.store'), [
                 'name' => 'test',
+                'price' => 3000,
+                'category_id' => $cat->getKey(),
             ]);
 
         $id = explode('/declarations/', $response->baseResponse->headers->get('Location'));
@@ -153,6 +157,7 @@ class AdTest extends TestCase
     public function testStoreCatalogAdAdmin()
     {
         $user = User::factory()->has(Profile::factory())->create();
+        $cat = CatalogAdCategory::factory()->create();
         $role = Role::where('name', 'admin')->first();
         if (!isset($role)) {
             Role::create(['name' => 'admin']);
@@ -164,6 +169,8 @@ class AdTest extends TestCase
             ->withToken($access_token)
             ->json('POST', route('declarations.store'), [
                 'name' => 'test',
+                'price' => 3000,
+                'category_id' => $cat->getKey(),
                 'profile_id' => $userTwo->profile->getKey(),
             ]);
         $id = explode('/declarations/', $response->baseResponse->headers->get('Location'));

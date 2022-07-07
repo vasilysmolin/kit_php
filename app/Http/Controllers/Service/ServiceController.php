@@ -9,8 +9,7 @@ use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Service\ServiceIndexRequest;
 use App\Http\Requests\Service\ServiceShowRequest;
-use App\Models\CatalogAd;
-use App\Models\CatalogAdCategory;
+use App\Http\Requests\Service\ServiceUpdateRequest;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Objects\Files;
@@ -167,7 +166,7 @@ class ServiceController extends Controller
         return response()->json([], 201, ['Location' => "/services/$service->id"]);
     }
 
-    public function show(ServiceShowRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function show(ServiceShowRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         $expand = $request->expand ? explode(',', $request->expand) : null;
@@ -207,7 +206,7 @@ class ServiceController extends Controller
         return response()->json($service);
     }
 
-    public function sort($id): \Illuminate\Http\JsonResponse
+    public function sort(string $id): \Illuminate\Http\JsonResponse
     {
 
         $service = Service::
@@ -221,7 +220,7 @@ class ServiceController extends Controller
         return response()->json([]);
     }
 
-    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function update(ServiceUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
         $currentUser = auth('api')->user();
@@ -256,7 +255,7 @@ class ServiceController extends Controller
         return response()->json([], 204);
     }
 
-    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function state(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         $state = $request->state;
         $service = Service::
@@ -274,7 +273,7 @@ class ServiceController extends Controller
         return response()->json([], 204);
     }
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         $service = Service::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
@@ -288,7 +287,7 @@ class ServiceController extends Controller
         return response()->json([], 204);
     }
 
-    public function restore($id): \Illuminate\Http\JsonResponse
+    public function restore(string $id): \Illuminate\Http\JsonResponse
     {
         $service = Service::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {

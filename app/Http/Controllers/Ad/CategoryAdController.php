@@ -9,7 +9,7 @@ use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Support\Str;
+use Illuminate\Support\Collection;
 
 class CategoryAdController extends Controller
 {
@@ -52,44 +52,7 @@ class CategoryAdController extends Controller
         return response()->json($data);
     }
 
-    public function fullSearch(Request $request): \Illuminate\Http\JsonResponse
-    {
-        $user = auth('api')->user();
-        $cabinet = isset($user) && $request->from === 'cabinet';
-//        $take = $request->take ?? config('settings.take_twenty_five');
-        $skip = $request->skip ?? 0;
-        $files = resolve(Files::class);
-        $take = $request->take;
-        $builder = CatalogAdCategory::search($request->get('querySearch'))
-            ->where('active', 1)
-            ->when(!empty($take), function ($query) use ($take) {
-                $query->take((int) $take);
-            })
-            ->orderBy('id', 'ASC');
-
-        $category = $builder
-            ->orderBy('id', 'ASC')
-            ->get();
-
-        $count = $builder->count();
-        $category->load('image', 'categories', 'categoriesParent', 'color');
-
-        $category->each(function ($item) use ($files, $cabinet) {
-            if (isset($item->image)) {
-                $item->photo = $files->getFilePath($item->image);
-                $item->makeHidden('image');
-            }
-            if ($cabinet) {
-                $this->changeName($item->categories);
-            }
-        });
-
-        $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
-
-        return response()->json($data);
-    }
-
-    private function changeName($node)
+    private function changeName(Collection $node): void
     {
         if ($node->isEmpty()) {
             return;
@@ -116,8 +79,6 @@ class CategoryAdController extends Controller
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
-        $formData['alias'] = Str::slug($formData['name'] . ' ' . str_random(5), '-');
-
         $category = new CatalogAdCategory();
         $category->fill($formData);
 
@@ -129,7 +90,7 @@ class CategoryAdController extends Controller
         return response()->json([], 201, ['Location' => "/category-declarations/$category->id"]);
     }
 
-    public function show(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function show(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
 
         $category = CatalogAdCategory::where('alias', $id)
@@ -148,7 +109,7 @@ class CategoryAdController extends Controller
         return response()->json($category);
     }
 
-    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function update(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
         if ((int) $formData['color_id'] === 0) {
@@ -175,7 +136,7 @@ class CategoryAdController extends Controller
         return response()->json([], 204);
     }
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         CatalogAdCategory::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {

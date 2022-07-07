@@ -10,13 +10,15 @@ use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Ad\AdIndexRequest;
 use App\Http\Requests\Ad\AdShowRequest;
+use App\Http\Requests\Ad\AdStateRequest;
+use App\Http\Requests\Ad\AdStoreRequest;
+use App\Http\Requests\Ad\AdUpdateRequest;
 use App\Models\CatalogAd;
 use App\Models\CatalogAdCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
-use Illuminate\Http\Request;
 
 class AdController extends Controller
 {
@@ -139,52 +141,7 @@ class AdController extends Controller
         return response()->json($data);
     }
 
-    public function fullSearch(AdIndexRequest $request): \Illuminate\Http\JsonResponse
-    {
-
-        $take = $request->take;
-        $skip = $request->skip ?? 0;
-        $expand = $request->expand ? explode(',', $request->expand) : null;
-        $files = resolve(Files::class);
-
-        $state = $request->state;
-        $states = new States();
-
-        $builder = CatalogAd::search($request->get('querySearch'), function ($meilisearch, $query, $options) use ($skip) {
-            if (!empty($skip)) {
-                $options['offset'] = (int) $skip;
-            }
-            return $meilisearch->search($query, $options);
-        })
-            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
-                $q->where('state', $state);
-            })
-            ->when(!empty($take), function ($query) use ($take) {
-                $query->take((int) $take);
-            })
-            ->orderBy('sort', 'ASC');
-
-        $catalogAd = $builder->get();
-
-        $catalogAd->load('image', 'categories')->when(!empty($expand), function ($q) use ($expand) {
-            $q->load($expand);
-        });
-        $count = $builder->count();
-
-        $catalogAd->each(function ($item) use ($files) {
-            if (isset($item->image)) {
-                $item->photo = $files->getFilePath($item->image);
-                $item->makeHidden('image');
-            }
-            $item->title = $item->name;
-        });
-
-        $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
-
-        return response()->json($data);
-    }
-
-    public function store(Request $request): \Illuminate\Http\JsonResponse
+    public function store(AdStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
 
@@ -222,7 +179,7 @@ class AdController extends Controller
         return response()->json([], 201, ['Location' => "/declarations/$catalogAd->id"]);
     }
 
-    public function sort($id): \Illuminate\Http\JsonResponse
+    public function sort(string $id): \Illuminate\Http\JsonResponse
     {
 
         $vacancy = CatalogAd::
@@ -236,7 +193,7 @@ class AdController extends Controller
         return response()->json([]);
     }
 
-    public function show(AdShowRequest $request, $id): \Illuminate\Http\JsonResponse
+    public function show(AdShowRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         $expand = $request->expand ? explode(',', $request->expand) : null;
@@ -291,7 +248,7 @@ class AdController extends Controller
         return response()->json($catalogAd);
     }
 
-    public function update(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function update(AdUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
         $filters = $request->filter;
@@ -339,7 +296,7 @@ class AdController extends Controller
         return response()->json([], 204);
     }
 
-    public function state(Request $request, $id): \Illuminate\Http\JsonResponse
+    public function state(AdStateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $state = $request->state;
         $ad = CatalogAd::
@@ -357,7 +314,7 @@ class AdController extends Controller
         return response()->json([], 204);
     }
 
-    public function destroy($id): \Illuminate\Http\JsonResponse
+    public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
@@ -371,7 +328,7 @@ class AdController extends Controller
         return response()->json([], 204);
     }
 
-    public function restore($id): \Illuminate\Http\JsonResponse
+    public function restore(string $id): \Illuminate\Http\JsonResponse
     {
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
@@ -384,7 +341,7 @@ class AdController extends Controller
         return response()->json([], 204);
     }
 
-    private function iter($item, $acc)
+    private function iter(?CatalogAdCategory $item, array $acc): array
     {
         array_push($acc, $item->getKey());
         if (empty($item->categories)) {

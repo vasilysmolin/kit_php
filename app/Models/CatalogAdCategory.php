@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Scout\Searchable;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class CatalogAdCategory extends Model
 {
     use HasFactory;
     use Searchable;
+    use HasSlug;
 
     public $table = 'catalog_ad_categories';
 
@@ -27,6 +30,19 @@ class CatalogAdCategory extends Model
         'updated_at',
         'deleted_at',
     ];
+
+    /**
+     * Get the options for generating the slug.
+     *
+     * @return \Spatie\Sluggable\SlugOptions
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->doNotGenerateSlugsOnUpdate()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('alias');
+    }
 
     public function categories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {

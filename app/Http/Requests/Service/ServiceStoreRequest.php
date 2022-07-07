@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Ad;
+namespace App\Http\Requests\Service;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class AdStoreRequest extends FormRequest
+class ServiceUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -34,7 +34,7 @@ class AdStoreRequest extends FormRequest
             ],
             'category_id' => [
                 'required',
-                'exists:catalog_ad_categories,id',
+                'exists:service_categories,id',
                 'integer',
                 'max:99999999999',
             ],
