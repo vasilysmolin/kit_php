@@ -47,6 +47,7 @@ class ServiceController extends Controller
         $cabinet = isset($user) && $request->from === 'cabinet';
         $userID = (int) $request->user_id;
         $state = $request->state;
+        $type = $request->type;
         $alias = $request->alias;
         $states = new States();
         $skipFromFull = $request->skipFromFull;
@@ -74,6 +75,9 @@ class ServiceController extends Controller
             })
             ->when(!empty($serviceIds), function ($query) use ($serviceIds) {
                 $query->whereIn('id', $serviceIds);
+            })
+            ->when(!empty($type), function ($query) use ($type) {
+                $query->where('type', $type);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
