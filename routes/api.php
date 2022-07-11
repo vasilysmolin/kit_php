@@ -62,6 +62,11 @@ Route::group([
         ->middleware('role:admin');
 });
 
+Route::group([
+], function ($router) {
+    Route::apiResource('newletters', 'NewslettersController');
+});
+
 
 Route::group([
     'namespace' => 'Color',
