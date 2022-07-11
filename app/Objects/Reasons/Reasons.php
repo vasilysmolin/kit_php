@@ -8,9 +8,11 @@ class Reasons
     private const CONTENT = 'content';
     private const TEXT = 'text';
     private const PRICE = 'price';
+    private const PHONE = 'phone';
 
     private $states = [
         self::PHOTO => 'Отсутствуют фотографии',
+        self::PHONE => 'Номер телефона указывается в отдельном поле',
         self::CONTENT => 'Запрещенный контент (фото или текст)',
         self::TEXT => 'Некорректный текст обьявления',
         self::PRICE => 'Возможно, вы ошиблись в указании цены',
@@ -65,5 +67,10 @@ class Reasons
     public function text(): string
     {
         return self::TEXT;
+    }
+
+    public function phone(): string
+    {
+        return self::PHONE;
     }
 }

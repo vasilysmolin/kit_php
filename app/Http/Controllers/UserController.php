@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+
+use App\Exports\ExportUsers;
 use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
 use App\Http\Requests\UsersStateRequest;
@@ -14,6 +16,7 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Maatwebsite\Excel\Facades\Excel;
 
 class UserController extends Controller
 {
@@ -86,6 +89,25 @@ class UserController extends Controller
 
     public function store(Request $request)
     {
+    }
+
+    public function download()
+    {
+        $users = User::get();
+        $collectionToExport = new ExportUsers($users->filter(function ($value) {
+            return true;
+        })->map(function ($user) {
+            return [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email_verified_at' => $user->email_verified_at,
+                'email' => $user->email,
+            ];
+        }));
+
+        Excel::store($collectionToExport, "users.csv", 'local');
+        $file =  storage_path('app/public/users.csv');
+        return response()->download($file)->deleteFileAfterSend(true);
     }
 
     public function show(UsersShowRequest $request, $id)

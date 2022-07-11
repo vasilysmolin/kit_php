@@ -52,6 +52,7 @@ Route::group([
 Route::group([
     'middleware' => ['auth:api'],
 ], function ($router) {
+    Route::get('users/download', 'UserController@download')->name('user.download')->middleware('role:admin');
     Route::apiResource('users', 'UserController');
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
@@ -64,7 +65,8 @@ Route::group([
 
 Route::group([
 ], function ($router) {
-    Route::apiResource('newletters', 'NewslettersController');
+    Route::get('newsletters/download', 'NewslettersController@download')->name('newsletters.download');
+    Route::apiResource('newsletters', 'NewslettersController');
 });
 
 

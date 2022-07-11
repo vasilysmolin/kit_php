@@ -2,20 +2,44 @@
 
 namespace App\Http\Controllers;
 
+use App\Exports\ExportNewsLetters;
 use App\Http\Requests\StoreNewslettersRequest;
 use App\Http\Requests\UpdateNewslettersRequest;
 use App\Models\Newsletters;
+use App\Objects\JsonHelper;
+use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class NewslettersController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
-        //
+        $take = $request->take ?? config('settings.take_twenty_five');
+        $skip = $request->skip ?? 0;
+        $builder = Newsletters::orderBy('id', 'DESC');
+        $letters = $builder
+            ->take((int) $take)
+            ->skip((int) $skip)
+            ->get();
+        $count = $builder->count();
+
+        $data = (new JsonHelper())->getIndexStructure(new Newsletters(), $letters, $count, (int) $skip);
+
+        return response()->json($data);
+    }
+
+    public function download()
+    {
+        $letters = Newsletters::get();
+
+        $collectionToLetters = new ExportNewsLetters($letters->filter(function ($value) {
+            return true;
+        }));
+
+        Excel::store($collectionToLetters, "letters.csv", 'local');
+        $file =  storage_path('app/public/letters.csv');
+        return response()->download($file)->deleteFileAfterSend(true);
     }
 
     public function store(StoreNewslettersRequest $request): \Illuminate\Http\JsonResponse
