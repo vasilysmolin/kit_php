@@ -98,9 +98,9 @@ class UserController extends Controller
             return true;
         })->map(function ($user) {
             return [
-                'id' => $user->id,
-                'name' => $user->name,
-                'email_verified_at' => $user->email_verified_at,
+//                'id' => $user->id,
+//                'name' => $user->name,
+//                'email_verified_at' => $user->email_verified_at,
                 'email' => $user->email,
             ];
         }));

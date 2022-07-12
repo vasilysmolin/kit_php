@@ -31,7 +31,7 @@ class NewslettersController extends Controller
 
     public function download()
     {
-        $letters = Newsletters::get();
+        $letters = Newsletters::select('email')->get();
 
         $collectionToLetters = new ExportNewsLetters($letters->filter(function ($value) {
             return true;
