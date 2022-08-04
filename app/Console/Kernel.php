@@ -33,6 +33,8 @@ class Kernel extends ConsoleKernel
             $schedule->command('backup:run', ['--only-db'])->everyFourHours();
             $schedule->command('backup:clean')->daily()->at('08:00');
             $schedule->command('backup:monitor')->daily()->at('10:00');
+
+            $schedule->command('check-ssl')->daily()->at('12:00');
         }
     }
 

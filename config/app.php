@@ -7,6 +7,8 @@ return [
 
     'env' => env('APP_ENV', 'production'),
 
+    'domain' => env('DOMAIN', 'tapigo.ru'),
+
     'mail_errors' => env('MAIL_ERRORS', 'errors@tapigo.ru'),
 
     'mail_errors_tapigo' => env('MAIL_ERRORS_TAPIGO', 'logs@tapigo.ru'),

@@ -36,6 +36,8 @@ RUN set -xe \
     && docker-php-ext-install -j$(nproc) exif \
     && docker-php-ext-install -j$(nproc) pdo_pgsql \
     && docker-php-ext-install -j$(nproc) gmp \
+    && docker-php-ext-configure intl \
+    && docker-php-ext-install intl \
     && pear install pear/PHP_CodeSniffer \
     && pecl install pcov
 
