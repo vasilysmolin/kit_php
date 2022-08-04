@@ -1,3 +1,4 @@
 @component('mail::message')
-
-# Истекает срок сертификата, осталось {{ $daysUntilExpirationDate }}
+# Обновите сертификат, чтобы сайт работал корректно
+   ## {{ $daysUntilExpirationDate }} дней
+@endcomponent

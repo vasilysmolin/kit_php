@@ -33,7 +33,7 @@ class InvalidSslMail extends Mailable implements ShouldQueue
     public function build()
     {
         return $this
-            ->from('welcome@tapigo.ru', "Истекает срок сертификата, осталось {$this->dataSslCertificate->daysUntilExpirationDate()}")
+            ->from('welcome@tapigo.ru', "Истекает срок сертификата, осталось {$this->dataSslCertificate->daysUntilExpirationDate()} дней")
             ->markdown('emails.ssl.invalid')
             ->subject('Истекает срок сертификата')
             ->with([

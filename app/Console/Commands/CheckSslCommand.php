@@ -33,7 +33,6 @@ class CheckSslCommand extends Command
     {
         $certificate = SslCertificate::createForHostName(config('app.domain'));
         if (!$certificate->isValidUntil(Carbon::now()->addDays(7))) {
-
                 Mail::to(config('app.mail_errors'))
                     ->cc(config('app.mail_errors_tapigo'))
                     ->queue(new InvalidSslMail($certificate));
