@@ -168,242 +168,242 @@ class UsersParser extends Command
 //"rooms": "1" - комнат объект Rooms от 1 до 7
 
 
-        $contents = json_decode($contents, true);
-        $i = 1;
-        foreach ($contents as $item) {
-            $userDB = User::find($item['id']);
-            if (isset($userDB)  || isset($userDB->profile)) {
-                foreach ($item['ads'] as $relation) {
-                    $next = true;
-                    if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatProperty") {
-                        $next = false;
-                        $slug = '-bye';
-                    }
-                    if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatRentProperty") {
-                        $next = false;
-                        $slug = '-rent';
-                    }
-                    if ($next === true) {
-                        continue;
-                    }
-                    if ((int) $relation['property']['rooms'] === 0) {
-                        $relation['property']['rooms'] = 1;
-                    }
-                    if ((int) $relation['property']['rooms'] > 5) {
-                        $relation['property']['rooms'] = 5;
-                    }
-                    $title = $relation['property']['rooms'] . ' комнатная';
-                    $alias = Str::slug(Str::limit($title, 10) . ' ' . str_random(7), '-');
-//                    $isModel = CatalogAd::find($relation['category']['id']);
-                    if (isset($relation['category'])) {
-                        $cats = CatalogAdCategory::find($relation['category']['id']);
-                    } else {
-                        $cats = null;
-                    }
-//                    $isModel = CatalogAd::find($relation['id']);
-
-                    $model = new CatalogAd();
-                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
-                        $model->latitude = $relation['location']['lat'];
-                        $model->longitude = $relation['location']['lng'];
-                        $model->street = $relation['location']['street'];
-                        $model->house = $relation['location']['house'];
-                    }
-//                    $model->id = $relation['id'];
-                    $model->profile_id = $userDB->profile->getKey();
-                    $model->name = $title;
-                    $model->description = trim($relation['property']['desc']);
-                    $model->category_id = isset($cats) ? $cats->id : null;
-                    $model->alias = $alias;
-                    $model->state = 'active';
-                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
-                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
-                    $model->save();
-                    $model->moveToStart();
-                    $string = $title;
-
-                    $rooms = CatalogParameter::where('value', $string)->first();
-                    $livingArea = CatalogParameter::where('sort', $relation['property']['living_area'])->whereHas('filter', function ($q) use ($slug) {
-                        $q->where('alias', 'zilaya-ploshhad'  . $slug);
-                    })->first();
-                    $kitArea = CatalogParameter::where('sort', $relation['property']['kitchen_area'])->whereHas('filter', function ($q) use ($slug) {
-                        $q->where('alias', 'ploshhad-kuxni'  . $slug);
-                    })->first();
-                    $totalArea = CatalogParameter::where('sort', $relation['property']['total_area'])->whereHas('filter', function ($q) use ($slug) {
-                        $q->where('alias', 'obshhaya-ploshhad'  . $slug);
-                    })->first();
-                    $floorsInHouse = CatalogParameter::where('value', $relation['property']['floors_in_house'])->whereHas('filter', function ($q) use ($slug) {
-                        $q->where('alias', 'vsego-etazei'  . $slug);
-                    })->first();
-                    $floor = CatalogParameter::where('value', $relation['property']['floor'])->whereHas('filter', function ($q) use ($slug) {
-                        $q->where('alias', 'etaz'  . $slug);
-                    })->first();
-                    if ($relation['property']['ad_flat_type_building_id'] === 1) {
-                        $dom = CatalogParameter::where('value', 'Панельный')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug);
-                        })->first();
-                    } elseif ($relation['property']['ad_flat_type_building_id'] === 2) {
-                        $dom = CatalogParameter::where('value', 'Кирпичный')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug);
-                        })->first();
-                    } elseif ($relation['property']['ad_flat_type_building_id'] === 3) {
-                        $dom = CatalogParameter::where('value', 'Деревянный')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug);
-                        })->first();
-                    } else {
-                        $dom = CatalogParameter::where('value', 'Шлакоблоки')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'dom'  . $slug);
-                        })->first();
-                    }
-
-                    if ($relation['property']['ad_flat_type_seller_id'] === 1) {
-                        $seller = CatalogParameter::where('value', 'Собственник')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'prodavec'  . $slug);
-                        })->first();
-                    } else {
-                        $seller = CatalogParameter::where('value', 'Посредник')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'prodavec'  . $slug);
-                        })->first();
-                    }
-
-                    if ($relation['property']['ad_flat_type_novelty_id'] === 1) {
-                        $novizna = CatalogParameter::where('value', 'Вторичка')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'novizna'  . $slug);
-                        })->first();
-                    } else {
-                        $novizna = CatalogParameter::where('value', 'Новостройка')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'novizna'  . $slug);
-                        })->first();
-                    }
-
-                    $phone = $contentsComfort->where('name', 'Телефон')->first();
-                    $phoneCollect = collect($phone['flats']);
-                    $myObj = $phoneCollect->where('id', $relation['property']['id'])->first();
-                    if (!empty($myObj)) {
-                        $comfortPhone = CatalogParameter::where('value', 'Телефон')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'udobstva'  . $slug);
-                        })->first();
-                    } else {
-                        $comfortPhone = null;
-                    }
-
-                    $net = $contentsComfort->where('name', 'Интернет')->first();
-                    $netCollect = collect($net['flats']);
-                    $myObj = $netCollect->where('id', $relation['property']['id'])->first();
-                    if (!empty($myObj)) {
-                        $comfortNet = CatalogParameter::where('value', 'Интернет')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'udobstva'  . $slug);
-                        })->first();
-                    } else {
-                        $comfortNet = null;
-                    }
-
-                    $park = $contentsComfort->where('name', 'Парковка')->first();
-                    $parkCollect = collect($park['flats']);
-                    $myObj = $parkCollect->where('id', $relation['id'])->first();
-                    if (!empty($myObj)) {
-                        $comfortPark = CatalogParameter::where('value', 'Парковка')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'udobstva'  . $slug);
-                        })->first();
-                    } else {
-                        $comfortPark = null;
-                    }
-
-                    $twoLift = $contentsComfort->where('name', 'Два лифта')->first();
-                    $twoLiftCollect = collect($twoLift['flats']);
-                    $myObj = $twoLiftCollect->where('id', $relation['id'])->first();
-                    if (!empty($myObj)) {
-                        $comfortTwoLift = CatalogParameter::where('value', 'Два лифта')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'udobstva'  . $slug);
-                        })->first();
-                    } else {
-                        $comfortTwoLift = null;
-                    }
-
-                    $conseg = $contentsComfort->where('name', 'Консьерж')->first();
-                    $consegCollect = collect($conseg['flats']);
-                    $myObj = $consegCollect->where('id', $relation['id'])->first();
-                    if (!empty($myObj)) {
-                        $comfortCons = CatalogParameter::where('value', 'Консьерж')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'udobstva'  . $slug);
-                        })->first();
-                    } else {
-                        $comfortCons = null;
-                    }
-
-                    $balkon = $contentsComfort->where('name', 'Балкон')->first();
-                    $balkonCollect = collect($balkon['flats']);
-                    $myObj = $balkonCollect->where('id', $relation['id'])->first();
-                    if (!empty($myObj)) {
-                        $comfortBal = CatalogParameter::where('value', 'Балкон')->whereHas('filter', function ($q) use ($slug) {
-                            $q->where('alias', 'udobstva'  . $slug);
-                        })->first();
-                    } else {
-                        $comfortBal = null;
-                    }
-
-
-
-                    $arr = collect();
-                    if (!empty($comfortBal)) {
-                        $arr->add($comfortBal->getKey());
-                    }
-                    if (!empty($comfortTwoLift)) {
-                        $arr->add($comfortTwoLift->getKey());
-                    }
-                    if (!empty($comfortCons)) {
-                        $arr->add($comfortCons->getKey());
-                    }
-                    if (!empty($comfortPhone)) {
-                        $arr->add($comfortPhone->getKey());
-                    }
-                    if (!empty($comfortPark)) {
-                        $arr->add($comfortPark->getKey());
-                    }
-                    if (!empty($comfortNet)) {
-                        $arr->add($comfortNet->getKey());
-                    }
-                    if (!empty($rooms)) {
-                        $arr->add($rooms->getKey());
-                    }
-                    if (!empty($livingArea)) {
-                        $arr->add($livingArea->getKey());
-                    }
-                    if (!empty($kitArea)) {
-                        $arr->add($kitArea->getKey());
-                    }
-                    if (!empty($totalArea)) {
-                        $arr->add($totalArea->getKey());
-                    }
-                    if (!empty($floorsInHouse)) {
-                        $arr->add($floorsInHouse->getKey());
-                    }
-                    if (!empty($floor)) {
-                        $arr->add($floor->getKey());
-                    }
-                    if (!empty($dom)) {
-                        $arr->add($dom->getKey());
-                    }
-                    if (!empty($seller)) {
-                        $arr->add($seller->getKey());
-                    }
-                    if (!empty($novizna)) {
-                        $arr->add($novizna->getKey());
-                    }
-                    $model->adParameters()->attach($arr);
-                    var_dump($i);
-                    $i += 1;
-
-                    if (!empty($relation['images'])) {
-                        foreach ($relation['images'] as $image) {
-                            $url = 'https://kto_tam:eto_tapigo@catalog.tapigo.tech/images/thumbnails/thumb_' . $image['image_path'];
-                            $files = resolve(Files::class);
-                            $files->saveParser($model, $url);
-                        }
-                    }
-                }
-            }
-        }
+//        $contents = json_decode($contents, true);
+//        $i = 1;
+//        foreach ($contents as $item) {
+//            $userDB = User::find($item['id']);
+//            if (isset($userDB)  || isset($userDB->profile)) {
+//                foreach ($item['ads'] as $relation) {
+//                    $next = true;
+//                    if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatProperty") {
+//                        $next = false;
+//                        $slug = '-bye';
+//                    }
+//                    if ($relation['property_type'] === "App\\Models\\Catalog\\Flat\\AdFlatRentProperty") {
+//                        $next = false;
+//                        $slug = '-rent';
+//                    }
+//                    if ($next === true) {
+//                        continue;
+//                    }
+//                    if ((int) $relation['property']['rooms'] === 0) {
+//                        $relation['property']['rooms'] = 1;
+//                    }
+//                    if ((int) $relation['property']['rooms'] > 5) {
+//                        $relation['property']['rooms'] = 5;
+//                    }
+//                    $title = $relation['property']['rooms'] . ' комнатная';
+//                    $alias = Str::slug(Str::limit($title, 10) . ' ' . str_random(7), '-');
+////                    $isModel = CatalogAd::find($relation['category']['id']);
+//                    if (isset($relation['category'])) {
+//                        $cats = CatalogAdCategory::find($relation['category']['id']);
+//                    } else {
+//                        $cats = null;
+//                    }
+////                    $isModel = CatalogAd::find($relation['id']);
+//
+//                    $model = new CatalogAd();
+//                    if (isset($relation['location']) && isset($relation['location']['lat']) && $relation['location']['lat'] != 0) {
+//                        $model->latitude = $relation['location']['lat'];
+//                        $model->longitude = $relation['location']['lng'];
+//                        $model->street = $relation['location']['street'];
+//                        $model->house = $relation['location']['house'];
+//                    }
+////                    $model->id = $relation['id'];
+//                    $model->profile_id = $userDB->profile->getKey();
+//                    $model->name = $title;
+//                    $model->description = trim($relation['property']['desc']);
+//                    $model->category_id = isset($cats) ? $cats->id : null;
+//                    $model->alias = $alias;
+//                    $model->state = 'active';
+//                    $model->price = (int) str_replace(' ', '', $relation['property']['price']);
+//                    $model->sale_price = (int) str_replace(' ', '', $relation['property']['price']);
+//                    $model->save();
+//                    $model->moveToStart();
+//                    $string = $title;
+//
+//                    $rooms = CatalogParameter::where('value', $string)->first();
+//                    $livingArea = CatalogParameter::where('sort', $relation['property']['living_area'])->whereHas('filter', function ($q) use ($slug) {
+//                        $q->where('alias', 'zilaya-ploshhad'  . $slug);
+//                    })->first();
+//                    $kitArea = CatalogParameter::where('sort', $relation['property']['kitchen_area'])->whereHas('filter', function ($q) use ($slug) {
+//                        $q->where('alias', 'ploshhad-kuxni'  . $slug);
+//                    })->first();
+//                    $totalArea = CatalogParameter::where('sort', $relation['property']['total_area'])->whereHas('filter', function ($q) use ($slug) {
+//                        $q->where('alias', 'obshhaya-ploshhad'  . $slug);
+//                    })->first();
+//                    $floorsInHouse = CatalogParameter::where('value', $relation['property']['floors_in_house'])->whereHas('filter', function ($q) use ($slug) {
+//                        $q->where('alias', 'vsego-etazei'  . $slug);
+//                    })->first();
+//                    $floor = CatalogParameter::where('value', $relation['property']['floor'])->whereHas('filter', function ($q) use ($slug) {
+//                        $q->where('alias', 'etaz'  . $slug);
+//                    })->first();
+//                    if ($relation['property']['ad_flat_type_building_id'] === 1) {
+//                        $dom = CatalogParameter::where('value', 'Панельный')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'dom'  . $slug);
+//                        })->first();
+//                    } elseif ($relation['property']['ad_flat_type_building_id'] === 2) {
+//                        $dom = CatalogParameter::where('value', 'Кирпичный')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'dom'  . $slug);
+//                        })->first();
+//                    } elseif ($relation['property']['ad_flat_type_building_id'] === 3) {
+//                        $dom = CatalogParameter::where('value', 'Деревянный')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'dom'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $dom = CatalogParameter::where('value', 'Шлакоблоки')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'dom'  . $slug);
+//                        })->first();
+//                    }
+//
+//                    if ($relation['property']['ad_flat_type_seller_id'] === 1) {
+//                        $seller = CatalogParameter::where('value', 'Собственник')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'prodavec'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $seller = CatalogParameter::where('value', 'Посредник')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'prodavec'  . $slug);
+//                        })->first();
+//                    }
+//
+//                    if ($relation['property']['ad_flat_type_novelty_id'] === 1) {
+//                        $novizna = CatalogParameter::where('value', 'Вторичка')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'novizna'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $novizna = CatalogParameter::where('value', 'Новостройка')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'novizna'  . $slug);
+//                        })->first();
+//                    }
+//
+//                    $phone = $contentsComfort->where('name', 'Телефон')->first();
+//                    $phoneCollect = collect($phone['flats']);
+//                    $myObj = $phoneCollect->where('id', $relation['property']['id'])->first();
+//                    if (!empty($myObj)) {
+//                        $comfortPhone = CatalogParameter::where('value', 'Телефон')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'udobstva'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $comfortPhone = null;
+//                    }
+//
+//                    $net = $contentsComfort->where('name', 'Интернет')->first();
+//                    $netCollect = collect($net['flats']);
+//                    $myObj = $netCollect->where('id', $relation['property']['id'])->first();
+//                    if (!empty($myObj)) {
+//                        $comfortNet = CatalogParameter::where('value', 'Интернет')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'udobstva'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $comfortNet = null;
+//                    }
+//
+//                    $park = $contentsComfort->where('name', 'Парковка')->first();
+//                    $parkCollect = collect($park['flats']);
+//                    $myObj = $parkCollect->where('id', $relation['id'])->first();
+//                    if (!empty($myObj)) {
+//                        $comfortPark = CatalogParameter::where('value', 'Парковка')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'udobstva'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $comfortPark = null;
+//                    }
+//
+//                    $twoLift = $contentsComfort->where('name', 'Два лифта')->first();
+//                    $twoLiftCollect = collect($twoLift['flats']);
+//                    $myObj = $twoLiftCollect->where('id', $relation['id'])->first();
+//                    if (!empty($myObj)) {
+//                        $comfortTwoLift = CatalogParameter::where('value', 'Два лифта')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'udobstva'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $comfortTwoLift = null;
+//                    }
+//
+//                    $conseg = $contentsComfort->where('name', 'Консьерж')->first();
+//                    $consegCollect = collect($conseg['flats']);
+//                    $myObj = $consegCollect->where('id', $relation['id'])->first();
+//                    if (!empty($myObj)) {
+//                        $comfortCons = CatalogParameter::where('value', 'Консьерж')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'udobstva'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $comfortCons = null;
+//                    }
+//
+//                    $balkon = $contentsComfort->where('name', 'Балкон')->first();
+//                    $balkonCollect = collect($balkon['flats']);
+//                    $myObj = $balkonCollect->where('id', $relation['id'])->first();
+//                    if (!empty($myObj)) {
+//                        $comfortBal = CatalogParameter::where('value', 'Балкон')->whereHas('filter', function ($q) use ($slug) {
+//                            $q->where('alias', 'udobstva'  . $slug);
+//                        })->first();
+//                    } else {
+//                        $comfortBal = null;
+//                    }
+//
+//
+//
+//                    $arr = collect();
+//                    if (!empty($comfortBal)) {
+//                        $arr->add($comfortBal->getKey());
+//                    }
+//                    if (!empty($comfortTwoLift)) {
+//                        $arr->add($comfortTwoLift->getKey());
+//                    }
+//                    if (!empty($comfortCons)) {
+//                        $arr->add($comfortCons->getKey());
+//                    }
+//                    if (!empty($comfortPhone)) {
+//                        $arr->add($comfortPhone->getKey());
+//                    }
+//                    if (!empty($comfortPark)) {
+//                        $arr->add($comfortPark->getKey());
+//                    }
+//                    if (!empty($comfortNet)) {
+//                        $arr->add($comfortNet->getKey());
+//                    }
+//                    if (!empty($rooms)) {
+//                        $arr->add($rooms->getKey());
+//                    }
+//                    if (!empty($livingArea)) {
+//                        $arr->add($livingArea->getKey());
+//                    }
+//                    if (!empty($kitArea)) {
+//                        $arr->add($kitArea->getKey());
+//                    }
+//                    if (!empty($totalArea)) {
+//                        $arr->add($totalArea->getKey());
+//                    }
+//                    if (!empty($floorsInHouse)) {
+//                        $arr->add($floorsInHouse->getKey());
+//                    }
+//                    if (!empty($floor)) {
+//                        $arr->add($floor->getKey());
+//                    }
+//                    if (!empty($dom)) {
+//                        $arr->add($dom->getKey());
+//                    }
+//                    if (!empty($seller)) {
+//                        $arr->add($seller->getKey());
+//                    }
+//                    if (!empty($novizna)) {
+//                        $arr->add($novizna->getKey());
+//                    }
+//                    $model->adParameters()->attach($arr);
+//                    var_dump($i);
+//                    $i += 1;
+//
+//                    if (!empty($relation['images'])) {
+//                        foreach ($relation['images'] as $image) {
+//                            $url = 'https://kto_tam:eto_tapigo@catalog.tapigo.tech/images/thumbnails/thumb_' . $image['image_path'];
+//                            $files = resolve(Files::class);
+//                            $files->saveParser($model, $url);
+//                        }
+//                    }
+//                }
+//            }
+//        }
 
         //        $contents = json_decode($contents, true);
 //        $i = 1;

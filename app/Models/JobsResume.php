@@ -94,6 +94,11 @@ class JobsResume extends Model
         return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 
+    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
+
     /**
      * Get the indexable data array for the model.
      *

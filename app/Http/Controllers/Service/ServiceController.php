@@ -182,7 +182,7 @@ class ServiceController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image')
+            ->with('image', 'city')
             ->when($cabinet === true, function ($q) use ($user) {
                 $q->whereHas('profile.user', function ($q) use ($user) {
                     $q->where('id', $user->id);

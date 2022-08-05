@@ -136,7 +136,7 @@ class ResumeController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image')
+            ->with('image', 'city')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
