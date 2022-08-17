@@ -19,6 +19,7 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
+use Illuminate\Support\Facades\DB;
 
 class AdController extends Controller
 {
@@ -80,8 +81,8 @@ class AdController extends Controller
             })
             ->when(isset($filters), function ($q) use ($filters) {
                 $q->whereHas('adParameters', function ($q) use ($filters) {
-                    $q->where('id', $filters);
-                });
+                    $q->whereIn('id', $filters);
+                }, '=', count($filters));
             })
             ->when(!empty($alias), function ($query) use ($alias) {
                 $category = CatalogAdCategory::where('alias', $alias)
@@ -135,7 +136,6 @@ class AdController extends Controller
             }
                 $item->title = $item->name;
         });
-
         $data = (new JsonHelper())->getIndexStructure(new CatalogAd(), $catalogAd, $count, (int) $skip);
 
         return response()->json($data);
