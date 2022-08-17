@@ -49,6 +49,8 @@ class ServiceController extends Controller
         $state = $request->state;
         $type = $request->type;
         $alias = $request->alias;
+        $priceFrom = $request->priceFrom;
+        $priceTo = $request->priceTo;
         $states = new States();
         $skipFromFull = $request->skipFromFull;
         $querySearch = $request->querySearch;
@@ -75,6 +77,12 @@ class ServiceController extends Controller
             })
             ->when(!empty($serviceIds), function ($query) use ($serviceIds) {
                 $query->whereIn('id', $serviceIds);
+            })
+            ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
+                $query->where('price', '>=', $priceFrom);
+            })
+            ->when(!empty($priceTo), function ($query) use ($priceTo) {
+                $query->where('price', '<=', $priceTo);
             })
             ->when(!empty($type), function ($query) use ($type) {
                 $query->where('type', $type);

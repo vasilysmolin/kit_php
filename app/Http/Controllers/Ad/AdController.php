@@ -46,6 +46,8 @@ class AdController extends Controller
         $state = $request->state;
         $name = $request->name;
         $alias = $request->alias;
+        $priceFrom = $request->priceFrom;
+        $priceTo = $request->priceTo;
         $states = new States();
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
@@ -73,6 +75,12 @@ class AdController extends Controller
         })
             ->when(!empty($catalogAdIds), function ($query) use ($catalogAdIds) {
                 $query->whereIn('id', $catalogAdIds);
+            })
+            ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
+                $query->where('sale_price', '>=', $priceFrom);
+            })
+            ->when(!empty($priceTo), function ($query) use ($priceTo) {
+                $query->where('sale_price', '<=', $priceTo);
             })
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
