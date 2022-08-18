@@ -80,10 +80,10 @@ class VacancyController extends Controller
                 });
             })
             ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
-                $query->where('price', '>=', $priceFrom);
+                $query->where('min_price', '>=', $priceFrom);
             })
             ->when(!empty($priceTo), function ($query) use ($priceTo) {
-                $query->where('price', '<=', $priceTo);
+                $query->where('min_price', '<=', $priceTo);
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
