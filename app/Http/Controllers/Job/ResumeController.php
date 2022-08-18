@@ -49,6 +49,8 @@ class ResumeController extends Controller
         $cabinet = isset($user) && $request->from === 'cabinet';
         $skipFromFull = $request->skipFromFull;
         $querySearch = $request->querySearch;
+        $priceFrom = $request->priceFrom;
+        $priceTo = $request->priceTo;
         $resumeIds = [];
 
         if (!empty($querySearch)) {
@@ -78,6 +80,12 @@ class ResumeController extends Controller
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
                 });
+            })
+            ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
+                $query->where('price', '>=', $priceFrom);
+            })
+            ->when(!empty($priceTo), function ($query) use ($priceTo) {
+                $query->where('price', '<=', $priceTo);
             })
             ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
                 $q->where('state', $state);
