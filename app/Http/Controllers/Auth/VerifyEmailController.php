@@ -3,22 +3,20 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Providers\RouteServiceProvider;
-use Illuminate\Auth\Events\Verified;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class VerifyEmailController extends Controller
 {
-
-    public function __invoke(EmailVerificationRequest $request)
+    public function show(Request $request)
     {
-        if ($request->user()->hasVerifiedEmail()) {
-            return response()->json([], 200);
-        }
-        if ($request->user()->markEmailAsVerified()) {
-            event(new Verified($request->user()));
+        $user = $request->user();
+        $hash = decrypt($request->hash);
+
+        if ($user->email === $hash['email'] && Carbon::now()->format('Y-m-d') === $hash['date']) {
+            $request->user()->markEmailAsVerified();
         }
 
-        return response()->json([], 200);
+        return response()->json([]);
     }
 }
