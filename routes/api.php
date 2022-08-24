@@ -21,21 +21,13 @@ Route::group([
     Route::post('refresh', 'AuthController@refresh');
     Route::get('user', 'AuthController@user')->middleware('auth:api');
 
-//    Route::get('/forgot-password', [PasswordResetLinkController::class, 'create'])
-//        ->middleware('guest')
-//        ->name('password.request');
-//
-//    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
-//        ->middleware('guest')
-//        ->name('password.email');
-//
-//    Route::get('/reset-password/{token}', [NewPasswordController::class, 'create'])
-//        ->middleware('guest')
-//        ->name('password.reset');
-//
-//    Route::post('/reset-password', [NewPasswordController::class, 'store'])
-//        ->middleware('guest')
-//        ->name('password.update');
+    Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
+        ->middleware('guest')
+        ->name('password.email');
+
+    Route::post('/reset-password', [NewPasswordController::class, 'store'])
+        ->middleware('guest')
+        ->name('password.update');
 //
 //    Route::get('/verify-email/{id}/{hash}', [VerifyEmailController::class, '__invoke'])
 //        ->middleware(['auth:api', 'signed', 'throttle:6,1'])
