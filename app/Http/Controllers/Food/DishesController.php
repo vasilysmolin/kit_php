@@ -249,7 +249,7 @@ class DishesController extends Controller
             })->first();
 
         if (!isset($dishes)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException("__('validation.permissionDenied')", Response::HTTP_FORBIDDEN);
         }
         $dishes->fill($formData);
         $dishes->update();

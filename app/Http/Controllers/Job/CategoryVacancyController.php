@@ -103,7 +103,7 @@ class CategoryVacancyController extends Controller
             ->first();
 
         if (!isset($vacancyCategory)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException("__('validation.permissionDenied')", Response::HTTP_FORBIDDEN);
         }
 
         $vacancyCategory->fill($formData);

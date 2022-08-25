@@ -121,7 +121,7 @@ class CategoryAdController extends Controller
             })
             ->first();
         if (!isset($category)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException("__('validation.permissionDenied')", Response::HTTP_FORBIDDEN);
         }
 
         $category->fill($formData);

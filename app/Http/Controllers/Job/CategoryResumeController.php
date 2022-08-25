@@ -102,7 +102,7 @@ class CategoryResumeController extends Controller
             ->first();
 
         if (!isset($resumeCategory)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException("__('validation.permissionDenied')", Response::HTTP_FORBIDDEN);
         }
 
         $resumeCategory->fill($formData);

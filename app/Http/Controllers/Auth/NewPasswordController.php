@@ -38,7 +38,7 @@ class NewPasswordController extends Controller
         } else {
             return response()->json(['errors' => [
                 'code' => 422,
-                'message' => 'Неверный логин или пароль',
+                'message' => __('validation.login'),
             ],
             ], 422);
         }

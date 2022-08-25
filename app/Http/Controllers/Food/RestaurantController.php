@@ -192,7 +192,7 @@ class RestaurantController extends Controller
             })->first();
 
         if (!isset($restaurant)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException("__('validation.permissionDenied')", Response::HTTP_FORBIDDEN);
         }
 
         $restaurant->fill($formData);

@@ -127,7 +127,7 @@ class UserController extends Controller
             ->first();
 
         if (!isset($user)) {
-            throw new ModelNotFoundException("Доступ запрещен", Response::HTTP_FORBIDDEN);
+            throw new ModelNotFoundException("__('validation.permissionDenied')", Response::HTTP_FORBIDDEN);
         }
         $result = $userData
             ->only(['name','email','phone','city_id'])

@@ -153,5 +153,6 @@ return [
     */
 
     'attributes' => [],
-
+    'login' => 'Неверный логин или пароль',
+    'permissionDenied' => 'Доступ запрещен',
 ];

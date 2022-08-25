@@ -3,7 +3,7 @@
 
 Вы получили это письмо, потому что мы получили запрос на сброс пароля для вашей учетной записи.
 
-@component('mail::button', ['url' => "https://tapigo.ru/auth/reset-password?${token}&email=${email}"])
+@component('mail::button', ['url' => "https://tapigo.ru/auth/reset-password?token=${token}&email=${email}"])
     Сброс пароля
 @endcomponent
 

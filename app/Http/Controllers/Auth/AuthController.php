@@ -53,7 +53,7 @@ class AuthController extends Controller
         if ($token === false) {
             return response()->json(['errors' => [
                 'code' => 422,
-                'message' => 'Неверный логин или пароль',
+                'message' => __('validation.login'),
                 ],
             ], 422);
         }
@@ -77,7 +77,7 @@ class AuthController extends Controller
             } catch (DecryptException $e) {
                 return response()->json(['errors' => [
                     'code' => 422,
-                    'message' => 'Неверный логин или пароль',
+                    'message' => __('validation.login'),
                 ],
                 ], 422);
             }
@@ -97,7 +97,7 @@ class AuthController extends Controller
                     if ($token === false) {
                         return response()->json(['errors' => [
                             'code' => 422,
-                            'message' => 'Неверный логин или пароль',
+                            'message' => __('validation.login'),
                         ],
                         ], 422);
                     }
@@ -109,7 +109,7 @@ class AuthController extends Controller
 
         return response()->json(['errors' => [
             'code' => 422,
-            'message' => 'Неверный логин или пароль',
+            'message' => __('validation.login'),
         ],
         ], 422);
     }
@@ -155,7 +155,7 @@ class AuthController extends Controller
             if ($token === false) {
                 return response()->json(['errors' => [
                     'code' => 422,
-                    'message' => 'Неверный логин или пароль',
+                    'message' => __('validation.login'),
                     ],
                 ], 422);
             }

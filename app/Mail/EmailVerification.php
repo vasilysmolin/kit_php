@@ -27,9 +27,9 @@ class EmailVerification extends Mailable implements ShouldQueue
     public function build()
     {
         return $this
-            ->from('welcome@tapigo.ru', "Подтверждение email")
+            ->from('welcome@tapigo.ru', __('email.title.accept'))
             ->markdown('emails.password.verify')
-            ->subject('Подтверждение email')
+            ->subject(__('email.title.accept'))
             ->with([
                 'hash' => $this->hash,
             ]);
