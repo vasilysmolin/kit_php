@@ -1,7 +1,7 @@
 @component('mail::message')
 # Нажмите кнопку ниже, чтобы подтвердить свой адрес электронной почты.
 
-@component('mail::button', ['url' => "https://tapigo.ru/auth/verify-email/${hash}"])
+@component('mail::button', ['url' => "https://tapigo.ru/auth/verify-email?hash=${hash}"])
     Подтвердите адрес электронной почты
 @endcomponent
 
