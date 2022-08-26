@@ -5,6 +5,8 @@ namespace App\Objects\Dadata;
 use Illuminate\Http\Client\ConnectionException;
 use MoveMoveIo\DaData\Enums\BranchType;
 use MoveMoveIo\DaData\Enums\CompanyType;
+use MoveMoveIo\DaData\Enums\Language;
+use MoveMoveIo\DaData\Facades\DaDataAddress;
 use MoveMoveIo\DaData\Facades\DaDataCompany;
 
 class Dadata
@@ -20,9 +22,24 @@ class Dadata
         return $dadata;
     }
 
+    public function findAddress(string $string)
+    {
+        try {
+            $dadata = DaDataAddress::prompt($string, 10, Language::RU);
+        } catch (\Exception | ConnectionException $e) {
+            dd($e->getMessage());
+        }
+        return $dadata;
+    }
+
     public function hasCompany($company): bool
     {
         return count($company['suggestions']) > 0;
+    }
+
+    public function getData($data): array
+    {
+        return $data['suggestions'];
     }
 
     public function getCompanyName($company): ?string

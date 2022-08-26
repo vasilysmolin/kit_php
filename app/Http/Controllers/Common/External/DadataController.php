@@ -14,4 +14,11 @@ class DadataController extends Controller
         $result = $dadata->findCompany($request->inn);
         return response()->json(['has_company' => $dadata->hasCompany($result)]);
     }
+
+    public function findAddress(Request $request)
+    {
+        $dadata = new Dadata();
+        $result = $dadata->findAddress($request->street);
+        return response()->json(['addresses' => $dadata->getData($result)]);
+    }
 }

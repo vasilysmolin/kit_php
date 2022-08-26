@@ -96,6 +96,7 @@ Route::group([
     'prefix' => 'external',
 ], function ($router) {
     Route::get('find-company', 'External\DadataController@findCompany')->name('dadata.find-company');
+    Route::get('find-address', 'External\DadataController@findAddress')->name('dadata.find-address');
 });
 
 Route::group([
