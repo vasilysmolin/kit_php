@@ -25,7 +25,7 @@ class Dadata
     public function findAddress(string $string)
     {
         try {
-            $dadata = DaDataAddress::prompt($string, 10, Language::RU);
+            $dadata = DaDataAddress::prompt($string, 10, Language::RU, [],[],[],["value" => "house"],["value" => "house"]);
         } catch (\Exception | ConnectionException $e) {
             dd($e->getMessage());
         }
