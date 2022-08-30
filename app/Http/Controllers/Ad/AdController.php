@@ -157,12 +157,12 @@ class AdController extends Controller
         $formData['active'] = true;
         $filters = $request->filter;
 
-        if (isset($formData['longitude']) && isset($formData['latitude'])) {
-            $yandexMap = resolve(YandexMapController::class);
-            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
-            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
-            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
-        }
+//        if (isset($formData['longitude']) && isset($formData['latitude'])) {
+//            $yandexMap = resolve(YandexMapController::class);
+//            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
+//            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
+//            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
+//        }
 
         unset($formData['category_id']);
         $catalogAd = new CatalogAd();
@@ -262,12 +262,12 @@ class AdController extends Controller
         $filters = $request->filter;
 //      $currentUser = auth('api')->user();
         unset($formData['category_id']);
-        if (isset($formData['longitude']) && isset($formData['latitude'])) {
-            $yandexMap = resolve(YandexMapController::class);
-            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
-            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
-            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
-        }
+//        if (isset($formData['longitude']) && isset($formData['latitude'])) {
+//            $yandexMap = resolve(YandexMapController::class);
+//            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
+//            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
+//            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
+//        }
 
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
