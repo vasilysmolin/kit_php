@@ -18,7 +18,7 @@ class DadataController extends Controller
     public function findAddress(Request $request)
     {
         $dadata = new Dadata();
-        $result = $dadata->findAddress($request->street);
+        $result = $dadata->findAddress($request->querySearch);
         return response()->json(['addresses' => $dadata->getData($result)]);
     }
 }
