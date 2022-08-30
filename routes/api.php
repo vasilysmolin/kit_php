@@ -23,19 +23,19 @@ Route::group([
 
     Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
         ->middleware('guest')
-        ->name('password.email');
+        ->name('forgot-password.email');
 
     Route::post('/reset-password', [NewPasswordController::class, 'store'])
         ->middleware('guest')
-        ->name('password.update');
+        ->name('reset-password.email');
 
     Route::get('/verify-email', [VerifyEmailController::class, 'show'])
         ->middleware(['auth:api', 'throttle:6,1'])
-        ->name('verification.verify');
+        ->name('verify-email.send');
 
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
         ->middleware(['auth:api', 'throttle:6,1'])
-        ->name('verification.send');
+        ->name('verification-notification.send');
 //
 //    Route::post('/confirm-password', [ConfirmablePasswordController::class, 'store'])
 //        ->middleware('auth:api');
