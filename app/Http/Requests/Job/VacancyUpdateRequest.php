@@ -50,13 +50,13 @@ class VacancyUpdateRequest extends FormRequest
                 'exists:cities,id',
                 'integer',
                 'nullable',
-                'max:255',
+                'max:9999999999',
             ],
             'category_id' => [
                 'exists:jobs_vacancy_categories,id',
                 'integer',
                 'nullable',
-                'max:255',
+                'max:9999999999',
             ],
         ];
     }

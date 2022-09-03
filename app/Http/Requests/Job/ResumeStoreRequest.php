@@ -51,13 +51,13 @@ class ResumeStoreRequest extends FormRequest
                 'exists:cities,id',
                 'nullable',
                 'integer',
-                'max:255',
+                'max:9999999999',
             ],
             'category_id' => [
                 'exists:jobs_vacancy_categories,id',
                 'nullable',
                 'integer',
-                'max:255',
+                'max:9999999999',
             ],
         ];
     }
