@@ -7,6 +7,7 @@ use App\Objects\Time\Contract\TimeInterface;
 class TimeArray implements TimeInterface
 {
     private $arrTimes = [
+        'without' => 'Без опыта',
         '1_year' => '1 год',
         '2_years' => '2 года',
         '3_years' => '3 года',
