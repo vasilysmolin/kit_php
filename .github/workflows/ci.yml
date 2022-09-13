@@ -61,7 +61,7 @@ jobs:
           extensions: zip, gmp, pdo_mysql, gd, pcov, curl, exif, json, fileinfo
 
       - name: Setup project
-        run: make setup
+        run: make setup-ci
         env:
           # The hostname used to communicate with the PostgreSQL service container
           DB_HOST: localhost
@@ -77,13 +77,13 @@ jobs:
           REDIS_PORT: 6379
 
       - name: Check lint
-        run: make lint
+        run: make lint-ci
 
       - name: Check phpstan
-        run: make phpstan
+        run: make phpstan-ci
 
       - name: Run tests
-        run: make test-coverage
+        run: make test-coverage-ci
 
 #      - name: Run tests covarage
 #        uses: paambaati/codeclimate-action@v2.6.0

@@ -1,35 +1,59 @@
+setup-ci: env-prepare install-ci key-ci database-prepare-ci install-front-ci
+
+setup: env-prepare build install key database-prepare storage-link
+
 test:
-	docker-compose exec php php artisan test
+	docker-compose exec php composer exec --verbose phpunit tests
 
-migrate:
-	docker-compose exec php php artisan migrate
+install-front-ci:
+	npm install
+	npm run build
 
-autoload:
-	docker-compose exec php composer install
-
-test-coverage:
+test-coverage-ci:
 	composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
 
-lint:
+install-ci:
+	composer install
+
+key-ci:
+	php artisan key:gen --ansi
+	php artisan jwt:secret --force
+
+database-prepare-ci:
+	php artisan migrate:fresh --seed
+
+lint-ci:
 	composer exec phpcs -v
 
-lint-fix:
+lint-fix-ci:
 	composer exec phpcbf -v
 
-phpstan:
+phpstan-ci:
 	composer exec phpstan analyse
 
-analyse:
+analyse-ci:
 	composer exec phpstan analyse -v
 
-config-clear:
+config-clear-ci:
 	php artisan config:clear
 
-env-prepare:
-	cp -n .env.example .env || true
+test-coverage:
+	docker-compose exec php composer exec --verbose phpunit tests -- --coverage-clover build/logs/clover.xml
 
-key:
-	php artisan key:generate
+lint:
+	docker-compose exec php composer exec phpcs -v
+
+lint-fix:
+	docker-compose exec php composer exec phpcbf -v
+
+phpstan:
+	docker-compose exec php composer exec phpstan analyse
+
+analyse:
+	docker-compose exec php composer exec phpstan analyse -v
+
+config-clear:
+	docker-compose exec php php artisan config:clear
 
 ide-helper:
 	php artisan ide-helper:eloquent
@@ -39,33 +63,38 @@ ide-helper:
 
 update:
 	git pull
-	docker-compose exec php composer install --no-interaction --ansi --no-suggest
+	docker-compose exec php composer install
 	docker-compose exec php php artisan migrate --force
 	docker-compose exec php php artisan optimize
 
 seeder:
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\FoodDishesCategorySeeder"
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\FoodCategoryRestaurantSeeder"
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\JobsCategoryResumeSeeder"
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\JobsCategoryVacancySeeder"
-	docker-compose exec php php artisan db:seed --class="Database\Seeders\ServiceCategorySeeder"
-
-seeder-dev:
 	docker-compose exec php php artisan db:seed
 
+env-prepare:
+	cp -n .env.example .env || true
+
+build:
+	docker-compose up -d --build
+
+install:
+	docker-compose exec php composer install
+
+key:
+	docker-compose exec php php artisan key:gen --ansi
+	docker-compose exec php php artisan jwt:secret --force
+
+database-prepare:
+	docker-compose exec php php artisan migrate:fresh --seed
+
+storage-link:
+	docker-compose exec php php artisan storage:link
 
 heroku-build:
-	php artisan migrate --force
-	php artisan db:seed --force
-	php artisan optimize
-
-setup:
 	composer install
-	cp -n .env.example .env|| true
-	php artisan key:gen --ansi
 	php artisan migrate --force
 	php artisan db:seed --force
 	php artisan optimize
+	php artisan parse-vk-users
 
 db-import-from-backup:
 	docker-compose exec -T database psql -d tapigo-database -U postgres  < data
