@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Ad;
 
 use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\External\YandexMapController;
 use App\Http\Middleware\AdMiddleware;
 use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
@@ -19,7 +18,6 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
-use Illuminate\Support\Facades\DB;
 
 class AdController extends Controller
 {
@@ -157,13 +155,6 @@ class AdController extends Controller
         $formData['active'] = true;
         $filters = $request->filter;
 
-//        if (isset($formData['longitude']) && isset($formData['latitude'])) {
-//            $yandexMap = resolve(YandexMapController::class);
-//            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
-//            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
-//            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
-//        }
-
         unset($formData['category_id']);
         $catalogAd = new CatalogAd();
         $catalogAd->fill($formData);
@@ -224,11 +215,6 @@ class AdController extends Controller
             })
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
-            })
-            ->when($cabinet === true, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
-                });
             })
             ->when($catalog === true, function ($q) use ($states) {
                 $q ->whereHas('profile.user', function ($q) use ($states) {

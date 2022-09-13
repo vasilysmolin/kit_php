@@ -163,7 +163,6 @@ class ResumeController extends Controller
         $files = resolve(Files::class);
         if (isset($resume->image)) {
             $resume->photo = $files->getFilePath($resume->image);
-//            $resume->makeHidden('image');
         }
 
         $resume->title = $resume->name;
@@ -233,17 +232,13 @@ class ResumeController extends Controller
     public function update(Request $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $currentUser = auth('api')->user();
 
         $resume = JobsResume::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-//        if (!$currentUser->isAdmin()) {
-//            $formData['state'] = (new States())->inProgress();
-//            $resume->moveToEnd();
-//        }
+
         $resume->fill($formData);
         $resume->update();
 

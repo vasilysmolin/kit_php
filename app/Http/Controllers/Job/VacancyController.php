@@ -14,7 +14,6 @@ use App\Http\Requests\Job\VacancyStoreRequest;
 use App\Http\Requests\Job\VacancyUpdateRequest;
 use App\Models\JobsVacancy;
 use App\Models\JobsVacancyCategory;
-use App\Models\Service;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
@@ -164,7 +163,6 @@ class VacancyController extends Controller
         $files = resolve(Files::class);
         if (isset($vacancy->image)) {
             $vacancy->photo = $files->getFilePath($vacancy->image);
-//            $vacancy->makeHidden('image');
         }
 
         abort_unless($vacancy, 404);
@@ -190,7 +188,6 @@ class VacancyController extends Controller
     public function update(VacancyUpdateRequest $request, $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-//        $currentUser = auth('api')->user();
         unset($formData['state']);
         $vacancy = JobsVacancy::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
@@ -198,10 +195,7 @@ class VacancyController extends Controller
             })
             ->first();
         $vacancy->fill($formData);
-//        if (!$currentUser->isAdmin()) {
-//            $formData['state'] = (new States())->inProgress();
-//            $vacancy->moveToEnd();
-//        }
+
         $vacancy->update();
 
         $files = resolve(Files::class);

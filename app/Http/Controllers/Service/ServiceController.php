@@ -209,7 +209,6 @@ class ServiceController extends Controller
         $files = resolve(Files::class);
         if (isset($service->image)) {
             $service->photo = $files->getFilePath($service->image);
-//            $service->makeHidden('image');
         }
 
         abort_unless($service, 404);
@@ -235,21 +234,14 @@ class ServiceController extends Controller
     public function update(ServiceUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $currentUser = auth('api')->user();
 
         unset($formData['category_id']);
         $service = Service::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-//            ->whereHas('profile.user', function ($q) use ($user) {
-//                $q->where('id', $user->id);
-//            })
             ->first();
-//        if (!$currentUser->isAdmin()) {
-//            $formData['state'] = (new States())->inProgress();
-//            $service->moveToEnd();
-//        }
+
         $service->fill($formData);
         $service->update();
         $files = resolve(Files::class);
