@@ -75,6 +75,11 @@ class Profile extends Model
         return $this->hasOne(Person::class, 'profile_id', 'id');
     }
 
+    public function invitedAccounts()
+    {
+        return $this->hasMany(InvitedUser::class, 'profile_id', 'id');
+    }
+
     public function isPerson()
     {
         return $this->isPerson === true;

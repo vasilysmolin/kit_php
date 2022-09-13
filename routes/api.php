@@ -44,8 +44,9 @@ Route::group([
 Route::group([
     'middleware' => ['auth:api'],
 ], function ($router) {
-    Route::get('users/download', 'UserController@download')->name('user.download')->middleware('role:admin');
     Route::apiResource('users', 'UserController');
+    Route::apiResource('invited-users', 'InvitedUserController');
+    Route::get('users/download', 'UserController@download')->name('user.download')->middleware('role:admin');
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
     Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
@@ -142,12 +143,12 @@ Route::group([
     'namespace' => 'Ad',
 ], function ($router) {
     Route::apiResource('declarations', 'AdController');
+    Route::apiResource('category-declarations', 'CategoryAdController');
     Route::put('declarations/{declaration}/sort', 'AdController@sort')->name('declarations.sort');
     Route::put('declarations/{declaration}/state', 'AdController@state')->name('declarations.state');
     Route::put('declarations/{declaration}/restore', 'AdController@restore')->name('declarations.restore');
     Route::get('declarations-full', 'AdController@fullSearch')->name('declarations.full-search');
     Route::get('category-declarations-full', 'CategoryAdController@fullSearch')->name('category-declarations.full-search');
-    Route::apiResource('category-declarations', 'CategoryAdController');
 });
 
 Route::group([

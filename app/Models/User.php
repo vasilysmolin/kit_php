@@ -83,6 +83,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(FoodOrder::class, 'user_id', 'id');
     }
 
+    public function bindingAccounts()
+    {
+        return $this->hasMany(InvitedUser::class, 'user_id', 'id');
+    }
+
     public function isAdmin()
     {
         $role = $this->roles->first();
