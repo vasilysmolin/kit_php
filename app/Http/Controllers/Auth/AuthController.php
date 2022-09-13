@@ -13,42 +13,17 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
     /**
-     * Create a new AuthController instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-//        $this->middleware('auth:api', ['except' => ['login']]);
-    }
-
-    /**
      * Get a JWT via given credentials.
      *
      * @return \Illuminate\Http\JsonResponse
      */
     public function login(AuthRequest $request)
     {
-//        $credentials = request(['email', 'password']);
-
         $email = Str::lower($request->email);
         $credentials = [
             'email' => $email,
             'password' => $request->password,
         ];
-//        $user = User::where('email', $request->email)->first();
-//        $oldPassword = $user->password;
-//        $user->password = '$2y$10$8QAWs8PGKE.FJwixKl.gfeWkSz2izS9DJUgFNx5NuWkrQTlmWTrkC';
-//        $user->update();
-//        $credentials = [
-//            'email' => $request->email,
-//            'password' => $request->password,
-//        ];
-//        $auth = auth('api');
-//        $token = $auth->attempt($credentials);
-//        $user->password = $oldPassword;
-//        $user->update();
-
         $token = auth('api')->attempt($credentials);
         if ($token === false) {
             return response()->json(['errors' => [
@@ -58,7 +33,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        return $this->respondWithToken($token);
+        respondWithToken($token);
     }
 
     /**
@@ -68,8 +43,6 @@ class AuthController extends Controller
      */
     public function loginHash()
     {
-//        $str = '794:black_info@bk.ru';
-//        $crypt = Crypt::encryptString($str);
         $crypt = request(['hash']);
         if (isset($crypt['hash'])) {
             try {
@@ -102,7 +75,7 @@ class AuthController extends Controller
                         ], 422);
                     }
 
-                    return $this->respondWithToken($token);
+                    respondWithToken($token);
                 }
             }
         }
@@ -121,8 +94,6 @@ class AuthController extends Controller
      */
     public function register(AuthRequest $request)
     {
-//        $credentials = request(['email', 'password']);
-
         $email = Str::lower($request->email);
         $credentials = [
             'email' => $email,
@@ -160,7 +131,7 @@ class AuthController extends Controller
                 ], 422);
             }
 
-            return $this->respondWithToken($token);
+            respondWithToken($token);
         } else {
             return response()->json(['errors' => [
                 'code' => 422,
@@ -204,22 +175,6 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        return $this->respondWithToken(auth('api')->refresh());
-    }
-
-    /**
-     * Get the token array structure.
-     *
-     * @param  string $token
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    protected function respondWithToken($token)
-    {
-        return response()->json([
-            'access_token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60,
-        ]);
+        respondWithToken(auth('api')->refresh());
     }
 }

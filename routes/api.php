@@ -46,6 +46,7 @@ Route::group([
 ], function ($router) {
     Route::apiResource('users', 'UserController');
     Route::apiResource('invited-users', 'InvitedUserController');
+    Route::put('users/{user}/change-profile', 'UserController@changeProfile')->name('user.changeProfile');
     Route::get('users/download', 'UserController@download')->name('user.download')->middleware('role:admin');
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');

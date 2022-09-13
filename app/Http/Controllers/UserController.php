@@ -17,6 +17,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Facades\Excel;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
@@ -166,6 +167,13 @@ class UserController extends Controller
 
 
         return response()->json([], 204);
+    }
+
+    public function changeProfile($request)
+    {
+        $user = auth('api')->user();
+        $token = JWTAuth::customClaims(['profile_id' => $request->profile_id])->fromUser($user);
+        respondWithToken($token);
     }
 
     public function state(UsersStateRequest $request, $id): \Illuminate\Http\JsonResponse
