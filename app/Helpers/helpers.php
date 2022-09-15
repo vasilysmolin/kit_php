@@ -18,12 +18,12 @@ use App\Models\Exercise;
 use Illuminate\Support\Collection;
 
 if (!function_exists('respondWithToken')) {
-    function respondWithToken(string $token): string
+    function respondWithToken(string $token): array
     {
-        return response()->json([
+        return [
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => auth('api')->factory()->getTTL() * 60,
-        ]);
+        ];
     }
 }

@@ -51,6 +51,8 @@ Route::group([
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
     Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
+    Route::get('check-user/{email}', 'UserController@checkUser')->name('user.check-user');
+    Route::put('add-user/{email}', 'UserController@addUser')->name('user.add-user');
 
     Route::apiResource('search-logs', 'Logs\SearchLogsController')
         ->only('index')

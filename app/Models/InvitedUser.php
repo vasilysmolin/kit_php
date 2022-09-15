@@ -9,6 +9,14 @@ class InvitedUser extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'email',
+        'name',
+        'profile_id',
+        'user_id',
+    ];
+
+
     public function invitedUser()
     {
         return $this->hasOne(User::class);

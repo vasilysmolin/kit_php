@@ -33,7 +33,7 @@ class AuthController extends Controller
             ], 422);
         }
 
-        respondWithToken($token);
+        return response()->json(respondWithToken($token));
     }
 
     /**
@@ -75,7 +75,7 @@ class AuthController extends Controller
                         ], 422);
                     }
 
-                    respondWithToken($token);
+                    return response()->json(respondWithToken($token));
                 }
             }
         }
@@ -131,7 +131,7 @@ class AuthController extends Controller
                 ], 422);
             }
 
-            respondWithToken($token);
+            return response()->json(respondWithToken($token));
         } else {
             return response()->json(['errors' => [
                 'code' => 422,
@@ -175,6 +175,6 @@ class AuthController extends Controller
      */
     public function refresh()
     {
-        respondWithToken(auth('api')->refresh());
+        return response()->json(respondWithToken(auth('api')->refresh()));
     }
 }

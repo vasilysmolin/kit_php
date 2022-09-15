@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('invited_users', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained();
-            $table->string('email')->nullable();
+            $table->string('email');
+            $table->string('name')->nullable();
             $table->foreignId('profile_id')->constrained();
             $table->timestamps();
         });

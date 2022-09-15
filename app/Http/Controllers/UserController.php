@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 
 use App\Exports\ExportUsers;
+use App\Http\Requests\UsersCheckRequest;
 use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
 use App\Http\Requests\UsersStateRequest;
@@ -24,7 +25,7 @@ class UserController extends Controller
 
     public function __construct()
     {
-        $this->middleware('role:admin')->except('update', 'show');
+        $this->middleware('role:admin')->except('update', 'show', 'checkUser', 'addUser');
     }
 
     public function index(UsersIndexRequest $request)
@@ -173,7 +174,24 @@ class UserController extends Controller
     {
         $user = auth('api')->user();
         $token = JWTAuth::customClaims(['profile_id' => $request->profile_id])->fromUser($user);
-        respondWithToken($token);
+        return response()->json(respondWithToken($token));
+    }
+
+    public function checkUser(UsersCheckRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $user = User::where('email', $request->email)->first();
+        return response()->json(['success' => !empty($user)]);
+    }
+
+    public function addUser(UsersCheckRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $user = auth('api')->user();
+        $userToInvite = User::select(['email','id as user_id', 'name'])
+            ->where('email', $request->email)
+            ->first();
+        $invitingUser = $user->profile->invitedAccounts()->make($userToInvite->toArray());
+        $isSave = $invitingUser->save();
+        return response()->json(['success' => $isSave]);
     }
 
     public function state(UsersStateRequest $request, $id): \Illuminate\Http\JsonResponse
