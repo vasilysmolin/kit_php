@@ -44,15 +44,16 @@ Route::group([
 Route::group([
     'middleware' => ['auth:api'],
 ], function ($router) {
-    Route::apiResource('users', 'UserController');
-    Route::apiResource('invited-users', 'InvitedUserController');
-    Route::put('users/{user}/change-profile', 'UserController@changeProfile')->name('user.changeProfile');
+    Route::get('users/accounts', 'UserController@accounts')->name('user.accounts');
+    Route::put('users/change-profile', 'UserController@changeProfile')->name('user.change-profile');
     Route::get('users/download', 'UserController@download')->name('user.download')->middleware('role:admin');
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
     Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
     Route::get('check-user/{email}', 'UserController@checkUser')->name('user.check-user');
     Route::put('add-user/{email}', 'UserController@addUser')->name('user.add-user');
+    Route::apiResource('invited-users', 'InvitedUserController');
+    Route::apiResource('users', 'UserController');
 
     Route::apiResource('search-logs', 'Logs\SearchLogsController')
         ->only('index')

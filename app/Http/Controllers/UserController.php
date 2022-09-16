@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-
 use App\Exports\ExportUsers;
 use App\Http\Requests\UsersCheckRequest;
 use App\Http\Requests\UsersIndexRequest;
@@ -22,10 +21,16 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UserController extends Controller
 {
-
     public function __construct()
     {
-        $this->middleware('role:admin')->except('update', 'show', 'checkUser', 'addUser');
+        $this->middleware('role:admin')->except(
+            'update',
+            'show',
+            'checkUser',
+            'addUser',
+            'accounts',
+            'changeProfile'
+        );
     }
 
     public function index(UsersIndexRequest $request)
@@ -111,9 +116,7 @@ class UserController extends Controller
 
     public function show(UsersShowRequest $request, $id)
     {
-
         $user = User::find($id);
-
         $user->setAttribute('role', $user->getRoleNames()->first());
         return response()->json($user->load(['profile.person']));
     }
@@ -170,11 +173,23 @@ class UserController extends Controller
         return response()->json([], 204);
     }
 
-    public function changeProfile($request)
+    public function changeProfile(Request $request)
     {
         $user = auth('api')->user();
-        $token = JWTAuth::customClaims(['profile_id' => $request->profile_id])->fromUser($user);
+//        dd($user);
+        $token = JWTAuth::customClaims([
+            'profile_id' => $request->profile_id,
+            'id' => $request->id,
+        ])->fromUser($user);
         return response()->json(respondWithToken($token));
+    }
+
+    public function accounts(Request $request)
+    {
+        $user = auth('api')->user();
+        $accounts = $user->bindingAccounts;
+        $data = (new JsonHelper())->getIndexStructure(new User(), $accounts, $accounts->count(), 0);
+        return response()->json($data);
     }
 
     public function checkUser(UsersCheckRequest $request): \Illuminate\Http\JsonResponse
@@ -189,6 +204,7 @@ class UserController extends Controller
         $userToInvite = User::select(['email','id as user_id', 'name'])
             ->where('email', $request->email)
             ->first();
+//        $userToInvite->user_id = $user->getKey();
         $invitingUser = $user->profile->invitedAccounts()->make($userToInvite->toArray());
         $isSave = $invitingUser->save();
         return response()->json(['success' => $isSave]);

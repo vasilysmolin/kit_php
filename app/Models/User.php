@@ -87,7 +87,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function bindingAccounts()
     {
-        return $this->hasMany(InvitedUser::class, 'user_id', 'id');
+        return $this->hasMany(InvitedUser::class, 'user_id', 'id')->with('profile.user');
     }
 
     public function isAdmin()

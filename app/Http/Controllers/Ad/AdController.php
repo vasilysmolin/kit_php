@@ -52,6 +52,7 @@ class AdController extends Controller
         $filters = $request->filter;
         $skipFromFull = $request->skipFromFull;
         $querySearch = $request->querySearch;
+        $account = $request->get('accounts');
         $catalogAdIds = [];
 
         if (!empty($querySearch)) {
@@ -112,9 +113,9 @@ class AdController extends Controller
                     $q->where('id', $userID);
                 });
             })
-            ->when($cabinet === true, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
+            ->when($cabinet === true, function ($q) use ($account) {
+                $q->whereHas('profile', function ($q) use ($account) {
+                    $q->where('id', $account['profile_id']);
                 });
             })
             ->when($catalog === true, function ($q) use ($states) {

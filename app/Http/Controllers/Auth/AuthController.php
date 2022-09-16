@@ -146,8 +146,9 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function user()
+    public function user(Request $request)
     {
+//        dd($request->get('accounts'));
         $user = auth('api')->user();
         if (!isset($user->profile)) {
             $user->profile()->create();

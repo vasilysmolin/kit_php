@@ -16,14 +16,13 @@ class InvitedUser extends Model
         'user_id',
     ];
 
-
-    public function invitedUser()
+    public function invitedUser(): \Illuminate\Database\Eloquent\Relations\HasOne
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(User::class, 'id', 'user_id');
     }
 
     public function profile()
     {
-        return $this->hasOne(Profile::class);
+        return $this->hasOne(Profile::class,'id', 'profile_id');
     }
 }
