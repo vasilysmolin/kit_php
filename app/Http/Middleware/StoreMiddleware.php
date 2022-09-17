@@ -22,7 +22,7 @@ class StoreMiddleware
         if ($currentUser->hasRole('admin')) {
             return $next($request);
         }
-        $profileID = $request->profile_id;
+        $profileID = $request->get('accounts')['profile_id'];
 
         if (isset($profileID) && $profileID !== $currentUser->profile->getKey()) {
             return response()->json([

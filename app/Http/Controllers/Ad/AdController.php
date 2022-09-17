@@ -151,8 +151,8 @@ class AdController extends Controller
     public function store(AdStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-
-        $formData['profile_id'] = auth('api')->user()->profile->id;
+        $account = $request->get('accounts');
+        $formData['profile_id'] = $account['profile_id'];
         $formData['active'] = true;
         $filters = $request->filter;
 
@@ -201,6 +201,7 @@ class AdController extends Controller
         $catalog = $request->from === 'catalog';
         $cabinet = isset($user) && $request->from === 'cabinet';
         $querySearch = $request->querySearch;
+        $account = $request->get('accounts');
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
         }
@@ -209,9 +210,9 @@ class AdController extends Controller
                 $q->orWhere('id', (int) $id);
             })
             ->with('image', 'images', 'adParameters.filter', 'city')
-            ->when($cabinet !== false, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->getKey());
+            ->when($cabinet !== false, function ($q) use ($account) {
+                $q->whereHas('profile', function ($q) use ($account) {
+                    $q->where('id', $account['profile_id']);
                 });
             })
             ->when(!empty($expand), function ($q) use ($expand) {
@@ -247,14 +248,7 @@ class AdController extends Controller
     {
         $formData = $request->all();
         $filters = $request->filter;
-//      $currentUser = auth('api')->user();
         unset($formData['category_id']);
-//        if (isset($formData['longitude']) && isset($formData['latitude'])) {
-//            $yandexMap = resolve(YandexMapController::class);
-//            $yandexMapData = $yandexMap->getAddressByCoords($formData['longitude'], $formData['latitude']);
-//            $formData['street'] = $yandexMapData['ThoroughfareName'] ?? null;
-//            $formData['house'] = $yandexMapData['PremiseNumber'] ?? null;
-//        }
 
         $catalogAd = CatalogAd::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {

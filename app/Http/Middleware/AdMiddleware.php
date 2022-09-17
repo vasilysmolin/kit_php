@@ -25,7 +25,7 @@ class AdMiddleware
         if ($currentUser->hasRole('admin')) {
             return $next($request);
         }
-        $profile = $currentUser->profile;
+        $profile = $request->get('accounts')['profile_id'];
         $ad = $request->route('declaration');
 
         if (isset($ad)) {
