@@ -18,7 +18,6 @@ class InvitedUserPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -30,7 +29,6 @@ class InvitedUserPolicy
      */
     public function view(User $user, InvitedUser $invitedUser)
     {
-        //
     }
 
     /**
@@ -41,7 +39,6 @@ class InvitedUserPolicy
      */
     public function create(User $user)
     {
-        //
     }
 
     /**
@@ -53,7 +50,6 @@ class InvitedUserPolicy
      */
     public function update(User $user, InvitedUser $invitedUser)
     {
-        //
     }
 
     /**
@@ -65,7 +61,6 @@ class InvitedUserPolicy
      */
     public function delete(User $user, InvitedUser $invitedUser)
     {
-        //
     }
 
     /**
@@ -77,7 +72,6 @@ class InvitedUserPolicy
      */
     public function restore(User $user, InvitedUser $invitedUser)
     {
-        //
     }
 
     /**
@@ -89,6 +83,5 @@ class InvitedUserPolicy
      */
     public function forceDelete(User $user, InvitedUser $invitedUser)
     {
-        //
     }
 }

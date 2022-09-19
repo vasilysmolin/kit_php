@@ -15,7 +15,6 @@ class StateEmailListener
      */
     public function __construct()
     {
-        //
     }
 
     /**

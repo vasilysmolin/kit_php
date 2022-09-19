@@ -24,7 +24,7 @@ class ServiceMiddleware
         if ($currentUser->hasRole('admin')) {
             return $next($request);
         }
-        $profile = $currentUser->profile;
+        $profile = $request->get('accounts')['profile_id'];
         $service = $request->route('service');
 
         if (isset($service)) {
@@ -33,7 +33,7 @@ class ServiceMiddleware
                     $q->orWhere('id', (int) $service);
                 })->withTrashed()
                 ->first();
-            if (isset($service) && isset($profile) && $service->profile_id !== $currentUser->profile->getKey()) {
+            if (isset($service) && isset($profile) && $service->profile_id !== $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

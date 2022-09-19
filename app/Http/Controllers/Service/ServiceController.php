@@ -21,7 +21,6 @@ use Illuminate\Support\Str;
 
 class ServiceController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware(['auth:api', StoreMiddleware::class])

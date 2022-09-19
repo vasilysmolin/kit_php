@@ -10,7 +10,6 @@ use YaGeo;
 
 class YandexMapController extends Controller
 {
-
 //    public function getAddress(Request $request): \Illuminate\Http\JsonResponse
 //    {
 //        $data = YaGeo::setQuery($request->address)->load()->getResponse()->getData();
@@ -40,5 +39,4 @@ class YandexMapController extends Controller
 
         return $data;
     }
-
 }

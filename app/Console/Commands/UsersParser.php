@@ -131,28 +131,27 @@ class UsersParser extends Command
 //                $isModel ? $meta->update() : $meta->save();
 //        }
 //        $rooms = CatalogParameter::where('value', '1 комнатные')->first();
-
-        $client = new Client();
-        $response = $client->get('https://catalog.tapigo.tech/all-ads-comfort-json', [
-            'verify' => false,
-            'auth' => [
-                'ktotam',
-                'eto_tapigo',
-            ],
-        ]);
-        $contentsComfort = $response->getBody()->getContents();
-        $contentsComfort = collect(json_decode($contentsComfort, true));
-
-
-        $client = new Client();
-        $response = $client->get('https://catalog.tapigo.tech/all-ads-json', [
-            'verify' => false,
-            'auth' => [
-                'ktotam',
-                'eto_tapigo',
-            ],
-        ]);
-        $contents = $response->getBody()->getContents();
+//        $client = new Client();
+//        $response = $client->get('https://catalog.tapigo.tech/all-ads-comfort-json', [
+//            'verify' => false,
+//            'auth' => [
+//                'ktotam',
+//                'eto_tapigo',
+//            ],
+//        ]);
+//        $contentsComfort = $response->getBody()->getContents();
+//        $contentsComfort = collect(json_decode($contentsComfort, true));
+//
+//
+//        $client = new Client();
+//        $response = $client->get('https://catalog.tapigo.tech/all-ads-json', [
+//            'verify' => false,
+//            'auth' => [
+//                'ktotam',
+//                'eto_tapigo',
+//            ],
+//        ]);
+//        $contents = $response->getBody()->getContents();
 //        Storage::disk('local')->put('all-ads-json.txt', $contents);
 //        App\\Models\\Catalog\\Flat\\AdFlatProperty
 //Инпуты

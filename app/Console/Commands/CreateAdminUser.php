@@ -84,7 +84,7 @@ class CreateAdminUser extends Command
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
             $item->update();
-            $i++;
+            $i += 1;
         });
 
         $items = JobsVacancy::orderBy('sort', 'ASC')->get();
@@ -92,7 +92,7 @@ class CreateAdminUser extends Command
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
             $item->update();
-            $i++;
+            $i += 1;
         });
 
         $items = JobsResume::orderBy('sort', 'ASC')->get();
@@ -100,14 +100,14 @@ class CreateAdminUser extends Command
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
             $item->update();
-            $i++;
+            $i += 1;
         });
         $items = Service::orderBy('sort', 'ASC')->get();
         $i = 1;
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
             $item->update();
-            $i++;
+            $i += 1;
         });
 
         $items = CatalogAd::orderBy('sort', 'ASC')->get();
@@ -115,7 +115,7 @@ class CreateAdminUser extends Command
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
             $item->update();
-            $i++;
+            $i += 1;
         });
 //        dd(1);
 //        $role = Role::where('name', 'admin')->first();

@@ -318,23 +318,6 @@ class AdTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testStoreCatalogAd403()
-    {
-        $user = User::factory()->has(Profile::factory())->create();
-        $access_token = JWTAuth::fromUser($user);
-        $userTwo = User::factory()->has(Profile::factory())->create();
-        $response = $this
-            ->withToken($access_token)
-            ->json('POST', route('declarations.store'), [
-                'name' => 'test',
-                'max_price' => 1000,
-                'min_price' => 100,
-                'profile_id' => $userTwo->profile->getKey(),
-            ]);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function testCatalogAdIndexCabinet()
     {
         $count = 1;

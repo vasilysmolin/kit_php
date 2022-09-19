@@ -27,8 +27,8 @@ class CreateCitiesDadataCommand extends Command
         $regions = $collect->first()->splice(1);
         $regions->each(function ($item) use ($regionsDB) {
 
-            $temp = strtolower($item[0]);
-            $cityName = ucfirst($temp);
+//            $temp = strtolower($item[0]);
+//            $cityName = ucfirst($temp);
             $alias = mb_strtolower($item[2]);
             $alias = preg_replace("/\s/", '-', $alias);
             $alias = preg_replace("/\//", '-', $alias);
@@ -57,7 +57,7 @@ class CreateCitiesDadataCommand extends Command
             while ($dublicate->count() > 0) {
                 $alias .= '-' . $i;
                 $dublicate = $regionsDB->where('alias', $alias);
-                $i++;
+                $i += 1;
             }
 
             $model = new Region();
@@ -113,7 +113,7 @@ class CreateCitiesDadataCommand extends Command
             while ($dublicate->count() > 0) {
                 $alias .= '-' . $i;
                 $dublicate = $citiesDB->where('alias', $alias);
-                $i++;
+                $i += 1;
             }
             $timeZones = substr($item[19], 3);
             $timeZone = $timezoneDB->where('regular', $timeZones)->first();

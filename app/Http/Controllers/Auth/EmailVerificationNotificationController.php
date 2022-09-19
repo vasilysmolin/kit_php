@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Mail;
 
 class EmailVerificationNotificationController extends Controller
 {
-
     public function store(Request $request)
     {
         if (!$request->user()->hasVerifiedEmail()) {

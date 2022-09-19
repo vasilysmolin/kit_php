@@ -12,7 +12,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class NewslettersController extends Controller
 {
-
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         $take = $request->take ?? config('settings.take_twenty_five');
@@ -58,7 +57,6 @@ class NewslettersController extends Controller
      */
     public function show(Newsletters $newsletters)
     {
-        //
     }
 
     /**
@@ -70,7 +68,6 @@ class NewslettersController extends Controller
      */
     public function update(UpdateNewslettersRequest $request, Newsletters $newsletters)
     {
-        //
     }
 
     /**
@@ -81,6 +78,5 @@ class NewslettersController extends Controller
      */
     public function destroy(Newsletters $newsletters)
     {
-        //
     }
 }

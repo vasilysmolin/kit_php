@@ -9,6 +9,7 @@ use Laravel\Scout\Searchable;
 use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
+
 //use Spatie\Translatable\HasTranslations;
 
 class JobsVacancy extends Model

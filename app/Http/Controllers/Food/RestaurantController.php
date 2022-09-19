@@ -16,7 +16,6 @@ use Illuminate\Support\Str;
 
 class RestaurantController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['index','show']]);

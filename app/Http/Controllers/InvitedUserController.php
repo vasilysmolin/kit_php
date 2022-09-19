@@ -10,7 +10,6 @@ use App\Objects\JsonHelper;
 
 class InvitedUserController extends Controller
 {
-
     public function index()
     {
         $user = auth('api')->user();
@@ -23,36 +22,30 @@ class InvitedUserController extends Controller
 
     public function create()
     {
-        //
     }
 
 
     public function store(StoreInvitedUserRequest $request)
     {
-        //
     }
 
 
     public function show(InvitedUser $invitedUser)
     {
-        //
     }
 
 
     public function edit(InvitedUser $invitedUser)
     {
-        //
     }
 
 
     public function update(UpdateInvitedUserRequest $request, InvitedUser $invitedUser)
     {
-        //
     }
 
 
     public function destroy(InvitedUser $invitedUser)
     {
-        //
     }
 }

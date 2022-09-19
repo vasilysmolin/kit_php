@@ -312,23 +312,6 @@ class ResumeTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testStoreResume403()
-    {
-        $user = User::factory()->has(Profile::factory())->create();
-        $access_token = JWTAuth::fromUser($user);
-        $userTwo = User::factory()->has(Profile::factory())->create();
-        $response = $this
-            ->withToken($access_token)
-            ->json('POST', route('resume.store'), [
-                'name' => 'test',
-                'max_price' => 1000,
-                'min_price' => 100,
-                'profile_id' => $userTwo->profile->getKey(),
-            ]);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function testResumeIndexCabinet()
     {
         $count = 1;

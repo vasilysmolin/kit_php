@@ -22,6 +22,7 @@ class VacanciesMiddleware
         if ($currentUser->hasRole('admin')) {
             return $next($request);
         }
+        $profile = $request->get('accounts')['profile_id'];
         $vacancyID = $request->route('vacancy');
 
         if (isset($vacancyID)) {
@@ -31,7 +32,7 @@ class VacanciesMiddleware
                 })
                 ->withTrashed()
                 ->first();
-            if (isset($vacancy) && $vacancy->profile_id !== $currentUser->profile->getKey()) {
+            if (isset($vacancy) && $vacancy->profile_id !== $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

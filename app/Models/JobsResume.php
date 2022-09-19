@@ -119,7 +119,7 @@ class JobsResume extends Model
             'duties',
             'demands',
             'additionally',
-            'sort'
+            'sort',
         ]);
     }
 

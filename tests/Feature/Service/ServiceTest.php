@@ -313,23 +313,6 @@ class ServiceTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testStoreService403()
-    {
-        $user = User::factory()->has(Profile::factory())->create();
-        $access_token = JWTAuth::fromUser($user);
-        $userTwo = User::factory()->has(Profile::factory())->create();
-        $response = $this
-            ->withToken($access_token)
-            ->json('POST', route('services.store'), [
-                'name' => 'test',
-                'max_price' => 1000,
-                'min_price' => 100,
-                'profile_id' => $userTwo->profile->getKey(),
-            ]);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function testServiceIndexCabinet()
     {
         $count = 1;

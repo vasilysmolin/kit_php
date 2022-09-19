@@ -24,7 +24,6 @@ class UpdateNewslettersRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

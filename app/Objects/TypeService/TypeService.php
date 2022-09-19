@@ -60,5 +60,4 @@ class TypeService implements ScheduleInterface
     {
         return self::NEED;
     }
-
 }

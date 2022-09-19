@@ -34,7 +34,7 @@ class AdMiddleware
                     $q->orWhere('id', (int) $ad);
                 })->withTrashed()
                 ->first();
-            if (isset($ad) && isset($profile) && $ad->profile_id !== $currentUser->profile->getKey()) {
+            if (isset($ad) && isset($profile) && $ad->profile_id !== $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

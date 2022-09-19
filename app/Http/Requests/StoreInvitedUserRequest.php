@@ -24,7 +24,6 @@ class StoreInvitedUserRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

@@ -24,7 +24,7 @@ class StoreMiddleware
         }
         $profileID = $request->get('accounts')['profile_id'];
 
-        if (isset($profileID) && $profileID !== $currentUser->profile->getKey()) {
+        if (isset($profileID) && $currentUser->checkProfile($profileID)) {
             return response()->json([
                 'errors' => [
                     'code' => Response::HTTP_FORBIDDEN,

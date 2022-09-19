@@ -90,6 +90,13 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(InvitedUser::class, 'user_id', 'id')->with('profile.user');
     }
 
+    public function checkProfile(int $profileID): bool
+    {
+        $invitedProfileID = $this->bindingAccounts->pluck('profile_id');
+        $invitedProfileID->push($this->profile->getKey());
+        return array_search($profileID, $invitedProfileID->toArray(), true) === false;
+    }
+
     public function isAdmin()
     {
         $role = $this->roles->first();

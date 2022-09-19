@@ -18,7 +18,6 @@ class NewslettersPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -30,7 +29,6 @@ class NewslettersPolicy
      */
     public function view(User $user, newsletters $newsletters)
     {
-        //
     }
 
     /**
@@ -41,7 +39,6 @@ class NewslettersPolicy
      */
     public function create(User $user)
     {
-        //
     }
 
     /**
@@ -53,7 +50,6 @@ class NewslettersPolicy
      */
     public function update(User $user, newsletters $newsletters)
     {
-        //
     }
 
     /**
@@ -65,7 +61,6 @@ class NewslettersPolicy
      */
     public function delete(User $user, newsletters $newsletters)
     {
-        //
     }
 
     /**
@@ -77,7 +72,6 @@ class NewslettersPolicy
      */
     public function restore(User $user, newsletters $newsletters)
     {
-        //
     }
 
     /**
@@ -89,6 +83,5 @@ class NewslettersPolicy
      */
     public function forceDelete(User $user, newsletters $newsletters)
     {
-        //
     }
 }

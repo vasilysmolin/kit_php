@@ -23,7 +23,7 @@ class ResumeMiddleware
         if ($currentUser->hasRole('admin')) {
             return $next($request);
         }
-        $profile = $currentUser->profile;
+        $profile = $request->get('accounts')['profile_id'];
         $resume = $request->route('resume');
 
         if (isset($resume)) {
@@ -32,7 +32,7 @@ class ResumeMiddleware
                     $q->orWhere('id', (int) $resume);
                 })->withTrashed()
                 ->first();
-            if (isset($resume) && isset($profile) && $resume->profile_id !== $currentUser->profile->getKey()) {
+            if (isset($resume) && isset($profile) && $resume->profile_id !== $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

@@ -18,7 +18,6 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class DishesController extends Controller
 {
-
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['index','show','foods']]);

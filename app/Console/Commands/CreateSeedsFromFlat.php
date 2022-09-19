@@ -87,7 +87,7 @@ class CreateSeedsFromFlat extends Command
                     'active' => 1,
                 ]);
 
-                for ($i = 1; $i <= 100; $i++) {
+                for ($i = 1; $i <= 100; $i += 1) {
                     $filter->parameters()->create([
                         'value' => $i,
                         'sort' => $i,
@@ -102,7 +102,7 @@ class CreateSeedsFromFlat extends Command
                     'active' => 1,
                 ]);
 
-                for ($i = 1; $i <= 100; $i++) {
+                for ($i = 1; $i <= 100; $i += 1) {
                     $filter->parameters()->create([
                         'value' => $i,
                         'sort' => $i,
@@ -173,7 +173,7 @@ class CreateSeedsFromFlat extends Command
                     'active' => 1,
                 ]);
 
-                for ($i = 1; $i <= 100; $i++) {
+                for ($i = 1; $i <= 100; $i += 1) {
                     $filter->parameters()->create([
                         'value' => "{$i}м2",
                         'sort' => $i,
@@ -188,7 +188,7 @@ class CreateSeedsFromFlat extends Command
                     'active' => 1,
                 ]);
 
-                for ($i = 1; $i <= 100; $i++) {
+                for ($i = 1; $i <= 100; $i += 1) {
                     $filter->parameters()->create([
                         'value' => "{$i}м2",
                         'sort' => $i,
@@ -203,7 +203,7 @@ class CreateSeedsFromFlat extends Command
                     'active' => 1,
                 ]);
 
-                for ($i = 1; $i <= 100; $i++) {
+                for ($i = 1; $i <= 100; $i += 1) {
                     $filter->parameters()->create([
                         'value' => "{$i}м2",
                         'sort' => $i,

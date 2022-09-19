@@ -11,7 +11,6 @@ use MoveMoveIo\DaData\Facades\DaDataCompany;
 
 class Dadata
 {
-
     public function findCompany(string $string)
     {
         try {
@@ -25,7 +24,7 @@ class Dadata
     public function findAddress(string $string)
     {
         try {
-            $dadata = DaDataAddress::prompt($string, 10, Language::RU, [],[],[],["value" => "house"],["value" => "house"]);
+            $dadata = DaDataAddress::prompt($string, 10, Language::RU, [], [], [], ["value" => "house"], ["value" => "house"]);
         } catch (\Exception | ConnectionException $e) {
             dd($e->getMessage());
         }

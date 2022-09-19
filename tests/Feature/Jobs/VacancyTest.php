@@ -313,23 +313,6 @@ class VacancyTest extends TestCase
         $response->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
-    public function testStoreVacancy403()
-    {
-        $user = User::factory()->has(Profile::factory())->create();
-        $access_token = JWTAuth::fromUser($user);
-        $userTwo = User::factory()->has(Profile::factory())->create();
-        $response = $this
-            ->withToken($access_token)
-            ->json('POST', route('vacancies.store'), [
-                'name' => 'test',
-                'max_price' => 1000,
-                'min_price' => 100,
-                'profile_id' => $userTwo->profile->getKey(),
-            ]);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
     public function testVacancyIndexCabinet()
     {
         $count = 1;

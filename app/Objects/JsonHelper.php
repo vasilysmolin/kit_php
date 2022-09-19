@@ -6,7 +6,6 @@ use Illuminate\Support\Collection;
 
 class JsonHelper
 {
-
     public function getIndexStructure($model, Collection $collection, int $count, int $skip): array
     {
 

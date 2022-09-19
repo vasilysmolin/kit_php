@@ -9,7 +9,6 @@ use Illuminate\Support\Str;
 
 class Files
 {
-
     protected static $CROP = [
         [
             'width' => 180,

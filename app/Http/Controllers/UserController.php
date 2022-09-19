@@ -176,12 +176,15 @@ class UserController extends Controller
     public function changeProfile(Request $request)
     {
         $user = auth('api')->user();
-//        dd($user);
-        $token = JWTAuth::customClaims([
-            'profile_id' => $request->profile_id,
-            'id' => $request->id,
-        ])->fromUser($user);
-        return response()->json(respondWithToken($token));
+        if ($user->checkProfile($request->profile_id)) {
+            $token = JWTAuth::customClaims([
+                'profile_id' => $request->profile_id,
+                'id' => $request->id,
+            ])->fromUser($user);
+            return response()->json(respondWithToken($token));
+        }
+
+        return response()->json([]);
     }
 
     public function accounts(Request $request)
@@ -194,7 +197,11 @@ class UserController extends Controller
 
     public function checkUser(UsersCheckRequest $request): \Illuminate\Http\JsonResponse
     {
-        $user = User::where('email', $request->email)->first();
+        $user = User::where('email', $request->email)
+            ->whereHas('profile', function ($q) {
+                $q->where('isPerson', true);
+            })
+            ->first();
         return response()->json(['success' => !empty($user)]);
     }
 
@@ -203,8 +210,10 @@ class UserController extends Controller
         $user = auth('api')->user();
         $userToInvite = User::select(['email','id as user_id', 'name'])
             ->where('email', $request->email)
+            ->whereHas('profile', function ($q) {
+                $q->where('isPerson', true);
+            })
             ->first();
-//        $userToInvite->user_id = $user->getKey();
         $invitingUser = $user->profile->invitedAccounts()->make($userToInvite->toArray());
         $isSave = $invitingUser->save();
         return response()->json(['success' => $isSave]);

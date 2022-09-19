@@ -24,7 +24,6 @@ class UpdateInvitedUserRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }
