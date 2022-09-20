@@ -187,12 +187,26 @@ class UserController extends Controller
         return response()->json([]);
     }
 
-    public function accounts(Request $request)
+    public function accounts(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         $accounts = $user->bindingAccounts;
         $data = (new JsonHelper())->getIndexStructure(new User(), $accounts, $accounts->count(), 0);
         return response()->json($data);
+    }
+
+    public function currentAccount(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $claims = JWTAuth::parseToken()->getPayload()->getClaims();
+        if (!empty($claims['profile_id'])) {
+            $user = User::whereHas('profile', function ($q) use ($claims) {
+                    $q->where('id', $claims['profile_id']->getValue());
+            })->with(['profile.restaurant', 'profile.person','city'])->first();
+        } else {
+            $user = auth('api')->user();
+            $user->load(['profile.restaurant', 'profile.person','city']);
+        }
+        return response()->json($user);
     }
 
     public function checkUser(UsersCheckRequest $request): \Illuminate\Http\JsonResponse
