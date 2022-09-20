@@ -32,7 +32,7 @@ class VacanciesMiddleware
                 })
                 ->withTrashed()
                 ->first();
-            if (isset($vacancy) && $vacancy->profile_id !== $profile) {
+            if (isset($vacancy) && $vacancy->profile_id !== (int) $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

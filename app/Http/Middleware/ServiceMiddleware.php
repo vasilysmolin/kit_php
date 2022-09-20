@@ -33,7 +33,7 @@ class ServiceMiddleware
                     $q->orWhere('id', (int) $service);
                 })->withTrashed()
                 ->first();
-            if (isset($service) && isset($profile) && $service->profile_id !== $profile) {
+            if (isset($service) && isset($profile) && $service->profile_id !== (int) $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

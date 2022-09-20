@@ -32,7 +32,7 @@ class ResumeMiddleware
                     $q->orWhere('id', (int) $resume);
                 })->withTrashed()
                 ->first();
-            if (isset($resume) && isset($profile) && $resume->profile_id !== $profile) {
+            if (isset($resume) && isset($profile) && $resume->profile_id !== (int) $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

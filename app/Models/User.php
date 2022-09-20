@@ -93,7 +93,7 @@ class User extends Authenticatable implements JWTSubject
     public function checkProfile(int $profileID): bool
     {
         $invitedProfileID = $this->bindingAccounts->pluck('profile_id');
-        $invitedProfileID->push($this->profile->getKey());
+        $invitedProfileID->push((int) $this->profile->getKey());
         return array_search($profileID, $invitedProfileID->toArray(), true) !== false;
     }
 

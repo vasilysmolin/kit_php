@@ -54,6 +54,7 @@ class ServiceController extends Controller
         $skipFromFull = $request->skipFromFull;
         $querySearch = $request->querySearch;
         $serviceIds = [];
+        $account = $request->get('accounts');
 
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
@@ -102,9 +103,9 @@ class ServiceController extends Controller
                     $q->where('id', $userID);
                 });
             })
-            ->when($cabinet === true, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
+            ->when($cabinet === true, function ($q) use ($account) {
+                $q->whereHas('profile', function ($q) use ($account) {
+                    $q->where('id', $account['profile_id']);
                 });
             })
             ->when($catalog === true, function ($q) use ($states) {
