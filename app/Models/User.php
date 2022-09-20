@@ -94,7 +94,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $invitedProfileID = $this->bindingAccounts->pluck('profile_id');
         $invitedProfileID->push($this->profile->getKey());
-        return array_search($profileID, $invitedProfileID->toArray(), true) === false;
+        return array_search($profileID, $invitedProfileID->toArray(), true) !== false;
     }
 
     public function isAdmin()

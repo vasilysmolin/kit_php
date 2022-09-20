@@ -51,8 +51,9 @@ Route::group([
     Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
     Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
     Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
-    Route::get('check-user/{email}', 'UserController@checkUser')->name('user.check-user');
-    Route::put('add-user/{email}', 'UserController@addUser')->name('user.add-user');
+    Route::get('users/check-user/{email}', 'UserController@checkUser')->name('user.check-user');
+    Route::put('users/add-user/{email}', 'UserController@addUser')->name('user.add-user');
+    Route::delete('users/delete-user/{email}', 'UserController@deleteUser')->name('user.delete-user');
     Route::apiResource('invited-users', 'InvitedUserController');
     Route::apiResource('users', 'UserController');
 

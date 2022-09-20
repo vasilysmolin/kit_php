@@ -8,6 +8,7 @@ use App\Http\Requests\UsersIndexRequest;
 use App\Http\Requests\UsersShowRequest;
 use App\Http\Requests\UsersStateRequest;
 use App\Http\Requests\UsersUpdateRequest;
+use App\Models\InvitedUser;
 use App\Models\User;
 use App\Objects\Dadata\Dadata;
 use App\Objects\JsonHelper;
@@ -28,7 +29,9 @@ class UserController extends Controller
             'show',
             'checkUser',
             'addUser',
+            'deleteUser',
             'accounts',
+            'currentAccount',
             'changeProfile'
         );
     }
@@ -213,7 +216,7 @@ class UserController extends Controller
     {
         $user = User::where('email', $request->email)
             ->whereHas('profile', function ($q) {
-                $q->where('isPerson', true);
+                $q->where('isPerson', false);
             })
             ->first();
         return response()->json(['success' => !empty($user)]);
@@ -225,12 +228,22 @@ class UserController extends Controller
         $userToInvite = User::select(['email','id as user_id', 'name'])
             ->where('email', $request->email)
             ->whereHas('profile', function ($q) {
-                $q->where('isPerson', true);
+                $q->where('isPerson', false);
             })
             ->first();
         $invitingUser = $user->profile->invitedAccounts()->make($userToInvite->toArray());
         $isSave = $invitingUser->save();
         return response()->json(['success' => $isSave]);
+    }
+
+    public function deleteUser(UsersCheckRequest $request): \Illuminate\Http\JsonResponse
+    {
+        $user = auth('api')->user();
+        InvitedUser::where('email', $request->email)
+            ->whereHas('profile', function ($q) use ($user) {
+                $q->where('id', $user->profile->getKey());
+            })->delete();
+        return response()->json(['success' => true]);
     }
 
     public function state(UsersStateRequest $request, $id): \Illuminate\Http\JsonResponse
