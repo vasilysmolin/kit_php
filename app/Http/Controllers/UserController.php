@@ -231,6 +231,10 @@ class UserController extends Controller
                 $q->where('isPerson', false);
             })
             ->first();
+        $invitedUser = $user->profile->invitedAccounts()->where('email', $request->email)->first();
+        if (!empty($invitedUser)) {
+            return response()->json(['success' => false]);
+        }
         $invitingUser = $user->profile->invitedAccounts()->make($userToInvite->toArray());
         $isSave = $invitingUser->save();
         return response()->json(['success' => $isSave]);
