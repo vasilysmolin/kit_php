@@ -44,16 +44,16 @@ Route::group([
 Route::group([
     'middleware' => ['auth:api'],
 ], function ($router) {
-    Route::get('users/accounts', 'UserController@accounts')->name('user.accounts');
-    Route::get('users/accounts/current', 'UserController@currentAccount')->name('user.current.account');
-    Route::put('users/change-profile', 'UserController@changeProfile')->name('user.change-profile');
-    Route::get('users/download', 'UserController@download')->name('user.download')->middleware('role:admin');
-    Route::put('users/{user}/restore', 'UserController@restore')->name('user.restore')->middleware('role:admin');
-    Route::put('users/{user}/sort', 'UserController@sort')->name('user.sort')->middleware('role:admin');
-    Route::put('users/{user}/state', 'UserController@state')->name('user.state')->middleware('role:admin');
-    Route::get('users/check-user/{email}', 'UserController@checkUser')->name('user.check-user');
-    Route::put('users/add-user/{email}', 'UserController@addUser')->name('user.add-user');
-    Route::delete('users/delete-user/{email}', 'UserController@deleteUser')->name('user.delete-user');
+    Route::get('users/accounts', 'UserController@accounts')->name('users.accounts');
+    Route::get('users/accounts/current', 'UserController@currentAccount')->name('users.current.account');
+    Route::put('users/change-profile', 'UserController@changeProfile')->name('users.change-profile');
+    Route::get('users/download', 'UserController@download')->name('users.download')->middleware('role:admin');
+    Route::put('users/{user}/restore', 'UserController@restore')->name('users.restore')->middleware('role:admin');
+    Route::put('users/{user}/sort', 'UserController@sort')->name('users.sort')->middleware('role:admin');
+    Route::put('users/{user}/state', 'UserController@state')->name('users.state')->middleware('role:admin');
+    Route::get('users/check-user/{email}', 'UserController@checkUser')->name('users.check-user');
+    Route::put('users/add-user/{email}', 'UserController@addUser')->name('users.add-user');
+    Route::delete('users/delete-user/{email}', 'UserController@deleteUser')->name('users.delete-user');
     Route::apiResource('invited-users', 'InvitedUserController');
     Route::apiResource('users', 'UserController');
 

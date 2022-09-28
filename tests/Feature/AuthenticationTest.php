@@ -18,19 +18,6 @@ class AuthenticationTest extends TestCase
         $response->assertStatus(200);
     }
 
-//    public function test_users_can_authenticate_using_the_login_screen()
-//    {
-//        $user = User::factory()->has(Profile::factory())->create();
-//
-//        $response = $this->post('/login', [
-//            'email' => $user->email,
-//            'password' => 'password',
-//        ]);
-//
-//        $this->assertAuthenticated();
-//        $response->assertRedirect(RouteServiceProvider::HOME);
-//    }
-
     public function testPassword()
     {
         $user = User::factory()->create();
