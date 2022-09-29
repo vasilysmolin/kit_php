@@ -10,7 +10,7 @@ use Spatie\EloquentSortable\SortableTrait;
 use Spatie\Sluggable\HasSlug;
 use Spatie\Sluggable\SlugOptions;
 
-class CatalogAd extends Model
+class Realty extends Model
 {
     use HasFactory;
     use HasSlug;
@@ -39,8 +39,6 @@ class CatalogAd extends Model
     ];
 
     protected $hidden = [
-//        'created_at',
-//        'updated_at',
         'deleted_at',
     ];
 
@@ -59,7 +57,7 @@ class CatalogAd extends Model
 
     public function categories()
     {
-        return $this->hasOne(CatalogAdCategory::class, 'id', 'category_id');
+        return $this->hasOne(RealtyCategory::class, 'id', 'category_id');
     }
 
     public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -95,9 +93,9 @@ class CatalogAd extends Model
     public function adParameters()
     {
         return $this->belongsToMany(
-            CatalogParameter::class,
-            'catalog_ad_parameters',
-            'ad_id',
+            RealtyParameter::class,
+            'realty_parameters',
+            'realty_id',
             'parameter_id'
         )->orderBy('catalog_parameters.sort');
     }
@@ -121,6 +119,6 @@ class CatalogAd extends Model
      */
     public function searchableAs()
     {
-        return 'catalog_ads';
+        return 'realty';
     }
 }

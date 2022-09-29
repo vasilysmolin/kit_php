@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCatalogAdCategoriesTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,9 @@ class CreateCatalogAdCategoriesTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_ad_categories', function (Blueprint $table) {
+        Schema::create('realty_categories', function (Blueprint $table) {
             $table->id();
-            $table->bigInteger('parent_id')->unsigned()->nullable();
+            $table->integer('parent_id')->unsigned()->nullable()->index();
             $table->foreign('parent_id', 'FK_parent_product_category')
                 ->references('id')
                 ->on('catalog_ad_categories')
@@ -42,6 +42,6 @@ class CreateCatalogAdCategoriesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_ad_categories');
+        Schema::dropIfExists('realty_categories');
     }
-}
+};

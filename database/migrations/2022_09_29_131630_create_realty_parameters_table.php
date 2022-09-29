@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCatalogMetasTable extends Migration
+return new class extends Migration
 {
     /**
      * Run the migrations.
@@ -13,14 +13,18 @@ class CreateCatalogMetasTable extends Migration
      */
     public function up()
     {
-        Schema::create('catalog_metas', function (Blueprint $table) {
+        Schema::create('realty_parameters', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->nullable();
-            $table->string('alias')->nullable()->unique();
+            $table->unsignedBigInteger('filter_id')->nullable();
+            $table->string('value')->nullable();
             $table->integer('sort')->nullable();
-            $table->integer('active')->unsigned()->default(1);
             $table->timestamps();
             $table->softDeletes();
+            $table->foreign('filter_id', 'FK_realty_parameters_category_id')
+                ->references('id')
+                ->on('realty_filters')
+                ->onUpdate('RESTRICT')
+                ->onDelete('CASCADE');
         });
     }
 
@@ -31,6 +35,6 @@ class CreateCatalogMetasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('catalog_metas');
+        Schema::dropIfExists('realty_parameters');
     }
-}
+};
