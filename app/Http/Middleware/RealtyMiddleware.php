@@ -23,8 +23,7 @@ class RealtyMiddleware
             return $next($request);
         }
         $profile = $request->get('accounts')['profile_id'];
-        $realty = $request->route('realties');
-
+        $realty = $request->route('realty');
         if (isset($realty)) {
             $realty = Realty::where('alias', $realty)
                 ->when(ctype_digit($realty), function ($q) use ($realty) {

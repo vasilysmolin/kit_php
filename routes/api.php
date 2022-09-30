@@ -162,9 +162,9 @@ Route::group([
 ], function ($router) {
     Route::apiResource('realties', 'RealtyController');
     Route::apiResource('category-realties', 'CategoryRealtyController');
-    Route::put('realties/{realties}/sort', 'RealtyController@sort')->name('realties.sort');
-    Route::put('realties/{realties}/state', 'RealtyController@state')->name('realties.state');
-    Route::put('realties/{realties}/restore', 'RealtyController@restore')->name('realties.restore');
+    Route::put('realties/{realty}/sort', 'RealtyController@sort')->name('realties.sort');
+    Route::put('realties/{realty}/state', 'RealtyController@state')->name('realties.state');
+    Route::put('realties/{realty}/restore', 'RealtyController@restore')->name('realties.restore');
     Route::get('realties-full', 'RealtyController@fullSearch')->name('realties.full-search');
     Route::get('category-realties-full', 'CategoryRealtyController@fullSearch')->name('category-realties.full-search');
 });
