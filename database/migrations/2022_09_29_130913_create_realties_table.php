@@ -18,6 +18,8 @@ return new class extends Migration
             $table->unsignedBigInteger('profile_id');
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
+            $table->string('state', 100)->default('new');
+            $table->string('reason', 100)->nullable();
             $table->string('street')->nullable();
             $table->string('house')->nullable();
             $table->float('latitude', 10, 0)->nullable();

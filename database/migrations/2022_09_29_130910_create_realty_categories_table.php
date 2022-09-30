@@ -29,6 +29,7 @@ return new class extends Migration
             $table->text('text')->nullable();
             $table->text('title')->nullable();
             $table->text('description')->nullable();
+            $table->foreignId('color_id')->nullable()->constrained();
             $table->integer('active')->unsigned()->default(1);
             $table->timestamps();
             $table->softDeletes();
