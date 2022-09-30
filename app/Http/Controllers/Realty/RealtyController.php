@@ -53,7 +53,7 @@ class RealtyController extends Controller
         $skipFromFull = $request->skipFromFull;
         $querySearch = $request->querySearch;
         $account = $request->get('accounts');
-        $RealtyIds = [];
+        $realtyIds = [];
 
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
@@ -67,13 +67,13 @@ class RealtyController extends Controller
                 ->take(10000)
                 ->orderBy('sort', 'ASC');
 
-            $RealtyIds = $builder->get()->pluck('id');
+            $realtyIds = $builder->get()->pluck('id');
         }
         $builder = Realty::when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
         })
-            ->when(!empty($RealtyIds), function ($query) use ($RealtyIds) {
-                $query->whereIn('id', $RealtyIds);
+            ->when(!empty($realtyIds), function ($query) use ($realtyIds) {
+                $query->whereIn('id', $realtyIds);
             })
             ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
                 $query->where('sale_price', '>=', $priceFrom);
@@ -126,7 +126,7 @@ class RealtyController extends Controller
             ->orderBy('sort', 'ASC');
 
         $builderCount = clone $builder;
-        $Realty = $builder
+        $realty = $builder
             ->take((int) $take)
             ->skip((int) $skip)
             ->with('image', 'categories', 'realtyParameters.filter')
@@ -136,14 +136,14 @@ class RealtyController extends Controller
             ->get();
         $count = $builderCount->count();
 
-        $Realty->each(function ($item) use ($files) {
+        $realty->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
                 $item->title = $item->name;
         });
-        $data = (new JsonHelper())->getIndexStructure(new Realty(), $Realty, $count, (int) $skip);
+        $data = (new JsonHelper())->getIndexStructure(new Realty(), $realty, $count, (int) $skip);
 
         return response()->json($data);
     }
@@ -157,26 +157,26 @@ class RealtyController extends Controller
         $filters = $request->filter;
 
         unset($formData['category_id']);
-        $Realty = new Realty();
-        $Realty->fill($formData);
-        $Realty->save();
-        $Realty->moveToStart();
+        $realty = new Realty();
+        $realty->fill($formData);
+        $realty->save();
+        $realty->moveToStart();
         $files = resolve(Files::class);
 
         if (isset($request['category_id'])) {
             $category = RealtyCategory::find($request['category_id']);
             if (isset($category)) {
-                $Realty->category_id = $request['category_id'];
-                $Realty->update();
+                $realty->category_id = $request['category_id'];
+                $realty->update();
             }
         }
 
-        $files->save($Realty, $request['files']);
+        $files->save($realty, $request['files']);
         if (!empty($filters)) {
-            $Realty->realtyParameters()->sync($filters);
+            $realty->realtyParameters()->sync($filters);
         }
 
-        return response()->json([], 201, ['Location' => "/declarations/$Realty->id"]);
+        return response()->json([], 201, ['Location' => "/realties/$realty->id"]);
     }
 
     public function sort(string $id): \Illuminate\Http\JsonResponse
@@ -205,7 +205,7 @@ class RealtyController extends Controller
         if (!empty($querySearch)) {
             event(new SaveLogsEvent($querySearch, (new TypeModules())->job(), auth('api')->user()));
         }
-        $Realty = Realty::where('alias', $id)
+        $realty = Realty::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
@@ -225,23 +225,23 @@ class RealtyController extends Controller
             })
             ->first();
 
-        abort_unless($Realty, 404);
+        abort_unless($realty, 404);
 
         $files = resolve(Files::class);
-        if (isset($Realty->image)) {
-            $Realty->photo = $files->getFilePath($Realty->image);
+        if (isset($realty->image)) {
+            $realty->photo = $files->getFilePath($realty->image);
         }
-        if (!empty($Realty->images)) {
-            $Realty->photos = collect([]);
-            $Realty->images->each(function ($image) use ($files, $Realty) {
-                $Realty->photos->push($files->getFilePath($image));
+        if (!empty($realty->images)) {
+            $realty->photos = collect([]);
+            $realty->images->each(function ($image) use ($files, $realty) {
+                $realty->photos->push($files->getFilePath($image));
             });
         }
-        $Realty->makeHidden('image');
-        $Realty->makeHidden('images');
-        $Realty->title = $Realty->name;
+        $realty->makeHidden('image');
+        $realty->makeHidden('images');
+        $realty->title = $realty->name;
 
-        return response()->json($Realty);
+        return response()->json($realty);
     }
 
     public function update(AdUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
@@ -250,16 +250,16 @@ class RealtyController extends Controller
         $filters = $request->filter;
         unset($formData['category_id']);
 
-        $Realty = Realty::where('alias', $id)
+        $realty = Realty::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-        $Realty->fill($formData);
+        $realty->fill($formData);
 
-        $Realty->update();
+        $realty->update();
         if (!empty($filters)) {
-            $Realty->realtyParameters()->sync($filters);
+            $realty->realtyParameters()->sync($filters);
         }
 
         $files = resolve(Files::class);
@@ -267,12 +267,12 @@ class RealtyController extends Controller
         if (isset($request['category_id'])) {
             $category = RealtyCategory::find($request['category_id']);
             if (isset($category)) {
-                $Realty->category_id = $request['category_id'];
-                $Realty->update();
+                $realty->category_id = $request['category_id'];
+                $realty->update();
             }
         }
 
-        $files->save($Realty, $request['files']);
+        $files->save($realty, $request['files']);
 
         return response()->json([], 204);
     }
@@ -297,27 +297,27 @@ class RealtyController extends Controller
 
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        $Realty = Realty::where('alias', $id)
+        $realty = Realty::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
             ->first();
-        if (isset($Realty)) {
-            $Realty->moveToEnd();
-            $Realty->delete();
+        if (isset($realty)) {
+            $realty->moveToEnd();
+            $realty->delete();
         }
         return response()->json([], 204);
     }
 
     public function restore(string $id): \Illuminate\Http\JsonResponse
     {
-        $Realty = Realty::where('alias', $id)
+        $realty = Realty::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })->withTrashed()->first();
-        if (isset($Realty)) {
-            $Realty->moveToStart();
-            $Realty->restore();
+        if (isset($realty)) {
+            $realty->moveToStart();
+            $realty->restore();
         }
         return response()->json([], 204);
     }

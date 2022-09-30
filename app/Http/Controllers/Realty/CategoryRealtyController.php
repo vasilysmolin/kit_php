@@ -87,7 +87,7 @@ class CategoryRealtyController extends Controller
 
         $files->save($category, $request['files']);
 
-        return response()->json([], 201, ['Location' => "/category-declarations/$category->id"]);
+        return response()->json([], 201, ['Location' => "/category-realties/$category->id"]);
     }
 
     public function show(Request $request, string $id): \Illuminate\Http\JsonResponse

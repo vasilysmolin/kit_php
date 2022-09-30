@@ -23,15 +23,15 @@ class RealtyMiddleware
             return $next($request);
         }
         $profile = $request->get('accounts')['profile_id'];
-        $ad = $request->route('declaration');
+        $realty = $request->route('realties');
 
-        if (isset($ad)) {
-            $ad = Realty::where('alias', $ad)
-                ->when(ctype_digit($ad), function ($q) use ($ad) {
-                    $q->orWhere('id', (int) $ad);
+        if (isset($realty)) {
+            $realty = Realty::where('alias', $realty)
+                ->when(ctype_digit($realty), function ($q) use ($realty) {
+                    $q->orWhere('id', (int) $realty);
                 })->withTrashed()
                 ->first();
-            if (isset($ad) && isset($profile) && $ad->profile_id !== (int) $profile) {
+            if (isset($realty) && isset($profile) && $realty->profile_id !== (int) $profile) {
                 return response()->json([
                     'errors' => [
                         'code' => Response::HTTP_FORBIDDEN,

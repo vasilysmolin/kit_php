@@ -17,7 +17,9 @@ class RealtyCategoryFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'name' => $this->faker->name(),
+            'alias' => $this->faker->slug(6),
+            'active' => 1,
         ];
     }
 }
