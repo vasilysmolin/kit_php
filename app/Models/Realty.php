@@ -90,14 +90,14 @@ class Realty extends Model
         return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 
-    public function adParameters()
+    public function realtyParameters()
     {
         return $this->belongsToMany(
             RealtyParameter::class,
-            'realty_parameters',
+            'filter_parameters',
             'realty_id',
             'parameter_id'
-        )->orderBy('catalog_parameters.sort');
+        )->orderBy('realty_parameters.sort');
     }
 
     /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Ad;
+namespace App\Http\Controllers\Realty;
 
 use App\Http\Controllers\Controller;
-use App\Models\CatalogAdCategory;
+use App\Models\RealtyCategory;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -11,7 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
 
-class CategoryAdController extends Controller
+class CategoryRealtyController extends Controller
 {
     public function index(Request $request): \Illuminate\Http\JsonResponse
     {
@@ -21,7 +21,7 @@ class CategoryAdController extends Controller
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $files = resolve(Files::class);
-        $builder = CatalogAdCategory::
+        $builder = RealtyCategory::
             when(!empty($id) && is_array($id), function ($query) use ($id) {
                 $query->whereIn('id', $id);
             })
@@ -47,7 +47,7 @@ class CategoryAdController extends Controller
             }
         });
 
-        $data = (new JsonHelper())->getIndexStructure(new CatalogAdCategory(), $category, $count, (int) $skip);
+        $data = (new JsonHelper())->getIndexStructure(new RealtyCategory(), $category, $count, (int) $skip);
 
         return response()->json($data);
     }
@@ -79,7 +79,7 @@ class CategoryAdController extends Controller
         $formData['profile_id'] = auth('api')->user()->profile->id;
         $formData['active'] = true;
 
-        $category = new CatalogAdCategory();
+        $category = new RealtyCategory();
         $category->fill($formData);
 
         $category->save();
@@ -93,7 +93,7 @@ class CategoryAdController extends Controller
     public function show(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
 
-        $category = CatalogAdCategory::where('alias', $id)
+        $category = RealtyCategory::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
@@ -115,7 +115,7 @@ class CategoryAdController extends Controller
         if (!empty($formData['color_id']) && (int) $formData['color_id'] === 0) {
             $formData['color_id'] = null;
         }
-        $category = CatalogAdCategory::where('alias', $id)
+        $category = RealtyCategory::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
@@ -138,7 +138,7 @@ class CategoryAdController extends Controller
 
     public function destroy(string $id): \Illuminate\Http\JsonResponse
     {
-        CatalogAdCategory::where('alias', $id)
+        RealtyCategory::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })

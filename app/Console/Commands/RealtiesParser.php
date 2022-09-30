@@ -52,7 +52,7 @@ class RealtiesParser extends Command
         if ($realtyCategories->isEmpty()) {
             RealtyCategory::insert($categories->toArray());
         }
-        $ads = CatalogAd::whereIn('category_id', $categories->pluck('id')->toArray())->get();
+        $ads = CatalogAd::with('adParameters')->whereIn('category_id', $categories->pluck('id')->toArray())->get();
         $realty = Realty::all();
         if ($realty->isEmpty()) {
             Realty::insert($ads->toArray());
@@ -67,10 +67,13 @@ class RealtiesParser extends Command
         if ($realtyParameters->isEmpty()) {
             RealtyParameter::insert($adParams->toArray());
         }
-//        $ads->each(function($ad){
-//            dd($ad->adParameters->first()->pivot->parameter_id);
-//        });
-//        dd($ads);
+        $ads->each(function ($ad) {
+            $params = $ad->adParameters->map(function ($ad) {
+                return $ad->pivot->parameter_id;
+            });
+            $realty = Realty::find($ad->getKey());
+            $realty->realtyParameters()->sync($params);
+        });
     }
 
     private function iter(?CatalogAdCategory $item, array $acc): array
