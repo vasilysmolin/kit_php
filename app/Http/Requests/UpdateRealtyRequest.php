@@ -24,7 +24,6 @@ class UpdateRealtyRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

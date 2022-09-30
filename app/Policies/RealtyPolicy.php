@@ -18,7 +18,6 @@ class RealtyPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -30,7 +29,6 @@ class RealtyPolicy
      */
     public function view(User $user, Realty $realty)
     {
-        //
     }
 
     /**
@@ -41,7 +39,6 @@ class RealtyPolicy
      */
     public function create(User $user)
     {
-        //
     }
 
     /**
@@ -53,7 +50,6 @@ class RealtyPolicy
      */
     public function update(User $user, Realty $realty)
     {
-        //
     }
 
     /**
@@ -65,7 +61,6 @@ class RealtyPolicy
      */
     public function delete(User $user, Realty $realty)
     {
-        //
     }
 
     /**
@@ -77,7 +72,6 @@ class RealtyPolicy
      */
     public function restore(User $user, Realty $realty)
     {
-        //
     }
 
     /**
@@ -89,6 +83,5 @@ class RealtyPolicy
      */
     public function forceDelete(User $user, Realty $realty)
     {
-        //
     }
 }

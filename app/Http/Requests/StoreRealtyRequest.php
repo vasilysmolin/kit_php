@@ -24,7 +24,6 @@ class StoreRealtyRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

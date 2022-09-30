@@ -18,7 +18,6 @@ class RealtyCategoryPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -30,7 +29,6 @@ class RealtyCategoryPolicy
      */
     public function view(User $user, RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -41,7 +39,6 @@ class RealtyCategoryPolicy
      */
     public function create(User $user)
     {
-        //
     }
 
     /**
@@ -53,7 +50,6 @@ class RealtyCategoryPolicy
      */
     public function update(User $user, RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -65,7 +61,6 @@ class RealtyCategoryPolicy
      */
     public function delete(User $user, RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -77,7 +72,6 @@ class RealtyCategoryPolicy
      */
     public function restore(User $user, RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -89,6 +83,5 @@ class RealtyCategoryPolicy
      */
     public function forceDelete(User $user, RealtyCategory $realtyCategory)
     {
-        //
     }
 }

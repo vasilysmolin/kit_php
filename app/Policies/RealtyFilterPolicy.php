@@ -18,7 +18,6 @@ class RealtyFilterPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -30,7 +29,6 @@ class RealtyFilterPolicy
      */
     public function view(User $user, RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -41,7 +39,6 @@ class RealtyFilterPolicy
      */
     public function create(User $user)
     {
-        //
     }
 
     /**
@@ -53,7 +50,6 @@ class RealtyFilterPolicy
      */
     public function update(User $user, RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -65,7 +61,6 @@ class RealtyFilterPolicy
      */
     public function delete(User $user, RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -77,7 +72,6 @@ class RealtyFilterPolicy
      */
     public function restore(User $user, RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -89,6 +83,5 @@ class RealtyFilterPolicy
      */
     public function forceDelete(User $user, RealtyFilter $realtyFilter)
     {
-        //
     }
 }

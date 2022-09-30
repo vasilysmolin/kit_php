@@ -24,7 +24,6 @@ class StoreRealtyCategoryRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }
