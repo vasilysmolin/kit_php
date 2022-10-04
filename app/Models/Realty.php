@@ -119,6 +119,6 @@ class Realty extends Model
      */
     public function searchableAs()
     {
-        return 'realty';
+        return 'realties';
     }
 }

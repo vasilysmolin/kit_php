@@ -80,6 +80,10 @@ class UpdateMeilisearchIndex extends Command
             $client->createIndex('catalog_ad_categories');
         } catch (ApiException $exception) {
         }
+        try {
+            $client->createIndex('realties');
+        } catch (ApiException $exception) {
+        }
 
         $this->info('Indexes create...');
     }
@@ -87,6 +91,11 @@ class UpdateMeilisearchIndex extends Command
     protected function updateSortableAttributes(Client $client): void
     {
         $client->index('catalog_ads')->updateSortableAttributes([
+            'name',
+            'sort',
+        ]);
+
+        $client->index('realties')->updateSortableAttributes([
             'name',
             'sort',
         ]);
@@ -123,6 +132,13 @@ class UpdateMeilisearchIndex extends Command
     protected function updateSearchableAttributes(Client $client): void
     {
         $client->index('catalog_ads')->updateSearchableAttributes([
+            'name',
+            'description',
+            'filter',
+            'street',
+        ]);
+
+        $client->index('realties')->updateSearchableAttributes([
             'name',
             'description',
             'filter',
@@ -173,6 +189,13 @@ class UpdateMeilisearchIndex extends Command
             'street',
         ]);
 
+        $client->index('realties')->updateRankingRules([
+            'name',
+            'description',
+            'filter',
+            'street',
+        ]);
+
         $client->index('services')->updateRankingRules([
             'name',
             'description',
@@ -211,6 +234,11 @@ class UpdateMeilisearchIndex extends Command
     protected function updateFilterableAttributes(Client $client): void
     {
         $client->index('catalog_ads')->updateFilterableAttributes([
+            'state',
+            'name',
+        ]);
+
+        $client->index('realties')->updateFilterableAttributes([
             'state',
             'name',
         ]);
