@@ -20,7 +20,7 @@ class RealtyParameter extends Model
             ->orderBy('sort');
     }
 
-    public function adParameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany
+    public function realtyParameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany
     {
         return $this->belongsToMany(
             Realty::class,
