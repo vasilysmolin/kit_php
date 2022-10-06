@@ -108,7 +108,7 @@ class Realty extends Model
     public function toSearchableArray()
     {
         $array = $this->only(['name','description', 'state', 'street', 'sort']);
-        $array['filter'] = $this->adParameters->pluck('value')->join(', ');
+        $array['filter'] = $this->realtyParameters->pluck('value')->join(', ');
         return $array;
     }
 
