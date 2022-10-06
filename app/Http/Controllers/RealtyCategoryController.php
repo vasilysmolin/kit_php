@@ -15,7 +15,6 @@ class RealtyCategoryController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -25,7 +24,6 @@ class RealtyCategoryController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -36,7 +34,6 @@ class RealtyCategoryController extends Controller
      */
     public function store(StoreRealtyCategoryRequest $request)
     {
-        //
     }
 
     /**
@@ -47,7 +44,6 @@ class RealtyCategoryController extends Controller
      */
     public function show(RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -58,7 +54,6 @@ class RealtyCategoryController extends Controller
      */
     public function edit(RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -70,7 +65,6 @@ class RealtyCategoryController extends Controller
      */
     public function update(UpdateRealtyCategoryRequest $request, RealtyCategory $realtyCategory)
     {
-        //
     }
 
     /**
@@ -81,6 +75,5 @@ class RealtyCategoryController extends Controller
      */
     public function destroy(RealtyCategory $realtyCategory)
     {
-        //
     }
 }

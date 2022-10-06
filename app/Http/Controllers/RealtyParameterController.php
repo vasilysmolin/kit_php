@@ -15,7 +15,6 @@ class RealtyParameterController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -25,7 +24,6 @@ class RealtyParameterController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -36,7 +34,6 @@ class RealtyParameterController extends Controller
      */
     public function store(StoreRealtyParameterRequest $request)
     {
-        //
     }
 
     /**
@@ -47,7 +44,6 @@ class RealtyParameterController extends Controller
      */
     public function show(RealtyParameter $realtyParameter)
     {
-        //
     }
 
     /**
@@ -58,7 +54,6 @@ class RealtyParameterController extends Controller
      */
     public function edit(RealtyParameter $realtyParameter)
     {
-        //
     }
 
     /**
@@ -70,7 +65,6 @@ class RealtyParameterController extends Controller
      */
     public function update(UpdateRealtyParameterRequest $request, RealtyParameter $realtyParameter)
     {
-        //
     }
 
     /**
@@ -81,6 +75,5 @@ class RealtyParameterController extends Controller
      */
     public function destroy(RealtyParameter $realtyParameter)
     {
-        //
     }
 }

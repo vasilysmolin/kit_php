@@ -15,7 +15,6 @@ class RealtyFilterController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -25,7 +24,6 @@ class RealtyFilterController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -36,7 +34,6 @@ class RealtyFilterController extends Controller
      */
     public function store(StoreRealtyFilterRequest $request)
     {
-        //
     }
 
     /**
@@ -47,7 +44,6 @@ class RealtyFilterController extends Controller
      */
     public function show(RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -58,7 +54,6 @@ class RealtyFilterController extends Controller
      */
     public function edit(RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -70,7 +65,6 @@ class RealtyFilterController extends Controller
      */
     public function update(UpdateRealtyFilterRequest $request, RealtyFilter $realtyFilter)
     {
-        //
     }
 
     /**
@@ -81,6 +75,5 @@ class RealtyFilterController extends Controller
      */
     public function destroy(RealtyFilter $realtyFilter)
     {
-        //
     }
 }

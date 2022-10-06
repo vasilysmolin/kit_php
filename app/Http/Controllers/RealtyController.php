@@ -15,7 +15,6 @@ class RealtyController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -25,7 +24,6 @@ class RealtyController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -36,7 +34,6 @@ class RealtyController extends Controller
      */
     public function store(StoreRealtyRequest $request)
     {
-        //
     }
 
     /**
@@ -47,7 +44,6 @@ class RealtyController extends Controller
      */
     public function show(Realty $realty)
     {
-        //
     }
 
     /**
@@ -58,7 +54,6 @@ class RealtyController extends Controller
      */
     public function edit(Realty $realty)
     {
-        //
     }
 
     /**
@@ -70,7 +65,6 @@ class RealtyController extends Controller
      */
     public function update(UpdateRealtyRequest $request, Realty $realty)
     {
-        //
     }
 
     /**
@@ -81,6 +75,5 @@ class RealtyController extends Controller
      */
     public function destroy(Realty $realty)
     {
-        //
     }
 }
