@@ -62,7 +62,9 @@ class Handler extends ExceptionHandler
                 'headers' => $request->headers->all(),
                 'params' => $request->all(),
                 'method' => $request->method(),
-                'exception' => $exception,
+                'code' => $exception->getCode(),
+                'getTraceAsString' => $exception->getTraceAsString(),
+                'getMessage' => $exception->getMessage(),
             ]);
             Mail::to(config('app.mail_errors'))
                 ->cc(config('app.mail_errors_tapigo'))

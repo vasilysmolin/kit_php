@@ -28,9 +28,9 @@
 @endcomponent
 
 ## Трасировка
-- код ошибки {{ $errors['exception']->getCode() }}
-- трасировка {{$errors['exception']->getTraceAsString()}}
-- сообщение ошибки {{ $errors['exception']->getMessage() }}
+- код ошибки {{ $errors['code'] }}
+- трасировка {{$errors['getTraceAsString'] }}
+- сообщение ошибки {{ $errors['getMessage'] }}
 
 
 Компания,<br>
