@@ -3,7 +3,6 @@
 namespace App\Exceptions;
 
 use App\Mail\ErrorMail;
-use Beauty\Modules\Common\Controllers\Misc\Email\Factory\EmailFactory;
 use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Illuminate\Http\Client\ConnectionException;
@@ -14,6 +13,7 @@ use Illuminate\Support\Facades\URL;
 use Illuminate\Validation\ValidationException;
 use Spatie\Permission\Exceptions\UnauthorizedException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\UnauthorizedHttpException;
 use Throwable;
 use Tymon\JWTAuth\Exceptions\TokenBlacklistedException;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -27,6 +27,11 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
+        UnauthorizedHttpException::class,
+        UnauthorizedException::class,
+        TokenInvalidException::class,
+        TokenExpiredException::class,
+        AuthenticationException::class,
     ];
 
     /**
@@ -55,20 +60,22 @@ class Handler extends ExceptionHandler
     public function render($request, Throwable $exception)
     {
         if (config('app.env') === 'production') {
-            $dataErrors = collect([
-                'url' => URL::current(),
-                'urlPrevious' => URL::previous(),
-                'user' => Auth::user() ?? null,
-                'headers' => $request->headers->all(),
-                'params' => $request->all(),
-                'method' => $request->method(),
-                'code' => $exception->getCode(),
-                'getTraceAsString' => $exception->getTraceAsString(),
-                'getMessage' => $exception->getMessage(),
-            ]);
-            Mail::to(config('app.mail_errors'))
-                ->cc(config('app.mail_errors_tapigo'))
-                ->queue(new ErrorMail($dataErrors));
+            if ($this->shouldReport($exception)) {
+                $dataErrors = collect([
+                    'url' => URL::current(),
+                    'urlPrevious' => URL::previous(),
+                    'user' => Auth::user() ?? null,
+                    'headers' => $request->headers->all(),
+                    'params' => $request->all(),
+                    'method' => $request->method(),
+                    'code' => $exception->getCode(),
+                    'getTraceAsString' => $exception->getTraceAsString(),
+                    'getMessage' => $exception->getMessage(),
+                ]);
+                Mail::to(config('app.mail_errors'))
+                    ->cc(config('app.mail_errors_tapigo'))
+                    ->queue(new ErrorMail($dataErrors));
+            }
         }
 
         if ($exception instanceof NotFoundHttpException) {
