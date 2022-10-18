@@ -16,3 +16,5 @@ yarn-error.log
 /storage/debugbar
 supervisord.log
 supervisord.pid
+/postgres-data
+/dump
