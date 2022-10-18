@@ -165,6 +165,7 @@ Route::group([
     Route::put('realties/{realty}/sort', 'RealtyController@sort')->name('realties.sort');
     Route::put('realties/{realty}/state', 'RealtyController@state')->name('realties.state');
     Route::put('realties/{realty}/restore', 'RealtyController@restore')->name('realties.restore');
+    Route::post('realties/import', 'RealtyController@import')->name('realties.import');
     Route::get('realties-full', 'RealtyController@fullSearch')->name('realties.full-search');
     Route::get('category-realties-full', 'CategoryRealtyController@fullSearch')->name('category-realties.full-search');
 });

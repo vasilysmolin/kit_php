@@ -15,7 +15,6 @@ class FeedController extends Controller
      */
     public function index()
     {
-        //
     }
 
     /**
@@ -25,7 +24,6 @@ class FeedController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -36,7 +34,6 @@ class FeedController extends Controller
      */
     public function store(StoreFeedRequest $request)
     {
-        //
     }
 
     /**
@@ -47,7 +44,6 @@ class FeedController extends Controller
      */
     public function show(Feed $feed)
     {
-        //
     }
 
     /**
@@ -58,7 +54,6 @@ class FeedController extends Controller
      */
     public function edit(Feed $feed)
     {
-        //
     }
 
     /**
@@ -70,7 +65,6 @@ class FeedController extends Controller
      */
     public function update(UpdateFeedRequest $request, Feed $feed)
     {
-        //
     }
 
     /**
@@ -81,6 +75,5 @@ class FeedController extends Controller
      */
     public function destroy(Feed $feed)
     {
-        //
     }
 }

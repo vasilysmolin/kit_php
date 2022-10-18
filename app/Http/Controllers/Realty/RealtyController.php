@@ -18,6 +18,10 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+use SimpleXMLElement;
 
 class RealtyController extends Controller
 {
@@ -319,6 +323,40 @@ class RealtyController extends Controller
             $realty->moveToStart();
             $realty->restore();
         }
+        return response()->json([], 204);
+    }
+
+    public function import(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $user = auth('api')->user();
+        $contents = Storage::disk('local')->get('flat.xml');
+        $realties = new SimpleXMLElement($contents);
+        $account = $request->get('accounts');
+        $profileId = $account['profile_id'];
+        $resultNew = collect([]);
+        foreach ($realties->object as $realty) {
+            $data = [];
+            $data['title'] = (string) $realty->JKSchema->Name;
+            $data['alias'] = Str::slug($realty->JKSchema->Name);
+            $data['state'] = (new States())->active();
+            $data['price'] = (string)  $realty->BargainTerms->Price;
+            $data['sale_price'] = (string)  $realty->BargainTerms->Price;
+            $data['external_id'] = (int) $realty->JKSchema->Id;
+            $data['description'] = (string) $realty->Description;
+            $data['profile_id'] = (int) $profileId;
+            $data['city_id'] = (int) $user->city->getKey();
+            $data['latitude'] = (string) $realty->Coordinates->Lat;
+            $data['longitude'] = (string) $realty->Coordinates->Lng;
+            $data['street'] = (string) $realty->Address;
+            $data['house'] = (string) $realty->JKSchema->House->Name;
+            $data['category_id'] = (int) $request->category_id;
+            $data['created_at'] = now();
+            $data['updated_at'] = now();
+            $resultNew->push($data);
+        }
+        $e = Realty::insert($resultNew->toArray());
+        dd($e);
+
         return response()->json([], 204);
     }
 

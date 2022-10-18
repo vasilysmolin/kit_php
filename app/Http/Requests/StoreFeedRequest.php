@@ -24,7 +24,6 @@ class StoreFeedRequest extends FormRequest
     public function rules()
     {
         return [
-            //
         ];
     }
 }

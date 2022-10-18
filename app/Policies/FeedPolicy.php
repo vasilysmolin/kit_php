@@ -18,7 +18,6 @@ class FeedPolicy
      */
     public function viewAny(User $user)
     {
-        //
     }
 
     /**
@@ -30,7 +29,6 @@ class FeedPolicy
      */
     public function view(User $user, Feed $feed)
     {
-        //
     }
 
     /**
@@ -41,7 +39,6 @@ class FeedPolicy
      */
     public function create(User $user)
     {
-        //
     }
 
     /**
@@ -53,7 +50,6 @@ class FeedPolicy
      */
     public function update(User $user, Feed $feed)
     {
-        //
     }
 
     /**
@@ -65,7 +61,6 @@ class FeedPolicy
      */
     public function delete(User $user, Feed $feed)
     {
-        //
     }
 
     /**
@@ -77,7 +72,6 @@ class FeedPolicy
      */
     public function restore(User $user, Feed $feed)
     {
-        //
     }
 
     /**
@@ -89,6 +83,5 @@ class FeedPolicy
      */
     public function forceDelete(User $user, Feed $feed)
     {
-        //
     }
 }

@@ -20,6 +20,7 @@ class Realty extends Model
 
     protected $fillable = [
         'id',
+        'external_id',
         'title',
         'reason',
         'name',
