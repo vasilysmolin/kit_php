@@ -28,6 +28,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('sorting')->daily()->at('05:00');
         $schedule->command('scout:import')->daily()->at('06:00');
 
+        $schedule->command('realty-import')->daily()->at('05:30');
+
         if (config('app.env') === 'production') {
             // Backups pgsql
             $schedule->command('backup:run', ['--only-db'])->everyFourHours();

@@ -12,6 +12,7 @@ use App\Http\Requests\Ad\AdShowRequest;
 use App\Http\Requests\Ad\AdStateRequest;
 use App\Http\Requests\Ad\AdStoreRequest;
 use App\Http\Requests\Ad\AdUpdateRequest;
+use App\Models\Profile;
 use App\Models\Realty;
 use App\Models\RealtyCategory;
 use App\Objects\Files;
@@ -333,7 +334,10 @@ class RealtyController extends Controller
         $realties = new SimpleXMLElement($contents);
         $account = $request->get('accounts');
         $profileId = $account['profile_id'];
-        $resultNew = collect([]);
+        $profile = Profile::find($profileId);
+        $realtiesExternal = $profile->realties()->whereNotNull('external_id')->get();
+//        $resultNew = collect([]);
+//        $resultUpdate = collect([]);
         foreach ($realties->object as $realty) {
             $data = [];
             $data['title'] = (string) $realty->JKSchema->Name;
@@ -341,7 +345,6 @@ class RealtyController extends Controller
             $data['state'] = (new States())->active();
             $data['price'] = (string)  $realty->BargainTerms->Price;
             $data['sale_price'] = (string)  $realty->BargainTerms->Price;
-            $data['external_id'] = (int) $realty->JKSchema->Id;
             $data['description'] = (string) $realty->Description;
             $data['profile_id'] = (int) $profileId;
             $data['city_id'] = (int) $user->city->getKey();
@@ -350,12 +353,55 @@ class RealtyController extends Controller
             $data['street'] = (string) $realty->Address;
             $data['house'] = (string) $realty->JKSchema->House->Name;
             $data['category_id'] = (int) $request->category_id;
-            $data['created_at'] = now();
             $data['updated_at'] = now();
-            $resultNew->push($data);
+            $realtyDB = $realtiesExternal->where('external_id', (int) $realty->JKSchema->Id)->first();
+            if (!empty($realtyDB)) {
+//                $data['id'] = $model->id;
+                $realtyDB->fill($data);
+                $realtyDB->update();
+                $model = $realtyDB;
+//                $resultUpdate->push($data);
+            } else {
+                $data['created_at'] = now();
+                $data['external_id'] = (int) $realty->JKSchema->Id;
+                $model = new Realty();
+                $model->fill($data);
+
+                $model->save();
+//                $resultNew->push($data);
+            }
+            foreach($realty->Photos->PhotoSchema as $photo) {
+                $files = resolve(Files::class);
+                $files->saveParser($model, (string) $photo->FullUrl);
+            }
+            $dataParameters = [];
+            $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
+            $dataParameters['floorNumber'] = (int) $realty->Building->FloorNumber;
+            $dataParameters['flatRoomsCount'] = (int) $realty->Building->FlatRoomsCount;
+            $dataParameters['totalArea'] = (int) $realty->Building->TotalArea;
+            $dataParameters['livingArea'] = (int) $realty->Building->LivingArea;
+            $dataParameters['kitchenArea'] = (int) $realty->Building->KitchenArea;
+            $dataParameters['materialType'] = (int) $realty->Building->MaterialType;
         }
-        $e = Realty::insert($resultNew->toArray());
-        dd($e);
+//        Realty::insert($resultNew->toArray());
+//        Realty::upsert($resultUpdate->toArray(), 'id', [
+//            'id',
+//            'title',
+//            'name',
+//            'state',
+//            'price',
+//            'sale_price',
+//            'description',
+//            'profile_id',
+//            'city_id',
+//            'latitude',
+//            'longitude',
+//            'street',
+//            'house',
+//            'category_id',
+//        ]);
+//
+//        dd($resultUpdate, $resultNew);
 
         return response()->json([], 204);
     }

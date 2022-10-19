@@ -68,7 +68,7 @@ class Files
         );
 
             $contents = @file_get_contents($url, false, stream_context_create($arrContextOptions));
-        if ($contents !== false) {
+            if ($contents !== false) {
             $name = Str::random(40);
             $mineType = 'image/jpeg';
             $extension = 'jpg';
@@ -92,6 +92,7 @@ class Files
                     $filteredImage
                 );
             }
+
             if ($model->images->count() < 1) {
                 $model->image()->create([
                     'mimeType' => $mineType,

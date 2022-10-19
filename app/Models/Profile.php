@@ -60,6 +60,11 @@ class Profile extends Model
         return $this->hasMany(CatalogAd::class, 'profile_id', 'id');
     }
 
+    public function realties()
+    {
+        return $this->hasMany(Realty::class, 'profile_id', 'id');
+    }
+
     public function service()
     {
         return $this->hasMany(Service::class, 'profile_id', 'id');
