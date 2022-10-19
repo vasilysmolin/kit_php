@@ -15,6 +15,7 @@ use App\Http\Requests\Ad\AdUpdateRequest;
 use App\Models\Profile;
 use App\Models\Realty;
 use App\Models\RealtyCategory;
+use App\Models\RealtyParameter;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
@@ -354,6 +355,8 @@ class RealtyController extends Controller
             $data['house'] = (string) $realty->JKSchema->House->Name;
             $data['category_id'] = (int) $request->category_id;
             $data['updated_at'] = now();
+
+//            dd($realty);
             $realtyDB = $realtiesExternal->where('external_id', (int) $realty->JKSchema->Id)->first();
             if (!empty($realtyDB)) {
 //                $data['id'] = $model->id;
@@ -370,18 +373,84 @@ class RealtyController extends Controller
                 $model->save();
 //                $resultNew->push($data);
             }
+//            dd($realty);
             foreach($realty->Photos->PhotoSchema as $photo) {
                 $files = resolve(Files::class);
                 $files->saveParser($model, (string) $photo->FullUrl);
             }
             $dataParameters = [];
             $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
-            $dataParameters['floorNumber'] = (int) $realty->Building->FloorNumber;
-            $dataParameters['flatRoomsCount'] = (int) $realty->Building->FlatRoomsCount;
-            $dataParameters['totalArea'] = (int) $realty->Building->TotalArea;
-            $dataParameters['livingArea'] = (int) $realty->Building->LivingArea;
-            $dataParameters['kitchenArea'] = (int) $realty->Building->KitchenArea;
-            $dataParameters['materialType'] = (int) $realty->Building->MaterialType;
+            $dataParameters['livingArea'] = (int) $realty->LivingArea;
+            $dataParameters['floorNumber'] = (int) $realty->FloorNumber;
+            $dataParameters['flatRoomsCount'] = (int) $realty->FlatRoomsCount;
+            $dataParameters['totalArea'] = (int) $realty->TotalArea;
+            $dataParameters['kitchenArea'] = (int) $realty->KitchenArea;
+            $dataParameters['materialType'] = (int) $realty->MaterialType;
+            $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
+            $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
+                $q->where('alias', 'zilaya-ploshhad'  . '-rent');
+            })->first();
+            $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) {
+                $q->where('alias', 'ploshhad-kuxni'  . '-rent');
+            })->first();
+            $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) {
+                $q->where('alias', 'obshhaya-ploshhad'  . '-rent');
+            })->first();
+            $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) {
+                $q->where('alias', 'etaz'  . '-rent');
+            })->first();
+            $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) {
+                $q->where('alias', 'vsego-etazei'  . '-rent');
+            })->first();
+
+            $arr = collect();
+            if (!empty($comfortBal)) {
+                $arr->add($comfortBal->getKey());
+            }
+            if (!empty($comfortTwoLift)) {
+                $arr->add($comfortTwoLift->getKey());
+            }
+            if (!empty($comfortCons)) {
+                $arr->add($comfortCons->getKey());
+            }
+            if (!empty($comfortPhone)) {
+                $arr->add($comfortPhone->getKey());
+            }
+            if (!empty($comfortPark)) {
+                $arr->add($comfortPark->getKey());
+            }
+            if (!empty($comfortNet)) {
+                $arr->add($comfortNet->getKey());
+            }
+            if (!empty($rooms)) {
+                $arr->add($rooms->getKey());
+            }
+            if (!empty($livingArea)) {
+                $arr->add($livingArea->getKey());
+            }
+            if (!empty($kitArea)) {
+                $arr->add($kitArea->getKey());
+            }
+            if (!empty($totalArea)) {
+                $arr->add($totalArea->getKey());
+            }
+            if (!empty($floorsInHouse)) {
+                $arr->add($floorsInHouse->getKey());
+            }
+            if (!empty($floor)) {
+                $arr->add($floor->getKey());
+            }
+            if (!empty($dom)) {
+                $arr->add($dom->getKey());
+            }
+            if (!empty($seller)) {
+                $arr->add($seller->getKey());
+            }
+            if (!empty($novizna)) {
+                $arr->add($novizna->getKey());
+            }
+            $model->realtyParameters()->sync($arr);
+
         }
 //        Realty::insert($resultNew->toArray());
 //        Realty::upsert($resultUpdate->toArray(), 'id', [
