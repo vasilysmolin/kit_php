@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed>
+    <feed_version>2</feed_version>
+    <object>
+        <Category>newBuildingFlatSale</Category>
+        <ExternalId>123-776</ExternalId>
+        <JKSchema>
+            <Id>5895</Id>
+            <Name>ЖК "Сердце столицы"</Name>
+            <House>
+                <Id>10498</Id>
+                <Name>Корпус 2</Name>
+                <Flat>
+                    <FlatNumber>170102553</FlatNumber>
+                    <SectionNumber>1</SectionNumber>
+                </Flat>
+            </House>
+            <Developer>
+                <Name>Донстрой</Name>
+            </Developer>
+        </JKSchema>
+        <Coordinates>
+            <Lat>55.762410</Lat>
+            <Lng>37.513404</Lng>
+        </Coordinates>
+        <Address>Москва, район Хорошёво-Мнёвники, Шелепихинская набережная, влд 34 корп.2/2</Address>
+        <Phones>
+            <PhoneSchema>
+                <CountryCode>+7</CountryCode>
+                <Number>4951111111</Number>
+            </PhoneSchema>
+        </Phones>
+        <Building>
+            <FloorsCount>19</FloorsCount>
+            <MaterialType>monolith</MaterialType>
+            <CeilingHeight>3.20</CeilingHeight>
+            <PassengerLiftsCount>1</PassengerLiftsCount>
+            <CargoLiftsCount>1</CargoLiftsCount>
+            <Deadline>
+                <Quarter>third</Quarter>
+                <Year>2018</Year>
+                <IsComplete>true</IsComplete>
+            </Deadline>
+        </Building>
+        <FloorNumber>3</FloorNumber>
+        <FlatRoomsCount>2</FlatRoomsCount>
+        <TotalArea>74</TotalArea>
+        <AllRoomsArea>22.60 16.10</AllRoomsArea>
+        <LivingArea>38.7</LivingArea>
+        <KitchenArea>14</KitchenArea>
+        <LoggiasCount>0</LoggiasCount>
+        <BalconiesCount>1</BalconiesCount>
+        <Decoration>without</Decoration>
+        <WindowsViewType>yardAndStreet</WindowsViewType>
+        <SeparateWcsCount>1</SeparateWcsCount>
+        <CombinedWcsCount>1</CombinedWcsCount>
+        <Description>
+            Живите сейчас! Рассрочка с первым взносом от 10%! По всем вопросам обращайтесь в офис
+            продаж, наши менеджеры вам все расскажут! Просторная 2-комн. квартира в ЖК "Сердце столицы" на
+            3 этаже. Общая площадь: 74 кв.м., жилая: 38.7 кв.м., площадь просторной кухни: 14 кв.м. В
+            квартире один балкон, один совмещенный и один раздельный санузел. Высота потолков 3.20 м.
+            Квартира полностью готова к ремонту и чистовой отделке. Все коммуникации заведены в квартиру,
+            выполнена разводка теплоснабжения, установлены временные радиаторы. В половину кирпича выделена
+            мокрая зона, кухня. Установлены входная дверь и стеклопакеты с повышенной шумоизоляцией.
+            Просторная двухкомнатная квартира с большой гостиной 22.5 м и просторной кухней 14м. Панорамные
+            виды внутреннего паркового пространства в 6.5га. Высокие потолки 3.2м. Дом монолитно-кирпичный,
+            черырехподъездный, высотой 19 этажей. Квартира находится в 1-й секции. На этаже 6 квартир. В
+            подъезде 1 пассажирский и 1 грузовой лифт. Начало строительства - 2 квартал 2016 года.
+            Строительство завершено, дом сдан. Оформление сделки по договору купли-продажи. В шаговой
+            доступности находятся станции метро: «Шелепиха» (900 м), «Полежаевская» (1.7 км), «Фили»
+            (1.7 км), «Хорошево» (1.7 км). В отделке подъезда использованы высококачественные материалы,
+            установлены надежные грузопассажирские лифты. Жилой комплекс "Сердце столицы" расположен рядом
+            с Москва-сити, на берегу Москва-реки. Предусмотрена парковая зона с пляжем и причалом. В составе
+            комплекса, помимо 8 жилых корпусов, свои школа и детский сад, торговый комплекс с крупным
+            супермаркетом и разнообразными магазинами. Подземный паркинг с автомойками. Обустроена
+            центральная площадь для праздников и других мероприятий, летний театр, открытый водоем (зимой –
+            каток). вартира продается застройщиком - компанией "Донстрой", что обеспечит Вам максимально
+            комфортные условия сделки и полную ее безопасность. Аккредитация в банках: «Сбербанк России»,
+            ПАО «Газпромбанк», ПАО Банк «ВТБ», АО Банк «Северный Морской Путь», ОАО «Россельхозбанк» и
+            других.
+        </Description>
+        <LayoutPhoto>
+            <FullUrl>https://tapigo-default.storage.yandexcloud.net/dc/df/dcdffac6b8d6f4bc5ed57375c4380307/dcdffac6b8d6f4bc5ed57375c4380307_800x800.jpg</FullUrl>
+            <IsDefault>true</IsDefault>
+        </LayoutPhoto>
+        <Photos>
+            <PhotoSchema>
+                <FullUrl>https://tapigo-default.storage.yandexcloud.net/dc/df/dcdffac6b8d6f4bc5ed57375c4380307/dcdffac6b8d6f4bc5ed57375c4380307_800x800.jpg</FullUrl>
+                <IsDefault>true</IsDefault>
+            </PhotoSchema>
+            <PhotoSchema>
+                <FullUrl>https://tapigo-default.storage.yandexcloud.net/dc/df/dcdffac6b8d6f4bc5ed57375c4380307/dcdffac6b8d6f4bc5ed57375c4380307_800x800.jpg</FullUrl>
+                <IsDefault>false</IsDefault>
+            </PhotoSchema>
+        </Photos>
+        <BargainTerms>
+            <Price>18530000</Price>
+            <Currency>rub</Currency>
+            <VatIncluded>true</VatIncluded>
+            <MortgageAllowed>true</MortgageAllowed>
+            <SaleType>pdkp</SaleType>
+        </BargainTerms>
+    </object>
+
+    <object>
+        <Category>newBuildingFlatSale</Category>
+        <ExternalId>123-882</ExternalId>
+        <JKSchema>
+            <Id>7111</Id>
+            <Name>ЖК "Новое Сертолово"</Name>
+            <House>
+                <Id>577592</Id>
+                <Name>Корпус 2.11</Name>
+                <Flat>
+                    <FlatNumber>10793</FlatNumber>
+                    <SectionNumber>1</SectionNumber>
+                </Flat>
+            </House>
+            <Developer>
+                <Name>ГК КВС</Name>
+            </Developer>
+        </JKSchema>
+        <Coordinates>
+            <Lat>60.164587</Lat>
+            <Lng>30.198979</Lng>
+        </Coordinates>
+        <Address>Всеволожский район, город Сертолово, Мира, 2.11</Address>
+        <Phones>
+            <PhoneSchema>
+                <CountryCode>+7</CountryCode>
+                <Number>8121111111</Number>
+            </PhoneSchema>
+        </Phones>
+        <Building>
+            <FloorsCount>5</FloorsCount>
+            <MaterialType>monolith</MaterialType>
+            <CeilingHeight>2.70</CeilingHeight>
+            <PassengerLiftsCount>0</PassengerLiftsCount>
+            <CargoLiftsCount>1</CargoLiftsCount>
+            <Deadline>
+                <Quarter>third</Quarter>
+                <Year>2020</Year>
+            </Deadline>
+        </Building>
+        <FloorNumber>1</FloorNumber>
+        <RoomType>separate</RoomType>
+        <FlatRoomsCount>9</FlatRoomsCount>
+        <TotalArea>31.03</TotalArea>
+        <AllRoomsArea>16.54</AllRoomsArea>
+        <LivingArea>16.54</LivingArea>
+        <KitchenArea>5.43</KitchenArea>
+        <LoggiasCount>0</LoggiasCount>
+        <BalconiesCount>1</BalconiesCount>
+        <Decoration>fine</Decoration>
+        <WindowsViewType>yard</WindowsViewType>
+        <SeparateWcsCount>0</SeparateWcsCount>
+        <CombinedWcsCount>1</CombinedWcsCount>
+        <Description>
+            Рассрочка с ежемесячным платежом 20 тыс. руб! Ипотека 6%! В интернете дешевле! Скидка
+            70 000 руб за покупку в интернет магазине! Приглашаем Вас в наш шоу-рум, позвоните, мы закажем
+            бесплатное такси и проведем для Вас экскурсию! Информация по телефону, мы вам все подробно
+            расскажем! 1-комн. квартира-студия с отделкой в ЖК "Новое Сертолово" на 1 этаже. Общая
+            площадь: 31.03 кв.м., площадь гостиной 21.97 кв.м., из которых 5.43 кв.м. выделено под
+            кухонную зону. В квартире один балкон, один совмещенный санузел. Высота потолков 2.70 м.
+            Квартира будет сдана с полной отделкой: остекление балконов и лоджий, установка элементов
+            отопления, выполнена полная электроразводка с установкой выключателей и розеток. На полах
+            ламинат, на стенах обои, потолки покрашены. Установлены все межкомнатные двери с фурнитурой.
+            В ванной на полу и стенах плитка, смонтирована вся сантехника. Все счетчики установлены и
+            подключены. Дом монолитно-кирпичный, многоподъездный, высотой 5 этажей. Квартира находится в
+            1-й секции. На этаже 5 квартир. Начало строительства - 3 квартал 2018 года. Окончание
+            строительства - 3 квартал 2020 года. Оформление сделки по договору долевого участия. Просторные
+            и уютные входные группы с отделкой материалами высокого качества, во дворе спортивные и детские
+            площадки. На территории жилого комплекса два детских сада и школа. Малоэтажный жилой микрорайон
+            «Новое Сертолово» — идея зеленого микро-города, в котором активный житель мегаполиса получает
+            качественный отдых после работы или учебы. Микрорайон «Новое Сертолово» имеет хорошую
+            транспортную доступность, дорога до станции метро «Проспект Просвещения» займет 15-20 минут.
+            В окрестностях «Нового Сертолово» проложена экологическая тропа «Заповедный лабиринт».
+            Аккредитация в банках: «Сбербанк России», АО «Райффайзенбанк», ПАО «Банк Уралсиб», ПАО
+            «Газпромбанк», ПАО Банк «ВТБ» и других.
+        </Description>
+        <LayoutPhoto>
+            <FullUrl>https://tapigo-default.storage.yandexcloud.net/dc/df/dcdffac6b8d6f4bc5ed57375c4380307/dcdffac6b8d6f4bc5ed57375c4380307_800x800.jpg</FullUrl>
+            <IsDefault>true</IsDefault>
+        </LayoutPhoto>
+        <Photos>
+            <PhotoSchema>
+                <FullUrl>https://tapigo-default.storage.yandexcloud.net/dc/df/dcdffac6b8d6f4bc5ed57375c4380307/dcdffac6b8d6f4bc5ed57375c4380307_800x800.jpg</FullUrl>
+                <IsDefault>true</IsDefault>
+            </PhotoSchema>
+            <PhotoSchema>
+                <FullUrl>https://tapigo-default.storage.yandexcloud.net/dc/df/dcdffac6b8d6f4bc5ed57375c4380307/dcdffac6b8d6f4bc5ed57375c4380307_800x800.jpg</FullUrl>
+                <IsDefault>false</IsDefault>
+            </PhotoSchema>
+        </Photos>
+        <BargainTerms>
+            <Price>2317941</Price>
+            <Currency>rub</Currency>
+            <VatIncluded>true</VatIncluded>
+            <MortgageAllowed>true</MortgageAllowed>
+            <SaleType>fz214</SaleType>
+        </BargainTerms>
+    </object>
+</feed>

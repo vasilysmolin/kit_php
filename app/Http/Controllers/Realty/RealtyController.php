@@ -337,8 +337,6 @@ class RealtyController extends Controller
         $profileId = $account['profile_id'];
         $profile = Profile::find($profileId);
         $realtiesExternal = $profile->realties()->whereNotNull('external_id')->get();
-//        $resultNew = collect([]);
-//        $resultUpdate = collect([]);
         foreach ($realties->object as $realty) {
             $data = [];
             $data['title'] = (string) $realty->JKSchema->Name;
@@ -356,14 +354,11 @@ class RealtyController extends Controller
             $data['category_id'] = (int) $request->category_id;
             $data['updated_at'] = now();
 
-//            dd($realty);
             $realtyDB = $realtiesExternal->where('external_id', (int) $realty->JKSchema->Id)->first();
             if (!empty($realtyDB)) {
-//                $data['id'] = $model->id;
                 $realtyDB->fill($data);
                 $realtyDB->update();
                 $model = $realtyDB;
-//                $resultUpdate->push($data);
             } else {
                 $data['created_at'] = now();
                 $data['external_id'] = (int) $realty->JKSchema->Id;
@@ -371,9 +366,7 @@ class RealtyController extends Controller
                 $model->fill($data);
 
                 $model->save();
-//                $resultNew->push($data);
             }
-//            dd($realty);
             foreach($realty->Photos->PhotoSchema as $photo) {
                 $files = resolve(Files::class);
                 $files->saveParser($model, (string) $photo->FullUrl);

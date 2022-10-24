@@ -107,6 +107,13 @@ Route::group([
 });
 
 Route::group([
+    'namespace' => 'Feed',
+], function ($router) {
+    Route::apiResource('feeds', 'FeedController');
+});
+
+
+Route::group([
     'namespace' => 'Food',
 ], function ($router) {
     Route::apiResource('restaurants', 'RestaurantController');

@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Feed;
 
+use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFeedRequest;
 use App\Http\Requests\UpdateFeedRequest;
 use App\Models\Feed;
@@ -26,24 +27,22 @@ class FeedController extends Controller
     {
     }
 
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \App\Http\Requests\StoreFeedRequest  $request
-     * @return \Illuminate\Http\Response
-     */
+
     public function store(StoreFeedRequest $request)
     {
+        $feed = new Feed();
+        $data = $request->all();
+        $account = $request->get('accounts');
+        $data['profile_id'] = $account['profile_id'];
+        $feed->fill($data);
+        $feed->save();
+        return response()->json([], 201, ['Location' => "/feeds/$feed->id"]);
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\Feed  $feed
-     * @return \Illuminate\Http\Response
-     */
+
     public function show(Feed $feed)
     {
+        return response()->json($feed);
     }
 
     /**
@@ -56,15 +55,15 @@ class FeedController extends Controller
     {
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \App\Http\Requests\UpdateFeedRequest  $request
-     * @param  \App\Models\Feed  $feed
-     * @return \Illuminate\Http\Response
-     */
+
     public function update(UpdateFeedRequest $request, Feed $feed)
     {
+        $data = $request->all();
+        $account = $request->get('accounts');
+        $data['profile_id'] = $account['profile_id'];
+        $feed->fill($data);
+        $feed->update();
+        return response()->json([], 204);
     }
 
     /**
