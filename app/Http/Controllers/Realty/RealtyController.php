@@ -24,6 +24,7 @@ use App\Objects\TypeModules\TypeModules;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
+use SimpleXMLElement;
 
 class RealtyController extends Controller
 {
