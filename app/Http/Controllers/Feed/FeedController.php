@@ -2,20 +2,30 @@
 
 namespace App\Http\Controllers\Feed;
 
+
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFeedRequest;
 use App\Http\Requests\UpdateFeedRequest;
 use App\Models\Feed;
+use App\Models\User;
+use App\Objects\JsonHelper;
+use Illuminate\Http\Request;
 
 class FeedController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
+
+    public function index(Request $request)
     {
+        $account = $request->get('accounts');
+        $profileID = $account['profile_id'];
+        $user = User::whereHas('profile', function ($q) use ($profileID) {
+            $q->where('id', $profileID);
+        })->first();
+        $feeds = $user->profile->feeds;
+
+        $data = (new JsonHelper())->getIndexStructure(new Feed(), $feeds, $feeds->count(), 0);
+
+        return response()->json($data);
     }
 
     /**
@@ -36,7 +46,7 @@ class FeedController extends Controller
         $data['profile_id'] = $account['profile_id'];
         $feed->fill($data);
         $feed->save();
-        return response()->json([], 201, ['Location' => "/feeds/$feed->id"]);
+        return response()->json(['id' => $feed->id], 201, ['Location' => "/feeds/$feed->id"]);
     }
 
 
@@ -66,13 +76,10 @@ class FeedController extends Controller
         return response()->json([], 204);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Feed  $feed
-     * @return \Illuminate\Http\Response
-     */
+
     public function destroy(Feed $feed)
     {
+        $feed->delete();
+        return response()->json([], 204);
     }
 }

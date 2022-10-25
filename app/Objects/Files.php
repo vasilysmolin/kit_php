@@ -80,10 +80,6 @@ class Files
                 $filteredImage = $image
                     ->fit($resolution['width'], $resolution['height'])
                     ->encode('jpg', 100);
-                var_dump($path . '_'
-                    . $resolution['width'] . 'x'
-                    . $resolution['height'] . '.' .
-                    'jpg');
                 Storage::put(
                     $path . '_'
                     . $resolution['width'] . 'x'

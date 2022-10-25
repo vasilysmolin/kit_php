@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use ParagonIE\Sodium\Core\Curve25519\Fe;
 
 class Profile extends Model
 {
@@ -63,6 +64,11 @@ class Profile extends Model
     public function realties()
     {
         return $this->hasMany(Realty::class, 'profile_id', 'id');
+    }
+
+    public function feeds()
+    {
+        return $this->hasMany(Feed::class, 'profile_id', 'id');
     }
 
     public function service()

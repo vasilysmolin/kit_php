@@ -12,6 +12,7 @@ use App\Http\Requests\Ad\AdShowRequest;
 use App\Http\Requests\Ad\AdStateRequest;
 use App\Http\Requests\Ad\AdStoreRequest;
 use App\Http\Requests\Ad\AdUpdateRequest;
+use App\Models\Feed;
 use App\Models\Profile;
 use App\Models\Realty;
 use App\Models\RealtyCategory;
@@ -20,10 +21,9 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use SimpleXMLElement;
 
 class RealtyController extends Controller
 {
@@ -331,8 +331,18 @@ class RealtyController extends Controller
     public function import(Request $request): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
-        $contents = Storage::disk('local')->get('flat.xml');
-        $realties = new SimpleXMLElement($contents);
+//        $contents = Storage::disk('local')->get('flat.xml');
+        $feed = Feed::find($request->id);
+        $client = new Client();
+        $content = $client->get($feed->url, [
+            'verify' => false,
+            'auth' => [
+                'ktotam',
+                'eto_tapigo',
+            ]
+        ]);
+        $realties = new SimpleXMLElement($content->getBody()->getContents());
+
         $account = $request->get('accounts');
         $profileId = $account['profile_id'];
         $profile = Profile::find($profileId);
@@ -340,6 +350,7 @@ class RealtyController extends Controller
         foreach ($realties->object as $realty) {
             $data = [];
             $data['title'] = (string) $realty->JKSchema->Name;
+            $data['name'] = (string) $realty->JKSchema->Name;
             $data['alias'] = Str::slug($realty->JKSchema->Name);
             $data['state'] = (new States())->active();
             $data['price'] = (string)  $realty->BargainTerms->Price;
@@ -351,9 +362,8 @@ class RealtyController extends Controller
             $data['longitude'] = (string) $realty->Coordinates->Lng;
             $data['street'] = (string) $realty->Address;
             $data['house'] = (string) $realty->JKSchema->House->Name;
-            $data['category_id'] = (int) $request->category_id;
+            $data['category_id'] = (int) $feed->type;
             $data['updated_at'] = now();
-
             $realtyDB = $realtiesExternal->where('external_id', (int) $realty->JKSchema->Id)->first();
             if (!empty($realtyDB)) {
                 $realtyDB->fill($data);
@@ -381,19 +391,20 @@ class RealtyController extends Controller
             $dataParameters['materialType'] = (int) $realty->MaterialType;
             $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
             $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'zilaya-ploshhad'  . '-rent');
+                $q->where('alias', 'zilaya-ploshhad'  . '-bye');
             })->first();
+
             $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'ploshhad-kuxni'  . '-rent');
+                $q->where('alias', 'ploshhad-kuxni'  . '-bye');
             })->first();
             $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'obshhaya-ploshhad'  . '-rent');
+                $q->where('alias', 'obshhaya-ploshhad'  . '-bye');
             })->first();
             $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'etaz'  . '-rent');
+                $q->where('alias', 'etaz'  . '-bye');
             })->first();
             $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'vsego-etazei'  . '-rent');
+                $q->where('alias', 'vsego-etazei'  . '-bye');
             })->first();
 
             $arr = collect();
