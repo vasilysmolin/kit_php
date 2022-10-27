@@ -4,6 +4,7 @@ namespace App\Objects;
 
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -80,6 +81,8 @@ class Files
                 $filteredImage = $image
                     ->fit($resolution['width'], $resolution['height'])
                     ->encode('jpg', 100);
+//                Log::info($path);
+//                Log::info('');
                 Storage::put(
                     $path . '_'
                     . $resolution['width'] . 'x'

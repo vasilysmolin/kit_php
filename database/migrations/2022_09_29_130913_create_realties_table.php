@@ -16,7 +16,7 @@ return new class extends Migration
         Schema::create('realties', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('profile_id');
-            $table->unsignedBigInteger('external_id')->nullable();
+            $table->string('external_id')->nullable();
             $table->unsignedBigInteger('category_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
             $table->string('state', 100)->default('new');

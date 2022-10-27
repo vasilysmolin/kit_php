@@ -23,6 +23,7 @@ use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 use SimpleXMLElement;
 
@@ -340,48 +341,63 @@ class RealtyController extends Controller
             'auth' => [
                 'ktotam',
                 'eto_tapigo',
-            ]
+            ],
         ]);
         $realties = new SimpleXMLElement($content->getBody()->getContents());
-
         $account = $request->get('accounts');
         $profileId = $account['profile_id'];
         $profile = Profile::find($profileId);
         $realtiesExternal = $profile->realties()->whereNotNull('external_id')->get();
+        set_time_limit(180);
         foreach ($realties->object as $realty) {
+            $arrayStreet = explode(',', trim((string) $realty->Address));
+            $house = array_pop($arrayStreet);
+            $street = array_pop($arrayStreet);
+            $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
+            $name = $realty->Title ?? $realty->JKSchema->Name ?? 'Квартира';
+//            Log::info($externalID);
+//            Log::info(' ');
+            if ((string) $realty->Category !== 'flatSale') {
+                continue;
+            }
             $data = [];
-            $data['title'] = (string) $realty->JKSchema->Name;
-            $data['name'] = (string) $realty->JKSchema->Name;
-            $data['alias'] = Str::slug($realty->JKSchema->Name);
+            $data['title'] = $name;
+            $data['name'] = $name;
             $data['state'] = (new States())->active();
             $data['price'] = (string)  $realty->BargainTerms->Price;
             $data['sale_price'] = (string)  $realty->BargainTerms->Price;
-            $data['description'] = (string) $realty->Description;
+            $data['description'] = trim((string) $realty->Description);
             $data['profile_id'] = (int) $profileId;
             $data['city_id'] = (int) $user->city->getKey();
-            $data['latitude'] = (string) $realty->Coordinates->Lat;
-            $data['longitude'] = (string) $realty->Coordinates->Lng;
-            $data['street'] = (string) $realty->Address;
-            $data['house'] = (string) $realty->JKSchema->House->Name;
+            $data['latitude'] = $realty->Coordinates->Lat;
+            $data['longitude'] = $realty->Coordinates->Lng;
+            $data['street'] = trim($street);
+            $data['house'] = isset($realty->JKSchema) ? (string) $realty->JKSchema->House->Name : trim($house);
             $data['category_id'] = (int) $feed->type;
             $data['updated_at'] = now();
-            $realtyDB = $realtiesExternal->where('external_id', (int) $realty->JKSchema->Id)->first();
+            $realtyDB = $realtiesExternal->where('external_id', $externalID)->first();
             if (!empty($realtyDB)) {
                 $realtyDB->fill($data);
                 $realtyDB->update();
                 $model = $realtyDB;
             } else {
                 $data['created_at'] = now();
-                $data['external_id'] = (int) $realty->JKSchema->Id;
+                $data['external_id'] = $externalID;
+                $data['alias'] = Str::slug($name) . '-' . Str::random(5);
                 $model = new Realty();
                 $model->fill($data);
-
                 $model->save();
+                $model->moveToStart();
             }
-            foreach($realty->Photos->PhotoSchema as $photo) {
-                $files = resolve(Files::class);
-                $files->saveParser($model, (string) $photo->FullUrl);
+            $i = 0;
+            foreach ($realty->Photos->PhotoSchema as $photo) {
+                if ($i < 10) {
+                    $files = resolve(Files::class);
+                    $files->saveParser($model, (string) $photo->FullUrl);
+                }
+                $i++;
             }
+
             $dataParameters = [];
             $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
             $dataParameters['livingArea'] = (int) $realty->LivingArea;
@@ -455,7 +471,6 @@ class RealtyController extends Controller
                 $arr->add($novizna->getKey());
             }
             $model->realtyParameters()->sync($arr);
-
         }
 //        Realty::insert($resultNew->toArray());
 //        Realty::upsert($resultUpdate->toArray(), 'id', [
