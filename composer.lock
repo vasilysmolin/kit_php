@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e8bcd66effc2aaa7c26e4571c2c92740",
+    "content-hash": "e3776774937dcc577af5a7090692e861",
     "packages": [
         {
             "name": "algolia/algoliasearch-client-php",
@@ -361,6 +361,71 @@
                 }
             ],
             "time": "2021-08-15T20:50:18+00:00"
+        },
+        {
+            "name": "cesargb/laravel-cascade-delete",
+            "version": "1.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/cesargb/laravel-cascade-delete.git",
+                "reference": "6883030d44bf67c9a73172e865e93d5a16078c5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/cesargb/laravel-cascade-delete/zipball/6883030d44bf67c9a73172e865e93d5a16078c5c",
+                "reference": "6883030d44bf67c9a73172e865e93d5a16078c5c",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "^6.0|^8.0|^9.0",
+                "illuminate/database": "^6.0|^8.0|^9.0",
+                "illuminate/events": "^6.0|^8.0|^9.0",
+                "illuminate/support": "^6.0|^8.0|^9.0",
+                "php": "^7.4|^8.0"
+            },
+            "require-dev": {
+                "laravel/legacy-factories": "^1.0.4",
+                "orchestra/testbench": "^4.0|^6.0|^7.0",
+                "phpunit/phpunit": "^8.0|^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Cesargb\\Database\\Support\\CascadeDeleteServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Cesargb\\Database\\Support\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Cesar Garcia",
+                    "email": "cesargb@gmail.com"
+                }
+            ],
+            "description": "Cascading eliminations implemented in polymorphic relationships for the Laravel apps",
+            "keywords": [
+                "cascade",
+                "delete",
+                "elocuent",
+                "laravel",
+                "polymorphic",
+                "relation",
+                "residual"
+            ],
+            "support": {
+                "issues": "https://github.com/cesargb/laravel-cascade-delete/issues",
+                "source": "https://github.com/cesargb/laravel-cascade-delete/tree/1.4.0"
+            },
+            "time": "2022-09-04T17:13:38+00:00"
         },
         {
             "name": "clue/stream-filter",
@@ -14037,14 +14102,15 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.0.2",
+        "php": "^8.1.1",
         "ext-curl": "*",
         "ext-exif": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
         "ext-gmp": "*",
         "ext-intl": "*",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-simplexml": "*"
     },
     "platform-dev": [],
     "plugin-api-version": "2.3.0"

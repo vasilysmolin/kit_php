@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cesargb\Database\Support\CascadeDelete;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -17,6 +18,9 @@ class Realty extends Model
     use SoftDeletes;
     use SortableTrait;
     use Searchable;
+    use CascadeDelete;
+
+    protected $cascadeDeleteMorph = ['images'];
 
     protected $fillable = [
         'id',

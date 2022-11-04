@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Feed;
 
-
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFeedRequest;
 use App\Http\Requests\UpdateFeedRequest;
 use App\Models\Feed;
+use App\Models\Profile;
+use App\Models\Realty;
 use App\Models\User;
 use App\Objects\JsonHelper;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class FeedController extends Controller
 {
-
     public function index(Request $request)
     {
         $account = $request->get('accounts');
@@ -40,9 +41,14 @@ class FeedController extends Controller
 
     public function store(StoreFeedRequest $request)
     {
+        $account = $request->get('accounts');
+        $profile = Profile::find($account['profile_id']);
+        $hasFeeds = $profile->feeds->first();
+        if ($hasFeeds) {
+            return response()->json([],422);
+        }
         $feed = new Feed();
         $data = $request->all();
-        $account = $request->get('accounts');
         $data['profile_id'] = $account['profile_id'];
         $feed->fill($data);
         $feed->save();
@@ -77,9 +83,19 @@ class FeedController extends Controller
     }
 
 
-    public function destroy(Feed $feed)
+    public function destroy(Request $request, Feed $feed)
     {
-        $feed->delete();
+        $account = $request->get('accounts');
+        $profileID = $account['profile_id'];
+        DB::transaction(function () use ($profileID, $feed) {
+            Realty::whereHas('profile', function ($q) use ($profileID) {
+                $q->where('id', $profileID);
+            })
+            ->whereNotNull('external_id')
+                ->withTrashed()
+                ->forceDelete();
+            $feed->delete();
+        }, 3);
         return response()->json([], 204);
     }
 }

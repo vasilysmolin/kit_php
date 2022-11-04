@@ -12,19 +12,17 @@ use App\Http\Requests\Ad\AdShowRequest;
 use App\Http\Requests\Ad\AdStateRequest;
 use App\Http\Requests\Ad\AdStoreRequest;
 use App\Http\Requests\Ad\AdUpdateRequest;
+use App\Jobs\RealtyImportJob;
 use App\Models\Feed;
 use App\Models\Profile;
 use App\Models\Realty;
 use App\Models\RealtyCategory;
-use App\Models\RealtyParameter;
 use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 use SimpleXMLElement;
 
 class RealtyController extends Controller
@@ -332,167 +330,35 @@ class RealtyController extends Controller
 
     public function import(Request $request): \Illuminate\Http\JsonResponse
     {
-        $user = auth('api')->user();
-//        $contents = Storage::disk('local')->get('flat.xml');
+//        $user = auth('api')->user();
         $feed = Feed::find($request->id);
         $client = new Client();
         $content = $client->get($feed->url, [
             'verify' => false,
-            'auth' => [
-                'ktotam',
-                'eto_tapigo',
-            ],
+//            'auth' => [
+//                'ktotam',
+//                'eto_tapigo',
+//            ],
         ]);
         $realties = new SimpleXMLElement($content->getBody()->getContents());
         $account = $request->get('accounts');
         $profileId = $account['profile_id'];
         $profile = Profile::find($profileId);
-        $realtiesExternal = $profile->realties()->whereNotNull('external_id')->get();
-        set_time_limit(180);
+        $realtiesExternal = $profile->realties()
+            ->select(['id', 'external_id'])
+            ->whereNotNull('external_id')
+            ->get();
+        $collect = collect([]);
         foreach ($realties->object as $realty) {
-            $arrayStreet = explode(',', trim((string) $realty->Address));
-            $house = array_pop($arrayStreet);
-            $street = array_pop($arrayStreet);
-            $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
-            $name = $realty->Title ?? $realty->JKSchema->Name ?? 'Квартира';
-//            Log::info($externalID);
-//            Log::info(' ');
-            if ((string) $realty->Category !== 'flatSale') {
-                continue;
-            }
-            $data = [];
-            $data['title'] = $name;
-            $data['name'] = $name;
-            $data['state'] = (new States())->active();
-            $data['price'] = (string)  $realty->BargainTerms->Price;
-            $data['sale_price'] = (string)  $realty->BargainTerms->Price;
-            $data['description'] = trim((string) $realty->Description);
-            $data['profile_id'] = (int) $profileId;
-            $data['city_id'] = (int) $user->city->getKey();
-            $data['latitude'] = $realty->Coordinates->Lat;
-            $data['longitude'] = $realty->Coordinates->Lng;
-            $data['street'] = trim($street);
-            $data['house'] = isset($realty->JKSchema) ? (string) $realty->JKSchema->House->Name : trim($house);
-            $data['category_id'] = (int) $feed->type;
-            $data['updated_at'] = now();
-            $realtyDB = $realtiesExternal->where('external_id', $externalID)->first();
-            if (!empty($realtyDB)) {
-                $realtyDB->fill($data);
-                $realtyDB->update();
-                $model = $realtyDB;
-            } else {
-                $data['created_at'] = now();
-                $data['external_id'] = $externalID;
-                $data['alias'] = Str::slug($name) . '-' . Str::random(5);
-                $model = new Realty();
-                $model->fill($data);
-                $model->save();
-                $model->moveToStart();
-            }
-            $i = 0;
-            foreach ($realty->Photos->PhotoSchema as $photo) {
-                if ($i < 10) {
-                    $files = resolve(Files::class);
-                    $files->saveParser($model, (string) $photo->FullUrl);
-                }
-                $i++;
-            }
-
-            $dataParameters = [];
-            $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
-            $dataParameters['livingArea'] = (int) $realty->LivingArea;
-            $dataParameters['floorNumber'] = (int) $realty->FloorNumber;
-            $dataParameters['flatRoomsCount'] = (int) $realty->FlatRoomsCount;
-            $dataParameters['totalArea'] = (int) $realty->TotalArea;
-            $dataParameters['kitchenArea'] = (int) $realty->KitchenArea;
-            $dataParameters['materialType'] = (int) $realty->MaterialType;
-            $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
-            $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'zilaya-ploshhad'  . '-bye');
-            })->first();
-
-            $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'ploshhad-kuxni'  . '-bye');
-            })->first();
-            $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'obshhaya-ploshhad'  . '-bye');
-            })->first();
-            $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'etaz'  . '-bye');
-            })->first();
-            $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) {
-                $q->where('alias', 'vsego-etazei'  . '-bye');
-            })->first();
-
-            $arr = collect();
-            if (!empty($comfortBal)) {
-                $arr->add($comfortBal->getKey());
-            }
-            if (!empty($comfortTwoLift)) {
-                $arr->add($comfortTwoLift->getKey());
-            }
-            if (!empty($comfortCons)) {
-                $arr->add($comfortCons->getKey());
-            }
-            if (!empty($comfortPhone)) {
-                $arr->add($comfortPhone->getKey());
-            }
-            if (!empty($comfortPark)) {
-                $arr->add($comfortPark->getKey());
-            }
-            if (!empty($comfortNet)) {
-                $arr->add($comfortNet->getKey());
-            }
-            if (!empty($rooms)) {
-                $arr->add($rooms->getKey());
-            }
-            if (!empty($livingArea)) {
-                $arr->add($livingArea->getKey());
-            }
-            if (!empty($kitArea)) {
-                $arr->add($kitArea->getKey());
-            }
-            if (!empty($totalArea)) {
-                $arr->add($totalArea->getKey());
-            }
-            if (!empty($floorsInHouse)) {
-                $arr->add($floorsInHouse->getKey());
-            }
-            if (!empty($floor)) {
-                $arr->add($floor->getKey());
-            }
-            if (!empty($dom)) {
-                $arr->add($dom->getKey());
-            }
-            if (!empty($seller)) {
-                $arr->add($seller->getKey());
-            }
-            if (!empty($novizna)) {
-                $arr->add($novizna->getKey());
-            }
-            $model->realtyParameters()->sync($arr);
+            $collect->add($realty->asXML());
         }
-//        Realty::insert($resultNew->toArray());
-//        Realty::upsert($resultUpdate->toArray(), 'id', [
-//            'id',
-//            'title',
-//            'name',
-//            'state',
-//            'price',
-//            'sale_price',
-//            'description',
-//            'profile_id',
-//            'city_id',
-//            'latitude',
-//            'longitude',
-//            'street',
-//            'house',
-//            'category_id',
-//        ]);
-//
-//        dd($resultUpdate, $resultNew);
+        $chunkCollect = $collect->chunk(5);
 
-        return response()->json([], 204);
+        foreach ($chunkCollect as $realty) {
+            RealtyImportJob::dispatch($realty,$realtiesExternal,$profile, (int) $feed->type);
+        }
+
+        return response()->json(['successText' => 'объекты импортируются в течении пары минут'], 204);
     }
 
     private function iter(?RealtyCategory $item, array $acc): array
