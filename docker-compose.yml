@@ -20,6 +20,11 @@ services:
       - .:/var/www/${BB_PHP_WORKDIR}
     depends_on:
       - database
+    logging:
+        driver: json-file
+        options:
+            max-size: "200m"
+            max-file: "3"
 
   # Nginx -----------------------------------------------
   nginx:
@@ -42,6 +47,11 @@ services:
       - .:/var/www/${BB_PHP_WORKDIR}
     depends_on:
       - php
+    logging:
+        driver: json-file
+        options:
+            max-size: "200m"
+            max-file: "3"
 
   # Redis -------------------------------------------------
   redis:
@@ -54,6 +64,11 @@ services:
       - php
       - database
     command: [ "redis-server", "/redis.conf" ]
+    logging:
+        driver: json-file
+        options:
+            max-size: "200m"
+            max-file: "3"
 
   # Database -------------------------------------------------
   database:
@@ -69,6 +84,11 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
     ports:
       - '5432:5432'
+    logging:
+        driver: json-file
+        options:
+            max-size: "200m"
+            max-file: "3"
   meilisearch:
       image: getmeili/meilisearch:v0.23.1
       restart: always
@@ -80,3 +100,8 @@ services:
 #          - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
       ports:
           - "7700:7700"
+      logging:
+          driver: json-file
+          options:
+              max-size: "200m"
+              max-file: "3"

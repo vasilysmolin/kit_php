@@ -349,13 +349,28 @@ class RealtyController extends Controller
             ->whereNotNull('external_id')
             ->get();
         $collect = collect([]);
-        foreach ($realties->object as $realty) {
-            $collect->add($realty->asXML());
+        if ($feed->type === 'cian') {
+            foreach ($realties->object as $realty) {
+                $collect->add($realty->asXML());
+            }
         }
+        if ($feed->type === 'yandex') {
+            foreach ($realties->offer as $realty) {
+                $collect->add($realty->asXML());
+            }
+        }
+
+        if ($feed->type === 'avito') {
+            foreach ($realties->Ad as $realty) {
+                $collect->add($realty->asXML());
+            }
+        }
+
         $chunkCollect = $collect->chunk(5);
 
         foreach ($chunkCollect as $realty) {
-            RealtyImportJob::dispatch($realty,$realtiesExternal,$profile, (int) $feed->type);
+            RealtyImportJob::dispatch($realty,$realtiesExternal,$profile, $feed->type);
+//            RealtyImportJob::dispatchSync($realty,$realtiesExternal,$profile, $feed->type);
         }
 
         return response()->json(['successText' => 'объекты импортируются в течении пары минут'], 204);
