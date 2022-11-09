@@ -181,7 +181,7 @@ class RealtyImportJob implements ShouldQueue
         if($this->type === 'yandex') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-                if ((string) $realty->category !== 'квартира' && (string) $realty->type !== 'продажа') {
+                if ((string) $realty->category !== 'квартира' || (string) $realty->type !== 'продажа') {
                     continue;
                 }
                 $arrayStreet = explode(',', trim((string) $realty->location->address));
@@ -305,18 +305,17 @@ class RealtyImportJob implements ShouldQueue
                 $model->realtyParameters()->sync($arr);
             }
         }
-
         if($this->type === 'avito') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-                if ((string) $realty->category !== 'квартира' && (string) $realty->type !== 'продажа') {
+                if ((string) $realty->Category !== 'Квартиры' || (string) $realty->OperationType !== 'Продам') {
                     continue;
                 }
-                $arrayStreet = explode(',', trim((string) $realty->location->address));
+                $arrayStreet = explode(',', trim((string) $realty->Address));
                 $house = array_pop($arrayStreet);
                 $street = array_pop($arrayStreet);
-                $externalID = $realty->ExternalId ?? (string )$realty->attributes()['internal-id'];
-                $name = $realty->rooms . ' квартира';
+                $externalID = $realty->Id;
+                $name = $realty->Rooms > 0 ? $realty->Rooms . ' квартира' : '1 квартира';
 //            Log::info($externalID);
 //            Log::info(' ');
 
@@ -324,13 +323,13 @@ class RealtyImportJob implements ShouldQueue
                 $data['title'] = $name;
                 $data['name'] = $name;
                 $data['state'] = (new States())->active();
-                $data['price'] = (string)  $realty->price->value;
-                $data['sale_price'] = (string)  $realty->price->value;
-                $data['description'] = trim((string) $realty->description);
+                $data['price'] = (string)  $realty->Price;
+                $data['sale_price'] = (string)  $realty->Price;
+                $data['description'] = trim((string) $realty->Description);
                 $data['profile_id'] = (int) $this->profile->getKey();
                 $data['city_id'] = (int) $this->profile->user->city->getKey();
-                $data['latitude'] = !empty($realty->location->latitude) ? $realty->location->latitude : null;
-                $data['longitude'] = !empty($realty->location->longitude) ? $realty->location->longitude : null;
+                $data['latitude'] = !empty($realty->Latitude) ? $realty->Latitude : null;
+                $data['longitude'] = !empty($realty->Longitude) ? $realty->Longitude : null;
                 $data['street'] = trim($street);
                 $data['house'] = trim($house);
                 $data['category_id'] = 12;
@@ -351,21 +350,23 @@ class RealtyImportJob implements ShouldQueue
                     $model->moveToStart();
                 }
                 $i = 0;
-                foreach ($realty->image as $photo) {
-                    if ($i < 1) {
-                        $files = resolve(Files::class);
-                        $files->saveParser($model, (string) $photo);
+                foreach ($realty->Images as $photos) {
+                    foreach($photos as $item) {
+                        if ($i < 1) {
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, (string) $item['url']);
+                        }
+                        $i++;
                     }
-                    $i++;
                 }
                 $dataParameters = [];
-                $dataParameters['floorsCount'] = (int) $realty['floors-total'];
-                $dataParameters['livingArea'] = !empty($realty->xpath('//living-space')) ? (int) $realty->xpath('//living-space')[0]->value : 0;
-                $dataParameters['floorNumber'] = (int) $realty->floor;
-                $dataParameters['flatRoomsCount'] = (int) $realty->rooms;
-                $dataParameters['totalArea'] = !empty($realty->xpath('//area')) ? (int) $realty->xpath('//area')[0]['value'] : 0;
-                $dataParameters['kitchenArea'] = !empty($realty->xpath('//kitchen-space')) ? (int) $realty->xpath('//kitchen-space')[0]['value'] : 0;
-                $dataParameters['materialType'] = !empty($realty->xpath('//building-type')) ?  (int) $realty->xpath('//building-type')[0]['value'] : 0;
+                $dataParameters['floorsCount'] = (int) $realty->Floors;
+                $dataParameters['livingArea'] = (int) $realty->LivingSpace;
+                $dataParameters['floorNumber'] = (int) $realty->Floor;
+                $dataParameters['flatRoomsCount'] = (int) $realty->Rooms;
+                $dataParameters['totalArea'] = (int) $realty->Square;
+                $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
+                $dataParameters['materialType'] = (int) $realty->HouseType;
                 $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
                 $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
                     $q->where('alias', 'zilaya-ploshhad'  . '-bye');
