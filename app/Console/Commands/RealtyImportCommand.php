@@ -50,17 +50,15 @@ class RealtyImportCommand extends Command
                     $importFeedService->import($feed, $feed->profile);
                 } catch(\Exception | ConnectionException | RequestException $exception) {
                     if (config('app.env') === 'production') {
-                        if ($this->shouldReport($exception)) {
-                            $dataErrors = collect([
-                                'user' => $feed->profile->getKey() ?? null,
-                                'code' => $exception->getCode(),
-                                'getTraceAsString' => $exception->getTraceAsString(),
-                                'getMessage' => $exception->getMessage(),
-                            ]);
-                            Mail::to(config('app.mail_errors'))
-                                ->cc(config('app.mail_errors_tapigo'))
-                                ->queue(new ErrorMail($dataErrors, 'errorCommand'));
-                        }
+                        $dataErrors = collect([
+                            'user' => $feed->profile->getKey() ?? null,
+                            'code' => $exception->getCode(),
+                            'getTraceAsString' => $exception->getTraceAsString(),
+                            'getMessage' => $exception->getMessage(),
+                        ]);
+                        Mail::to(config('app.mail_errors'))
+                            ->cc(config('app.mail_errors_tapigo'))
+                            ->queue(new ErrorMail($dataErrors, 'errorCommand'));
                     }
                 }
 
