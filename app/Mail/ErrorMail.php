@@ -19,10 +19,12 @@ class ErrorMail extends Mailable implements ShouldQueue
      * @return void
      */
     protected $errors;
+    protected $template;
 
-    public function __construct(Collection $errors)
+    public function __construct(Collection $errors, string $template = 'error')
     {
         $this->errors = $errors;
+        $this->template = $template;
     }
 
     /**
@@ -32,9 +34,10 @@ class ErrorMail extends Mailable implements ShouldQueue
      */
     public function build()
     {
+        $template = $this->template;
         return $this
             ->from('welcome@tapigo.ru', "Ошибка на тапиго {$this->errors['url']}")
-            ->markdown('emails.errors.error')
+            ->markdown("emails.errors.$template")
             ->subject('500 ошибка')
             ->with([
                 'errors' => $this->errors,

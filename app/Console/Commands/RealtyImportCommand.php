@@ -2,10 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Exports\ExportUsers;
-use App\Models\User;
+use App\Mail\ErrorMail;
+use App\Models\Feed;
+use App\Services\ImportFeedService;
+use Doctrine\DBAL\ConnectionException;
+use GuzzleHttp\Exception\RequestException;
 use Illuminate\Console\Command;
-use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Mail;
 
 class RealtyImportCommand extends Command
 {
@@ -40,6 +43,30 @@ class RealtyImportCommand extends Command
      */
     public function handle()
     {
+        $importFeedService = resolve(ImportFeedService::class);
+        Feed::query()->has('profile')->chunk(100, function($feeds) use ($importFeedService) {
+            $feeds->each(function($feed) use ($importFeedService) {
+                try{
+                    $importFeedService->import($feed, $feed->profile);
+                } catch(\Exception | ConnectionException | RequestException $exception) {
+                    if (config('app.env') === 'production') {
+                        if ($this->shouldReport($exception)) {
+                            $dataErrors = collect([
+                                'user' => $feed->profile->getKey() ?? null,
+                                'code' => $exception->getCode(),
+                                'getTraceAsString' => $exception->getTraceAsString(),
+                                'getMessage' => $exception->getMessage(),
+                            ]);
+                            Mail::to(config('app.mail_errors'))
+                                ->cc(config('app.mail_errors_tapigo'))
+                                ->queue(new ErrorMail($dataErrors, 'errorCommand'));
+                        }
+                    }
+                }
+
+            });
+
+        });
         return 0;
     }
 }

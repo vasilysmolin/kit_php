@@ -15,4 +15,9 @@ class Feed extends Model
         'type',
         'name',
     ];
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
+    }
 }

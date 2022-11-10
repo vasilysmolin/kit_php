@@ -49,7 +49,6 @@ class RealtiesParser extends Command
         $categoriesID = $this->iter($categoryMain, []);
         $categories =  CatalogAdCategory::whereIn('id', $categoriesID)->get();
         CatalogAd::whereIn('category_id', $categories->pluck('id')->toArray())->delete();
-        dd(1);
         $realtyCategories = RealtyCategory::all();
         if ($realtyCategories->isEmpty()) {
             RealtyCategory::insert($categories->toArray());

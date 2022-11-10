@@ -21,14 +21,16 @@ use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
-use GuzzleHttp\Client;
+use App\Services\ImportFeedService;
 use Illuminate\Http\Request;
-use SimpleXMLElement;
 
 class RealtyController extends Controller
 {
-    public function __construct()
+    protected ImportFeedService $importFeedService;
+
+    public function __construct(ImportFeedService $importFeedService)
     {
+        $this->importFeedService = $importFeedService;
         $this->middleware(['auth:api', StoreMiddleware::class])
             ->only('store');
         $this->middleware(['auth:api', RealtyMiddleware::class])
@@ -330,50 +332,12 @@ class RealtyController extends Controller
 
     public function import(Request $request): \Illuminate\Http\JsonResponse
     {
-//        $user = auth('api')->user();
         $feed = Feed::find($request->id);
-        $client = new Client();
-        $content = $client->get($feed->url, [
-            'verify' => false,
-//            'auth' => [
-//                'ktotam',
-//                'eto_tapigo',
-//            ],
-        ]);
-        $realties = new SimpleXMLElement($content->getBody()->getContents());
         $account = $request->get('accounts');
         $profileId = $account['profile_id'];
         $profile = Profile::find($profileId);
-        $realtiesExternal = $profile->realties()
-            ->select(['id', 'external_id'])
-            ->whereNotNull('external_id')
-            ->get();
-        $collect = collect([]);
-        if ($feed->type === 'cian') {
-            foreach ($realties->object as $realty) {
-                $collect->add($realty->asXML());
-            }
-        }
-        if ($feed->type === 'yandex') {
-            foreach ($realties->offer as $realty) {
-                $collect->add($realty->asXML());
-            }
-        }
-
-        if ($feed->type === 'avito') {
-            foreach ($realties->Ad as $realty) {
-                $collect->add($realty->asXML());
-            }
-        }
-
-        $chunkCollect = $collect->chunk(5);
-
-        foreach ($chunkCollect as $realty) {
-            RealtyImportJob::dispatch($realty,$realtiesExternal,$profile, $feed->type);
-//            RealtyImportJob::dispatchSync($realty,$realtiesExternal,$profile, $feed->type);
-        }
-
-        return response()->json(['successText' => 'объекты импортируются в течении пары минут'], 204);
+        $this->importFeedService->import($feed, $profile);
+        return response()->json(['successText' => __('import.imProcess')], 204);
     }
 
     private function iter(?RealtyCategory $item, array $acc): array
