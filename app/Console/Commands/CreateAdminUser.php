@@ -9,6 +9,7 @@ use App\Models\JobsResume;
 use App\Models\JobsResumeCategory;
 use App\Models\JobsVacancy;
 use App\Models\Profile;
+use App\Models\Realty;
 use App\Models\Service;
 use App\Models\ServiceCategory;
 use App\Models\User;
@@ -111,6 +112,14 @@ class CreateAdminUser extends Command
         });
 
         $items = CatalogAd::orderBy('sort', 'ASC')->get();
+        $i = 1;
+        $items->map(function ($item) use (&$i) {
+            $item->sort = $i;
+            $item->update();
+            $i += 1;
+        });
+
+        $items = Realty::orderBy('sort', 'ASC')->get();
         $i = 1;
         $items->map(function ($item) use (&$i) {
             $item->sort = $i;
