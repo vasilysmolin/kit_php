@@ -6,6 +6,7 @@ use App\Jobs\RealtyImportJob;
 use App\Models\Feed;
 use App\Models\Profile;
 use GuzzleHttp\Client;
+use SimpleXMLElement;
 
 class ImportFeedService
 {
