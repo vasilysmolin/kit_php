@@ -45,17 +45,23 @@ class RealtyImportJob implements ShouldQueue
      */
     public function handle()
     {
-
-        /**
-         * Продажа квартир 12 id
-         * - cian flatSale, yandex продажа-квартира, avito <Category>Квартиры</Category><OperationType>Продам</OperationType>
-         * */
-        //        set_time_limit(180);
         if($this->type === 'cian') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-                if ((string) $realty->Category !== 'flatSale') {
+                $check = false;
+                if((string) $realty->Category === 'flatSale') {
+                    $check = true;
+                }
+                if((string) $realty->Category === 'flatRent') {
+                    $check = true;
+                }
+                if (!$check) {
                     continue;
+                }
+                if((string) $realty->Category === 'flatSale') {
+                    $typeParameters = '-bye';
+                } else {
+                    $typeParameters = '-rent';
                 }
                 $arrayStreet = explode(',', trim((string) $realty->Address));
                 $house = array_pop($arrayStreet);
@@ -78,7 +84,7 @@ class RealtyImportJob implements ShouldQueue
                 $data['longitude'] = $realty->Coordinates->Lng;
                 $data['street'] = trim($street);
                 $data['house'] = isset($realty->JKSchema) ? (string) $realty->JKSchema->House->Name : trim($house);
-                $data['category_id'] = 12;
+                $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
                 $data['updated_at'] = now();
                 $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
                 if (!empty($realtyDB)) {
@@ -112,21 +118,21 @@ class RealtyImportJob implements ShouldQueue
                 $dataParameters['kitchenArea'] = (int) $realty->KitchenArea;
                 $dataParameters['materialType'] = (int) $realty->MaterialType;
                 $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
-                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'zilaya-ploshhad'  . '-bye');
+                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
                 })->first();
 
-                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'ploshhad-kuxni'  . '-bye');
+                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'ploshhad-kuxni'  . $typeParameters);
                 })->first();
-                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'obshhaya-ploshhad'  . '-bye');
+                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'obshhaya-ploshhad'  . $typeParameters);
                 })->first();
-                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'etaz'  . '-bye');
+                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'etaz'  . $typeParameters);
                 })->first();
-                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'vsego-etazei'  . '-bye');
+                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'vsego-etazei'  . $typeParameters);
                 })->first();
 
                 $arr = collect();
@@ -181,7 +187,16 @@ class RealtyImportJob implements ShouldQueue
         if($this->type === 'yandex') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-                if ((string) $realty->category !== 'квартира' || (string) $realty->type !== 'продажа') {
+                $check = false;
+                if ((string) $realty->category === 'квартира' || (string) $realty->type === 'продажа') {
+                    $check = true;
+                    $typeParameters = '-bye';
+                }
+                if ((string) $realty->category === 'квартира' || (string) $realty->type === 'аренда') {
+                    $check = true;
+                    $typeParameters = '-rent';
+                }
+                if (!$check) {
                     continue;
                 }
                 $arrayStreet = explode(',', trim((string) $realty->location->address));
@@ -205,7 +220,7 @@ class RealtyImportJob implements ShouldQueue
                 $data['longitude'] = !empty($realty->location->longitude) ? $realty->location->longitude : null;
                 $data['street'] = trim($street);
                 $data['house'] = trim($house);
-                $data['category_id'] = 12;
+                $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
                 $data['updated_at'] = now();
                 $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
 
@@ -239,21 +254,21 @@ class RealtyImportJob implements ShouldQueue
                 $dataParameters['kitchenArea'] = !empty($realty->xpath('//kitchen-space')) ? (int) $realty->xpath('//kitchen-space')[0]['value'] : 0;
                 $dataParameters['materialType'] = !empty($realty->xpath('//building-type')) ?  (int) $realty->xpath('//building-type')[0]['value'] : 0;
                 $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
-                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'zilaya-ploshhad'  . '-bye');
+                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
                 })->first();
 
-                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'ploshhad-kuxni'  . '-bye');
+                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'ploshhad-kuxni'  . $typeParameters);
                 })->first();
-                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'obshhaya-ploshhad'  . '-bye');
+                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'obshhaya-ploshhad'  . $typeParameters);
                 })->first();
-                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'etaz'  . '-bye');
+                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'etaz'  . $typeParameters);
                 })->first();
-                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'vsego-etazei'  . '-bye');
+                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'vsego-etazei'  . $typeParameters);
                 })->first();
 
                 $arr = collect();
@@ -308,7 +323,17 @@ class RealtyImportJob implements ShouldQueue
         if($this->type === 'avito') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-                if ((string) $realty->Category !== 'Квартиры' || (string) $realty->OperationType !== 'Продам') {
+
+                $check = false;
+                if ((string) $realty->Category === 'Квартиры' || (string) $realty->OperationType === 'Продам') {
+                    $check = true;
+                    $typeParameters = '-bye';
+                }
+                if ((string) $realty->Category === 'Квартиры' || (string) $realty->OperationType === 'Сдам') {
+                    $check = true;
+                    $typeParameters = '-rent';
+                }
+                if (!$check) {
                     continue;
                 }
                 $arrayStreet = explode(',', trim((string) $realty->Address));
@@ -332,7 +357,7 @@ class RealtyImportJob implements ShouldQueue
                 $data['longitude'] = !empty($realty->Longitude) ? $realty->Longitude : null;
                 $data['street'] = trim($street);
                 $data['house'] = trim($house);
-                $data['category_id'] = 12;
+                $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
                 $data['updated_at'] = now();
                 $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
 
@@ -368,21 +393,21 @@ class RealtyImportJob implements ShouldQueue
                 $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
                 $dataParameters['materialType'] = (int) $realty->HouseType;
                 $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
-                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'zilaya-ploshhad'  . '-bye');
+                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
                 })->first();
 
-                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'ploshhad-kuxni'  . '-bye');
+                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'ploshhad-kuxni'  . $typeParameters);
                 })->first();
-                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'obshhaya-ploshhad'  . '-bye');
+                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'obshhaya-ploshhad'  . $typeParameters);
                 })->first();
-                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'etaz'  . '-bye');
+                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'etaz'  . $typeParameters);
                 })->first();
-                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) {
-                    $q->where('alias', 'vsego-etazei'  . '-bye');
+                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'vsego-etazei'  . $typeParameters);
                 })->first();
 
                 $arr = collect();
@@ -434,33 +459,5 @@ class RealtyImportJob implements ShouldQueue
                 $model->realtyParameters()->sync($arr);
             }
         }
-
-
-
-
-
-
-
-
-
-        //        Realty::insert($resultNew->toArray());
-//        Realty::upsert($resultUpdate->toArray(), 'id', [
-//            'id',
-//            'title',
-//            'name',
-//            'state',
-//            'price',
-//            'sale_price',
-//            'description',
-//            'profile_id',
-//            'city_id',
-//            'latitude',
-//            'longitude',
-//            'street',
-//            'house',
-//            'category_id',
-//        ]);
-//
-//        dd($resultUpdate, $resultNew);
     }
 }

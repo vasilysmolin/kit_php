@@ -47,7 +47,7 @@ class RealtyImportCommand extends Command
         Feed::query()->has('profile')->chunk(100, function($feeds) use ($importFeedService) {
             $feeds->each(function($feed) use ($importFeedService) {
                 try{
-                    $importFeedService->import($feed, $feed->profile);
+                    $importFeedService->import($feed, $feed->profile, true);
                 } catch(\Exception | ConnectionException | RequestException $exception) {
                     if (config('app.env') === 'production') {
                         $dataErrors = collect([

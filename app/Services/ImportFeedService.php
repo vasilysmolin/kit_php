@@ -41,7 +41,6 @@ class ImportFeedService
         }
 
         $chunkCollect = $collect->chunk(5);
-
         foreach ($chunkCollect as $realty) {
             if($isSync) {
                 RealtyImportJob::dispatchSync($realty,$realtiesExternal,$profile, $feed->type);
