@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('parent_id')->unsigned()->nullable()->index();
             $table->foreign('parent_id', 'FK_parent_product_category')
                 ->references('id')
-                ->on('catalog_ad_categories')
+                ->on('realty_categories')
                 ->onUpdate('CASCADE')
                 ->onDelete('SET NULL');
             $table->string('name')->nullable();
