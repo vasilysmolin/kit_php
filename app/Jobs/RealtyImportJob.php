@@ -102,7 +102,7 @@ class RealtyImportJob implements ShouldQueue
                 }
                 $i = 0;
                 foreach ($realty->Photos->PhotoSchema as $photo) {
-                    if ($i < 1) {
+                    if ($i < 15) {
                         $files = resolve(Files::class);
                         $files->saveParser($model, (string) $photo->FullUrl);
                     }
@@ -241,7 +241,7 @@ class RealtyImportJob implements ShouldQueue
                 }
                 $i = 0;
                 foreach ($realty->image as $photo) {
-                    if ($i < 1) {
+                    if ($i < 15) {
                         $files = resolve(Files::class);
                         $files->saveParser($model, (string) $photo);
                     }
@@ -381,7 +381,7 @@ class RealtyImportJob implements ShouldQueue
                 $i = 0;
                 foreach ($realty->Images as $photos) {
                     foreach($photos as $item) {
-                        if ($i < 1) {
+                        if ($i < 15) {
                             $files = resolve(Files::class);
                             $files->saveParser($model, (string) $item['url']);
                         }
