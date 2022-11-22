@@ -117,7 +117,9 @@ class RealtyImportJob implements ShouldQueue
                 $dataParameters['totalArea'] = (int) $realty->TotalArea;
                 $dataParameters['kitchenArea'] = (int) $realty->KitchenArea;
                 $dataParameters['materialType'] = (int) $realty->MaterialType;
-                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
+                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
+                })->first();
                 $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
                 })->first();
@@ -253,7 +255,9 @@ class RealtyImportJob implements ShouldQueue
                 $dataParameters['totalArea'] = !empty($realty->xpath('//area')) ? (int) $realty->xpath('//area')[0]['value'] : 0;
                 $dataParameters['kitchenArea'] = !empty($realty->xpath('//kitchen-space')) ? (int) $realty->xpath('//kitchen-space')[0]['value'] : 0;
                 $dataParameters['materialType'] = !empty($realty->xpath('//building-type')) ?  (int) $realty->xpath('//building-type')[0]['value'] : 0;
-                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
+                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
+                })->first();
                 $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
                 })->first();
@@ -392,7 +396,9 @@ class RealtyImportJob implements ShouldQueue
                 $dataParameters['totalArea'] = (int) $realty->Square;
                 $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
                 $dataParameters['materialType'] = (int) $realty->HouseType;
-                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->first();
+                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
+                })->first();
                 $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
                 })->first();
