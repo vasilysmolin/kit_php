@@ -76,6 +76,8 @@ class RealtyImportJob implements ShouldQueue
                 $data['sale_price'] = (string)  $realty->BargainTerms->Price;
                 $data['description'] = trim((string) $realty->Description);
                 $data['profile_id'] = (int) $this->profile->getKey();
+                $data['date_build'] = !empty($realty->Building) && !empty($realty->Building->BuildYear) ? (string) $realty->Building->BuildYear : null;
+                $data['ceiling_height'] = !empty($realty->Building) && !empty($realty->Building->CeilingHeight) ? (string) $realty->Building->CeilingHeight : null;
                 $data['city_id'] = (int) $this->profile->user->city->getKey();
                 $data['latitude'] = $realty->Coordinates->Lat;
                 $data['longitude'] = $realty->Coordinates->Lng;
@@ -214,6 +216,8 @@ class RealtyImportJob implements ShouldQueue
                 $data['sale_price'] = (string)  $realty->price->value;
                 $data['description'] = trim((string) $realty->description);
                 $data['profile_id'] = (int) $this->profile->getKey();
+                $data['date_build'] = !empty($realty->xpath('//built-year')) ? (int) $realty->xpath('//built-year')[0]->value : null;
+                $data['ceiling_height'] = !empty($realty->xpath('//ceiling-height')) ? (int) $realty->xpath('//ceiling-height')[0]->value : null;
                 $data['city_id'] = (int) $this->profile->user->city->getKey();
                 $data['latitude'] = !empty($realty->location->latitude) ? $realty->location->latitude : null;
                 $data['longitude'] = !empty($realty->location->longitude) ? $realty->location->longitude : null;
@@ -337,6 +341,7 @@ class RealtyImportJob implements ShouldQueue
                 if (!$check) {
                     continue;
                 }
+
                 $arrayStreet = explode(',', trim((string) $realty->Address));
                 $house = array_pop($arrayStreet);
                 $street = array_pop($arrayStreet);
@@ -350,6 +355,8 @@ class RealtyImportJob implements ShouldQueue
                 $data['name'] = $name;
                 $data['state'] = (new States())->active();
                 $data['price'] = (string)  $realty->Price;
+                $data['date_build'] = !empty($realty->BuiltYear) ? (string) $realty->BuiltYear : null;
+                $data['ceiling_height'] = !empty($realty->CeilingHeight) ? (string) $realty->CeilingHeight : null;
                 $data['sale_price'] = (string)  $realty->Price;
                 $data['description'] = trim((string) $realty->Description);
                 $data['profile_id'] = (int) $this->profile->getKey();
@@ -376,15 +383,15 @@ class RealtyImportJob implements ShouldQueue
                     $model->moveToStart();
                 }
                 $i = 0;
-                foreach ($realty->Images as $photos) {
-                    foreach($photos as $item) {
-                        if ($i < 15) {
-                            $files = resolve(Files::class);
-                            $files->saveParser($model, (string) $item['url']);
-                        }
-                        $i++;
-                    }
-                }
+//                foreach ($realty->Images as $photos) {
+//                    foreach($photos as $item) {
+//                        if ($i < 15) {
+//                            $files = resolve(Files::class);
+//                            $files->saveParser($model, (string) $item['url']);
+//                        }
+//                        $i++;
+//                    }
+//                }
                 $dataParameters = [];
                 $dataParameters['floorsCount'] = (int) $realty->Floors;
                 $dataParameters['livingArea'] = (int) $realty->LivingSpace;
