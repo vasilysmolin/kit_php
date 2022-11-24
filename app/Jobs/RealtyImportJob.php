@@ -50,18 +50,15 @@ class RealtyImportJob implements ShouldQueue
                 $realty = simplexml_load_string($realtyString);
                 $check = false;
                 if((string) $realty->Category === 'flatSale') {
+                    $typeParameters = '-bye';
                     $check = true;
                 }
                 if((string) $realty->Category === 'flatRent') {
+                    $typeParameters = '-rent';
                     $check = true;
                 }
                 if (!$check) {
                     continue;
-                }
-                if((string) $realty->Category === 'flatSale') {
-                    $typeParameters = '-bye';
-                } else {
-                    $typeParameters = '-rent';
                 }
                 $arrayStreet = explode(',', trim((string) $realty->Address));
                 $house = array_pop($arrayStreet);
@@ -190,11 +187,11 @@ class RealtyImportJob implements ShouldQueue
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
                 $check = false;
-                if ((string) $realty->category === 'квартира' || (string) $realty->type === 'продажа') {
+                if ((string) $realty->category === 'квартира' && (string) $realty->type === 'продажа') {
                     $check = true;
                     $typeParameters = '-bye';
                 }
-                if ((string) $realty->category === 'квартира' || (string) $realty->type === 'аренда') {
+                if ((string) $realty->category === 'квартира' && (string) $realty->type === 'аренда') {
                     $check = true;
                     $typeParameters = '-rent';
                 }
@@ -329,11 +326,11 @@ class RealtyImportJob implements ShouldQueue
                 $realty = simplexml_load_string($realtyString);
 
                 $check = false;
-                if ((string) $realty->Category === 'Квартиры' || (string) $realty->OperationType === 'Продам') {
+                if ((string) $realty->Category === 'Квартиры' && (string) $realty->OperationType === 'Продам') {
                     $check = true;
                     $typeParameters = '-bye';
                 }
-                if ((string) $realty->Category === 'Квартиры' || (string) $realty->OperationType === 'Сдам') {
+                if ((string) $realty->Category === 'Квартиры' && (string) $realty->OperationType === 'Сдам') {
                     $check = true;
                     $typeParameters = '-rent';
                 }
