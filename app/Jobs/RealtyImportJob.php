@@ -250,6 +250,19 @@ class RealtyImportJob implements ShouldQueue
                 }
                 $dataParameters = [];
                 $dataParameters['floorsCount'] = (int) $realty['floors-total'];
+                $dataParameters['typeRooms'] = !empty($realty->xpath('//rooms-type')) ? (string) $realty->xpath('//living-space')[0]->value : null;
+                $dataParameters['house'] = !empty($realty->xpath('//building-type')) ? (string) $realty->xpath('//living-space')[0]->value : null;
+                if(!empty($dataParameters['typeRooms'])) {
+                    if($dataParameters['typeRooms'] == 'Изолированная') {
+                        $dataParameters['typeRooms'] = 'Изолированные';
+                    } else {
+                        $dataParameters['typeRooms'] = 'Смежные';
+                    }
+                }
+//                $dataParameters['isNew'] = (string) $realty->MarketType;
+                $dataParameters['balconyOrLoggia'] = (string) $realty->balcony;
+
+
                 $dataParameters['livingArea'] = !empty($realty->xpath('//living-space')) ? (int) $realty->xpath('//living-space')[0]->value : 0;
                 $dataParameters['floorNumber'] = (int) $realty->floor;
                 $dataParameters['flatRoomsCount'] = (int) $realty->rooms;
@@ -275,6 +288,21 @@ class RealtyImportJob implements ShouldQueue
                 $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'vsego-etazei'  . $typeParameters);
                 })->first();
+                $typeRooms = RealtyParameter::where('value', $dataParameters['typeRooms'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'tip-komnat'  . $typeParameters);
+                })->first();
+//                $isNew = RealtyParameter::where('value', $dataParameters['isNew'])->whereHas('filter', function ($q) use ($typeParameters) {
+//                    $q->where('alias', 'novizna'  . $typeParameters);
+//                })->first();
+                $house = RealtyParameter::where('value', $dataParameters['house'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'dom'  . $typeParameters);
+                })->first();
+                if($dataParameters['balconyOrLoggia']) {
+                    $balkon = RealtyParameter::where('value', 'Балкон')
+                        ->whereHas('filter', function ($q) use ($typeParameters) {
+                            $q->where('alias', 'udobstva'  . $typeParameters);
+                        })->first();
+                }
 
                 $arr = collect();
                 if (!empty($comfortBal)) {
@@ -319,8 +347,17 @@ class RealtyImportJob implements ShouldQueue
                 if (!empty($seller)) {
                     $arr->add($seller->getKey());
                 }
-                if (!empty($novizna)) {
-                    $arr->add($novizna->getKey());
+                if (!empty($isNew)) {
+                    $arr->add($isNew->getKey());
+                }
+                if (!empty($typeRooms)) {
+                    $arr->add($typeRooms->getKey());
+                }
+                if (!empty($balkon)) {
+                    $arr->add($balkon->getKey());
+                }
+                if (!empty($house)) {
+                    $arr->add($house->getKey());
                 }
                 $model->realtyParameters()->sync($arr);
             }
@@ -383,23 +420,27 @@ class RealtyImportJob implements ShouldQueue
                     $model->moveToStart();
                 }
                 $i = 0;
-//                foreach ($realty->Images as $photos) {
-//                    foreach($photos as $item) {
-//                        if ($i < 15) {
-//                            $files = resolve(Files::class);
-//                            $files->saveParser($model, (string) $item['url']);
-//                        }
-//                        $i++;
-//                    }
-//                }
+                foreach ($realty->Images as $photos) {
+                    foreach($photos as $item) {
+                        if ($i < 15) {
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, (string) $item['url']);
+                        }
+                        $i++;
+                    }
+                }
                 $dataParameters = [];
                 $dataParameters['floorsCount'] = (int) $realty->Floors;
+                $dataParameters['isNew'] = (string) $realty->MarketType;
+                $dataParameters['balconyOrLoggia'] = (string) $realty->BalconyOrLoggia === 'Балкон' || (string) $realty->BalconyOrLoggia === 'Лоджия';
+//                $dataParameters['garbage'] = (string) $realty->Garbage === 'Мусоропровод';
+                $dataParameters['house'] = (string) $realty->HouseType;
+                $dataParameters['typeRooms'] = !empty($realty->RoomType) ? (string) $realty->RoomType->Option : null;
                 $dataParameters['livingArea'] = (int) $realty->LivingSpace;
                 $dataParameters['floorNumber'] = (int) $realty->Floor;
                 $dataParameters['flatRoomsCount'] = (int) $realty->Rooms;
                 $dataParameters['totalArea'] = (int) $realty->Square;
                 $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
-                $dataParameters['materialType'] = (int) $realty->HouseType;
                 $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
                 })->first();
@@ -419,6 +460,22 @@ class RealtyImportJob implements ShouldQueue
                 $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'vsego-etazei'  . $typeParameters);
                 })->first();
+                $isNew = RealtyParameter::where('value', $dataParameters['isNew'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'novizna'  . $typeParameters);
+                })->first();
+                $typeRooms = RealtyParameter::where('value', $dataParameters['typeRooms'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'tip-komnat'  . $typeParameters);
+                })->first();
+                $house = RealtyParameter::where('value', $dataParameters['house'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'dom'  . $typeParameters);
+                })->first();
+
+                if($dataParameters['balconyOrLoggia']) {
+                    $balkon = RealtyParameter::where('value', 'Балкон')
+                        ->whereHas('filter', function ($q) use ($typeParameters) {
+                            $q->where('alias', 'udobstva'  . $typeParameters);
+                        })->first();
+                }
 
                 $arr = collect();
                 if (!empty($comfortBal)) {
@@ -463,8 +520,17 @@ class RealtyImportJob implements ShouldQueue
                 if (!empty($seller)) {
                     $arr->add($seller->getKey());
                 }
-                if (!empty($novizna)) {
-                    $arr->add($novizna->getKey());
+                if (!empty($isNew)) {
+                    $arr->add($isNew->getKey());
+                }
+                if (!empty($typeRooms)) {
+                    $arr->add($typeRooms->getKey());
+                }
+                if (!empty($house)) {
+                    $arr->add($house->getKey());
+                }
+                if (!empty($balkon)) {
+                    $arr->add($balkon->getKey());
                 }
                 $model->realtyParameters()->sync($arr);
             }
