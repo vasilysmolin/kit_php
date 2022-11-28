@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Models\Profile;
 use App\Models\Realty;
 use App\Models\RealtyParameter;
+use App\Objects\Dadata\Dadata;
 use App\Objects\Files;
 use App\Objects\States\States;
 use Illuminate\Bus\Queueable;
@@ -400,6 +401,20 @@ class RealtyImportJob implements ShouldQueue
                 $data['city_id'] = (int) $this->profile->user->city->getKey();
                 $data['latitude'] = !empty($realty->Latitude) ? $realty->Latitude : null;
                 $data['longitude'] = !empty($realty->Longitude) ? $realty->Longitude : null;
+                if (empty($data['latitude'])) {
+                    try{
+                        $dadata = new Dadata();
+                        $result = $dadata->findAddress(trim($street) . ' ' . trim($house));
+                        if(!empty($result['suggestions']) && $result['suggestions'][0]) {
+                            $data = $result['suggestions'][0]['data'];
+                            $data['latitude'] = !empty($data['geo_lat']) ? $data['geo_lat'] : null;
+                            $data['longitude'] = !empty($data['geo_lat']) ? $data['geo_lon'] : null;
+                        }
+                    } catch(\Exception $exception) {
+
+                    }
+
+                }
                 $data['street'] = trim($street);
                 $data['house'] = trim($house);
                 $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
@@ -420,15 +435,18 @@ class RealtyImportJob implements ShouldQueue
                     $model->moveToStart();
                 }
                 $i = 0;
-                foreach ($realty->Images as $photos) {
-                    foreach($photos as $item) {
-                        if ($i < 15) {
-                            $files = resolve(Files::class);
-                            $files->saveParser($model, (string) $item['url']);
+                if (config('app.env') === 'production') {
+                    foreach ($realty->Images as $photos) {
+                        foreach($photos as $item) {
+                            if ($i < 15) {
+                                $files = resolve(Files::class);
+                                $files->saveParser($model, (string) $item['url']);
+                            }
+                            $i++;
                         }
-                        $i++;
                     }
                 }
+
                 $dataParameters = [];
                 $dataParameters['floorsCount'] = (int) $realty->Floors;
                 $dataParameters['isNew'] = (string) $realty->MarketType;

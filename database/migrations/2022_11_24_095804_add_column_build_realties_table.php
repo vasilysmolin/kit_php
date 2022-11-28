@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::table('realties', function (Blueprint $table) {
             $table->year('date_build')->nullable();
-            $table->date('cadastral_number')->nullable();
-            $table->date('ceiling_height')->nullable();
+            $table->string('cadastral_number')->nullable();
+            $table->float('ceiling_height')->nullable();
         });
     }
 
