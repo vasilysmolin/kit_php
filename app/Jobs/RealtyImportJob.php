@@ -454,7 +454,9 @@ class RealtyImportJob implements ShouldQueue
 //                $dataParameters['garbage'] = (string) $realty->Garbage === 'Мусоропровод';
                 $dataParameters['house'] = (string) $realty->HouseType;
                 $dataParameters['typeRooms'] = !empty($realty->RoomType) ? (string) $realty->RoomType->Option : null;
+                $dataParameters['viewFromWindows'] = !empty($realty->ViewFromWindows) ? (string) $realty->ViewFromWindows->Option : null;
                 $dataParameters['livingArea'] = (int) $realty->LivingSpace;
+                $dataParameters['renovation'] = (string) $realty->Renovation;
                 $dataParameters['floorNumber'] = (int) $realty->Floor;
                 $dataParameters['flatRoomsCount'] = (int) $realty->Rooms;
                 $dataParameters['totalArea'] = (int) $realty->Square;
@@ -487,6 +489,12 @@ class RealtyImportJob implements ShouldQueue
                 $house = RealtyParameter::where('value', $dataParameters['house'])->whereHas('filter', function ($q) use ($typeParameters) {
                     $q->where('alias', 'dom'  . $typeParameters);
                 })->first();
+                $view = RealtyParameter::where('value', $dataParameters['viewFromWindows'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'vid-iz-okon'  . $typeParameters);
+                })->first();
+                $renovation = RealtyParameter::where('value', $dataParameters['renovation'])->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'remont'  . $typeParameters);
+                })->first();
 
                 if($dataParameters['balconyOrLoggia']) {
                     $balkon = RealtyParameter::where('value', 'Балкон')
@@ -498,6 +506,12 @@ class RealtyImportJob implements ShouldQueue
                 $arr = collect();
                 if (!empty($comfortBal)) {
                     $arr->add($comfortBal->getKey());
+                }
+                if (!empty($view)) {
+                    $arr->add($view->getKey());
+                }
+                if (!empty($renovation)) {
+                    $arr->add($renovation->getKey());
                 }
                 if (!empty($comfortTwoLift)) {
                     $arr->add($comfortTwoLift->getKey());

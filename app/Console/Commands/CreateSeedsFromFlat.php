@@ -278,6 +278,81 @@ class CreateSeedsFromFlat extends Command
                     'sort' => 2,
                 ]);
             }
+            if (empty($flatCat->filters()->where('name', 'Вид из окон')->first())) {
+                $filter = $flatCat->filters()->create([
+                    'name' => 'Вид из окон',
+                    'type' => 'select',
+                    'alias' => Str::slug('Вид из окон') . $slug,
+                    'sort' => 13,
+                    'active' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Во двор',
+                    'sort' => 1,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'На улицу',
+                    'sort' => 2,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'На солнечную сторону',
+                    'sort' => 3,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'На 3 стороны',
+                    'sort' => 4,
+                ]);
+            }
+            if (empty($flatCat->filters()->where('name', 'Ремонт')->first())) {
+                $filter = $flatCat->filters()->create([
+                    'name' => 'Ремонт',
+                    'type' => 'select',
+                    'alias' => Str::slug('Ремонт') . $slug,
+                    'sort' => 14,
+                    'active' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Требуется',
+                    'sort' => 1,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'Косметический',
+                    'sort' => 2,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'Евро',
+                    'sort' => 3,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'Дизайнерский',
+                    'sort' => 4,
+                ]);
+            }
+
+            if (empty($flatCat->filters()->where('name', 'Элитный')->first())) {
+                $filter = $flatCat->filters()->create([
+                    'name' => 'Элитный',
+                    'type' => 'select',
+                    'alias' => Str::slug('Элитный') . $slug,
+                    'sort' => 14,
+                    'active' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Да',
+                    'sort' => 1,
+                ]);
+
+                $filter->parameters()->create([
+                    'value' => 'Нет',
+                    'sort' => 2,
+                ]);
+            }
 
 
         }
