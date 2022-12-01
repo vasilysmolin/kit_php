@@ -662,7 +662,7 @@ class RealtyImportJob implements ShouldQueue
         }
         $data['street'] = trim($street);
         $data['house'] = trim($house);
-        $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
+        $data['category_id'] = $typeParameters === '-bye' ? 389 : 385;
         $data['updated_at'] = now();
         $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
 
