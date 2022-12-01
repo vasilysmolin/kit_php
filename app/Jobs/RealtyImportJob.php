@@ -114,14 +114,14 @@ class RealtyImportJob implements ShouldQueue
                     $model->fill($data);
                     $model->save();
                     $model->moveToStart();
-                }
-                $i = 0;
-                if (config('app.env') === 'production') {
-                    foreach ($realty->Images as $photos) {
-                        foreach($photos as $item) {
-                            $files = resolve(Files::class);
-                            $files->saveParser($model, (string) $item['url']);
-                            $i++;
+                    $i = 0;
+                    if (config('app.env') === 'production') {
+                        foreach ($realty->Images as $photos) {
+                            foreach($photos as $item) {
+                                $files = resolve(Files::class);
+                                $files->saveParser($model, (string) $item['url']);
+                                $i++;
+                            }
                         }
                     }
                 }
@@ -271,14 +271,14 @@ class RealtyImportJob implements ShouldQueue
                     $model->fill($data);
                     $model->save();
                     $model->moveToStart();
-                }
-                $i = 0;
-                if (config('app.env') === 'production') {
-                    foreach ($realty->Images as $photos) {
-                        foreach($photos as $item) {
-                            $files = resolve(Files::class);
-                            $files->saveParser($model, (string) $item['url']);
-                            $i++;
+                    $i = 0;
+                    if (config('app.env') === 'production') {
+                        foreach ($realty->Images as $photos) {
+                            foreach($photos as $item) {
+                                $files = resolve(Files::class);
+                                $files->saveParser($model, (string) $item['url']);
+                                $i++;
+                            }
                         }
                     }
                 }
@@ -485,17 +485,18 @@ class RealtyImportJob implements ShouldQueue
             $model->fill($data);
             $model->save();
             $model->moveToStart();
-        }
-        $i = 0;
-        if (config('app.env') === 'production') {
-            foreach ($realty->Images as $photos) {
-                foreach($photos as $item) {
-                    $files = resolve(Files::class);
-                    $files->saveParser($model, (string) $item['url']);
-                    $i++;
+            $i = 0;
+            if (config('app.env') === 'production') {
+                foreach ($realty->Images as $photos) {
+                    foreach($photos as $item) {
+                        $files = resolve(Files::class);
+                        $files->saveParser($model, (string) $item['url']);
+                        $i++;
+                    }
                 }
             }
         }
+
 
         $dataParameters = [];
         $dataParameters['floorsCount'] = (int) $realty->Floors;
@@ -678,17 +679,18 @@ class RealtyImportJob implements ShouldQueue
             $model->fill($data);
             $model->save();
             $model->moveToStart();
-        }
-        $i = 0;
-        if (config('app.env') === 'production') {
-            foreach ($realty->Images as $photos) {
-                foreach($photos as $item) {
-                    $files = resolve(Files::class);
-                    $files->saveParser($model, (string) $item['url']);
-                    $i++;
+            $i = 0;
+            if (config('app.env') === 'production') {
+                foreach ($realty->Images as $photos) {
+                    foreach($photos as $item) {
+                        $files = resolve(Files::class);
+                        $files->saveParser($model, (string) $item['url']);
+                        $i++;
+                    }
                 }
             }
         }
+
         $dataParameters = [];
         $dataParameters['floorsCount'] = (int) $realty->Floors;
         $dataParameters['wallsType'] = !empty($realty->HouseServices->WallsType) ? (string) $realty->HouseServices->WallsType : null;
