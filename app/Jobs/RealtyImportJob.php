@@ -119,10 +119,8 @@ class RealtyImportJob implements ShouldQueue
                 if (config('app.env') === 'production') {
                     foreach ($realty->Images as $photos) {
                         foreach($photos as $item) {
-                            if ($i < 15) {
-                                $files = resolve(Files::class);
-                                $files->saveParser($model, (string) $item['url']);
-                            }
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, (string) $item['url']);
                             $i++;
                         }
                     }
@@ -278,10 +276,8 @@ class RealtyImportJob implements ShouldQueue
                 if (config('app.env') === 'production') {
                     foreach ($realty->Images as $photos) {
                         foreach($photos as $item) {
-                            if ($i < 15) {
-                                $files = resolve(Files::class);
-                                $files->saveParser($model, (string) $item['url']);
-                            }
+                            $files = resolve(Files::class);
+                            $files->saveParser($model, (string) $item['url']);
                             $i++;
                         }
                     }
@@ -402,205 +398,348 @@ class RealtyImportJob implements ShouldQueue
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
 
-                $check = false;
+                $checkFlat = false;
                 if ((string) $realty->Category === 'Квартиры' && (string) $realty->OperationType === 'Продам') {
-                    $check = true;
+                    $checkFlat = true;
                     $typeParameters = '-bye';
                 }
                 if ((string) $realty->Category === 'Квартиры' && (string) $realty->OperationType === 'Сдам') {
-                    $check = true;
+                    $checkFlat = true;
                     $typeParameters = '-rent';
                 }
-                if (!$check) {
-                    continue;
+
+                if ($checkFlat) {
+                    $this->flatAvito($realty, $typeParameters);
                 }
 
-                $arrayStreet = explode(',', trim((string) $realty->Address));
-                $house = array_pop($arrayStreet);
-                $street = array_pop($arrayStreet);
-                $externalID = $realty->Id;
-                $name = $realty->Rooms > 0 ? $realty->Rooms . '-к квартира' : '1-к квартира';
+                $checkHouse = false;
+                if ((string) $realty->Category === 'Дома, дачи, коттеджи' && (string) $realty->OperationType === 'Продам') {
+                    $checkHouse = true;
+                    $typeParameters = '-bye';
+                }
+                if ((string) $realty->Category === 'Дома, дачи, коттеджи' && (string) $realty->OperationType === 'Сдам') {
+                    $checkHouse = true;
+                    $typeParameters = '-rent';
+                }
+
+                if ($checkHouse) {
+                    $this->houseAvito($realty, $typeParameters);
+                }
+
+            }
+        }
+    }
+
+    private function flatAvito($realty, string $typeParameters)
+    {
+        $arrayStreet = explode(',', trim((string) $realty->Address));
+        $house = array_pop($arrayStreet);
+        $street = array_pop($arrayStreet);
+        $externalID = $realty->Id;
+        $name = $realty->Rooms > 0 ? $realty->Rooms . '-к квартира' : '1-к квартира';
 //            Log::info($externalID);
 //            Log::info(' ');
 
-                $data = [];
-                $data['title'] = $name;
-                $data['name'] = $name;
-                $data['state'] = (new States())->active();
-                $data['price'] = (string)  $realty->Price;
-                $data['date_build'] = !empty($realty->BuiltYear) ? (string) $realty->BuiltYear : null;
-                $data['ceiling_height'] = !empty($realty->CeilingHeight) ? (string) $realty->CeilingHeight : null;
-                $data['sale_price'] = (string)  $realty->Price;
-                $data['description'] = trim((string) $realty->Description);
-                $data['profile_id'] = (int) $this->profile->getKey();
-                $data['city_id'] = (int) $this->profile->user->city->getKey();
-                $data['latitude'] = !empty($realty->Latitude) ? $realty->Latitude : null;
-                $data['longitude'] = !empty($realty->Longitude) ? $realty->Longitude : null;
-                if (empty($data['latitude'])) {
-                    try{
-                        $dadata = new Dadata();
-                        $result = $dadata->findAddress(trim($street) . ' ' . trim($house));
-                        if(!empty($result['suggestions']) && $result['suggestions'][0]) {
-                            $data = $result['suggestions'][0]['data'];
-                            $data['latitude'] = !empty($data['geo_lat']) ? $data['geo_lat'] : null;
-                            $data['longitude'] = !empty($data['geo_lat']) ? $data['geo_lon'] : null;
-                        }
-                    } catch(\Exception $exception) {
+        $data = [];
+        $data['title'] = $name;
+        $data['name'] = $name;
+        $data['state'] = (new States())->active();
+        $data['price'] = (string)  $realty->Price;
+        $data['date_build'] = !empty($realty->BuiltYear) ? (string) $realty->BuiltYear : null;
+        $data['ceiling_height'] = !empty($realty->CeilingHeight) ? (string) $realty->CeilingHeight : null;
+        $data['sale_price'] = (string)  $realty->Price;
+        $data['description'] = trim((string) $realty->Description);
+        $data['profile_id'] = (int) $this->profile->getKey();
+        $data['city_id'] = (int) $this->profile->user->city->getKey();
+        $data['latitude'] = !empty($realty->Latitude) ? $realty->Latitude : null;
+        $data['longitude'] = !empty($realty->Longitude) ? $realty->Longitude : null;
+        if (empty($data['latitude'])) {
+            try{
+                $dadata = new Dadata();
+                $result = $dadata->findAddress(trim($street) . ' ' . trim($house));
+                if(!empty($result['suggestions']) && $result['suggestions'][0]) {
+                    $data = $result['suggestions'][0]['data'];
+                    $data['latitude'] = !empty($data['geo_lat']) ? $data['geo_lat'] : null;
+                    $data['longitude'] = !empty($data['geo_lat']) ? $data['geo_lon'] : null;
+                }
+            } catch(\Exception $exception) {
 
-                    }
+            }
 
-                }
-                $data['street'] = trim($street);
-                $data['house'] = trim($house);
-                $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
-                $data['updated_at'] = now();
-                $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
+        }
+        $data['street'] = trim($street);
+        $data['house'] = trim($house);
+        $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
+        $data['updated_at'] = now();
+        $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
 
-                if (!empty($realtyDB)) {
-                    $realtyDB->fill($data);
-                    $realtyDB->update();
-                    $model = $realtyDB;
-                } else {
-                    $data['created_at'] = now();
-                    $data['external_id'] = $externalID;
-                    $data['alias'] = Str::slug($name) . '-' . Str::random(5);
-                    $model = new Realty();
-                    $model->fill($data);
-                    $model->save();
-                    $model->moveToStart();
+        if (!empty($realtyDB)) {
+            $realtyDB->fill($data);
+            $realtyDB->update();
+            $model = $realtyDB;
+        } else {
+            $data['created_at'] = now();
+            $data['external_id'] = $externalID;
+            $data['alias'] = Str::slug($name) . '-' . Str::random(5);
+            $model = new Realty();
+            $model->fill($data);
+            $model->save();
+            $model->moveToStart();
+        }
+        $i = 0;
+        if (config('app.env') === 'production') {
+            foreach ($realty->Images as $photos) {
+                foreach($photos as $item) {
+                    $files = resolve(Files::class);
+                    $files->saveParser($model, (string) $item['url']);
+                    $i++;
                 }
-                $i = 0;
-                if (config('app.env') === 'production') {
-                    foreach ($realty->Images as $photos) {
-                        foreach($photos as $item) {
-                            if ($i < 15) {
-                                $files = resolve(Files::class);
-                                $files->saveParser($model, (string) $item['url']);
-                            }
-                            $i++;
-                        }
-                    }
-                }
-
-                $dataParameters = [];
-                $dataParameters['floorsCount'] = (int) $realty->Floors;
-                $dataParameters['isNew'] = (string) $realty->MarketType;
-                $dataParameters['balconyOrLoggia'] = (string) $realty->BalconyOrLoggia === 'Балкон' || (string) $realty->BalconyOrLoggia === 'Лоджия';
-//                $dataParameters['garbage'] = (string) $realty->Garbage === 'Мусоропровод';
-                $dataParameters['house'] = (string) $realty->HouseType;
-                $dataParameters['typeRooms'] = !empty($realty->RoomType) ? (string) $realty->RoomType->Option : null;
-                $dataParameters['viewFromWindows'] = !empty($realty->ViewFromWindows) ? (string) $realty->ViewFromWindows->Option : null;
-                $dataParameters['livingArea'] = (int) $realty->LivingSpace;
-                $dataParameters['renovation'] = (string) $realty->Renovation;
-                $dataParameters['floorNumber'] = (int) $realty->Floor;
-                $dataParameters['flatRoomsCount'] = (int) $realty->Rooms;
-                $dataParameters['totalArea'] = (int) $realty->Square;
-                $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
-                $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
-                })->first();
-                $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
-                })->first();
-
-                $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'ploshhad-kuxni'  . $typeParameters);
-                })->first();
-                $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'obshhaya-ploshhad'  . $typeParameters);
-                })->first();
-                $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'etaz'  . $typeParameters);
-                })->first();
-                $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'vsego-etazei'  . $typeParameters);
-                })->first();
-                $isNew = RealtyParameter::where('value', $dataParameters['isNew'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'novizna'  . $typeParameters);
-                })->first();
-                $typeRooms = RealtyParameter::where('value', $dataParameters['typeRooms'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'tip-komnat'  . $typeParameters);
-                })->first();
-                $house = RealtyParameter::where('value', $dataParameters['house'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'dom'  . $typeParameters);
-                })->first();
-                $view = RealtyParameter::where('value', $dataParameters['viewFromWindows'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'vid-iz-okon'  . $typeParameters);
-                })->first();
-                $renovation = RealtyParameter::where('value', $dataParameters['renovation'])->whereHas('filter', function ($q) use ($typeParameters) {
-                    $q->where('alias', 'remont'  . $typeParameters);
-                })->first();
-
-                if($dataParameters['balconyOrLoggia']) {
-                    $balkon = RealtyParameter::where('value', 'Балкон')
-                        ->whereHas('filter', function ($q) use ($typeParameters) {
-                            $q->where('alias', 'udobstva'  . $typeParameters);
-                        })->first();
-                }
-
-                $arr = collect();
-                if (!empty($comfortBal)) {
-                    $arr->add($comfortBal->getKey());
-                }
-                if (!empty($view)) {
-                    $arr->add($view->getKey());
-                }
-                if (!empty($renovation)) {
-                    $arr->add($renovation->getKey());
-                }
-                if (!empty($comfortTwoLift)) {
-                    $arr->add($comfortTwoLift->getKey());
-                }
-                if (!empty($comfortCons)) {
-                    $arr->add($comfortCons->getKey());
-                }
-                if (!empty($comfortPhone)) {
-                    $arr->add($comfortPhone->getKey());
-                }
-                if (!empty($comfortPark)) {
-                    $arr->add($comfortPark->getKey());
-                }
-                if (!empty($comfortNet)) {
-                    $arr->add($comfortNet->getKey());
-                }
-                if (!empty($rooms)) {
-                    $arr->add($rooms->getKey());
-                }
-                if (!empty($livingArea)) {
-                    $arr->add($livingArea->getKey());
-                }
-                if (!empty($kitArea)) {
-                    $arr->add($kitArea->getKey());
-                }
-                if (!empty($totalArea)) {
-                    $arr->add($totalArea->getKey());
-                }
-                if (!empty($floorsInHouse)) {
-                    $arr->add($floorsInHouse->getKey());
-                }
-                if (!empty($floor)) {
-                    $arr->add($floor->getKey());
-                }
-                if (!empty($dom)) {
-                    $arr->add($dom->getKey());
-                }
-                if (!empty($seller)) {
-                    $arr->add($seller->getKey());
-                }
-                if (!empty($isNew)) {
-                    $arr->add($isNew->getKey());
-                }
-                if (!empty($typeRooms)) {
-                    $arr->add($typeRooms->getKey());
-                }
-                if (!empty($house)) {
-                    $arr->add($house->getKey());
-                }
-                if (!empty($balkon)) {
-                    $arr->add($balkon->getKey());
-                }
-                $model->realtyParameters()->sync($arr);
             }
         }
+
+        $dataParameters = [];
+        $dataParameters['floorsCount'] = (int) $realty->Floors;
+        $dataParameters['isNew'] = (string) $realty->MarketType;
+        $dataParameters['balconyOrLoggia'] = (string) $realty->BalconyOrLoggia === 'Балкон' || (string) $realty->BalconyOrLoggia === 'Лоджия';
+//                $dataParameters['garbage'] = (string) $realty->Garbage === 'Мусоропровод';
+        $dataParameters['house'] = (string) $realty->HouseType;
+        $dataParameters['typeRooms'] = !empty($realty->RoomType) ? (string) $realty->RoomType->Option : null;
+        $dataParameters['viewFromWindows'] = !empty($realty->ViewFromWindows) ? (string) $realty->ViewFromWindows->Option : null;
+        $dataParameters['livingArea'] = (int) $realty->LivingSpace;
+        $dataParameters['renovation'] = (string) $realty->Renovation;
+        $dataParameters['floorNumber'] = (int) $realty->Floor;
+        $dataParameters['flatRoomsCount'] = (int) $realty->Rooms;
+        $dataParameters['totalArea'] = (int) $realty->Square;
+        $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
+        $rooms = RealtyParameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
+        })->first();
+        $livingArea = RealtyParameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
+        })->first();
+
+        $kitArea = RealtyParameter::where('sort', $dataParameters['kitchenArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'ploshhad-kuxni'  . $typeParameters);
+        })->first();
+        $totalArea = RealtyParameter::where('sort', $dataParameters['totalArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'obshhaya-ploshhad'  . $typeParameters);
+        })->first();
+        $floor = RealtyParameter::where('sort', $dataParameters['floorNumber'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'etaz'  . $typeParameters);
+        })->first();
+        $floorsInHouse = RealtyParameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'vsego-etazei'  . $typeParameters);
+        })->first();
+        $isNew = RealtyParameter::where('value', $dataParameters['isNew'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'novizna'  . $typeParameters);
+        })->first();
+        $typeRooms = RealtyParameter::where('value', $dataParameters['typeRooms'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'tip-komnat'  . $typeParameters);
+        })->first();
+        $house = RealtyParameter::where('value', $dataParameters['house'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'dom'  . $typeParameters);
+        })->first();
+        $view = RealtyParameter::where('value', $dataParameters['viewFromWindows'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'vid-iz-okon'  . $typeParameters);
+        })->first();
+        $renovation = RealtyParameter::where('value', $dataParameters['renovation'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'remont'  . $typeParameters);
+        })->first();
+
+        if($dataParameters['balconyOrLoggia']) {
+            $balkon = RealtyParameter::where('value', 'Балкон')
+                ->whereHas('filter', function ($q) use ($typeParameters) {
+                    $q->where('alias', 'udobstva'  . $typeParameters);
+                })->first();
+        }
+
+        $arr = collect();
+        if (!empty($comfortBal)) {
+            $arr->add($comfortBal->getKey());
+        }
+        if (!empty($view)) {
+            $arr->add($view->getKey());
+        }
+        if (!empty($renovation)) {
+            $arr->add($renovation->getKey());
+        }
+        if (!empty($comfortTwoLift)) {
+            $arr->add($comfortTwoLift->getKey());
+        }
+        if (!empty($comfortCons)) {
+            $arr->add($comfortCons->getKey());
+        }
+        if (!empty($comfortPhone)) {
+            $arr->add($comfortPhone->getKey());
+        }
+        if (!empty($comfortPark)) {
+            $arr->add($comfortPark->getKey());
+        }
+        if (!empty($comfortNet)) {
+            $arr->add($comfortNet->getKey());
+        }
+        if (!empty($rooms)) {
+            $arr->add($rooms->getKey());
+        }
+        if (!empty($livingArea)) {
+            $arr->add($livingArea->getKey());
+        }
+        if (!empty($kitArea)) {
+            $arr->add($kitArea->getKey());
+        }
+        if (!empty($totalArea)) {
+            $arr->add($totalArea->getKey());
+        }
+        if (!empty($floorsInHouse)) {
+            $arr->add($floorsInHouse->getKey());
+        }
+        if (!empty($floor)) {
+            $arr->add($floor->getKey());
+        }
+        if (!empty($dom)) {
+            $arr->add($dom->getKey());
+        }
+        if (!empty($seller)) {
+            $arr->add($seller->getKey());
+        }
+        if (!empty($isNew)) {
+            $arr->add($isNew->getKey());
+        }
+        if (!empty($typeRooms)) {
+            $arr->add($typeRooms->getKey());
+        }
+        if (!empty($house)) {
+            $arr->add($house->getKey());
+        }
+        if (!empty($balkon)) {
+            $arr->add($balkon->getKey());
+        }
+        $model->realtyParameters()->sync($arr);
+    }
+
+    private function houseAvito($realty, string $typeParameters)
+    {
+        //LandArea Площадь земельного участка
+        //Square Площадь
+        //Floors этажей
+        //HouseServices Электричество Отопление
+        //ObjectType Дача
+        //DistanceToCity 25 км
+        //WallsType бревно
+        //Rooms комнат
+        //Renovation требуется
+        $arrayStreet = explode(',', trim((string) $realty->Address));
+        $house = array_pop($arrayStreet);
+        $street = array_pop($arrayStreet);
+        $externalID = $realty->Id;
+        $name = !empty($realty->Title) ? $realty->Title : 'Дом';
+        $data = [];
+        $data['title'] = $name;
+        $data['name'] = $name;
+        $data['state'] = (new States())->active();
+        $data['price'] = (string)  $realty->Price;
+        $data['date_build'] = !empty($realty->BuiltYear) ? (string) $realty->BuiltYear : null;
+        $data['ceiling_height'] = !empty($realty->CeilingHeight) ? (string) $realty->CeilingHeight : null;
+        $data['sale_price'] = (string)  $realty->Price;
+        $data['description'] = trim((string) $realty->Description);
+        $data['profile_id'] = (int) $this->profile->getKey();
+        $data['city_id'] = (int) $this->profile->user->city->getKey();
+        $data['latitude'] = !empty($realty->Latitude) ? $realty->Latitude : null;
+        $data['longitude'] = !empty($realty->Longitude) ? $realty->Longitude : null;
+        if (empty($data['latitude'])) {
+            try{
+                $dadata = new Dadata();
+                $result = $dadata->findAddress(trim($street) . ' ' . trim($house));
+                if(!empty($result['suggestions']) && $result['suggestions'][0]) {
+                    $data = $result['suggestions'][0]['data'];
+                    $data['latitude'] = !empty($data['geo_lat']) ? $data['geo_lat'] : null;
+                    $data['longitude'] = !empty($data['geo_lat']) ? $data['geo_lon'] : null;
+                }
+            } catch(\Exception $exception) {
+
+            }
+
+        }
+        $data['street'] = trim($street);
+        $data['house'] = trim($house);
+        $data['category_id'] = $typeParameters === '-bye' ? 12 : 383;
+        $data['updated_at'] = now();
+        $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
+
+        if (!empty($realtyDB)) {
+            $realtyDB->fill($data);
+            $realtyDB->update();
+            $model = $realtyDB;
+        } else {
+            $data['created_at'] = now();
+            $data['external_id'] = $externalID;
+            $data['alias'] = Str::slug($name) . '-' . Str::random(5);
+            $model = new Realty();
+            $model->fill($data);
+            $model->save();
+            $model->moveToStart();
+        }
+        $i = 0;
+        if (config('app.env') === 'production') {
+            foreach ($realty->Images as $photos) {
+                foreach($photos as $item) {
+                    $files = resolve(Files::class);
+                    $files->saveParser($model, (string) $item['url']);
+                    $i++;
+                }
+            }
+        }
+        $dataParameters = [];
+        $dataParameters['floorsCount'] = (int) $realty->Floors;
+        $dataParameters['wallsType'] = !empty($realty->HouseServices->WallsType) ? (string) $realty->HouseServices->WallsType : null;
+        $dataParameters['distanceToCity'] = !empty($realty->HouseServices->DistanceToCity) ? (string) $realty->HouseServices->DistanceToCity : null;
+        $dataParameters['landArea'] = !empty($realty->LandArea) ? (int) $realty->LandArea : null;
+        $dataParameters['square'] = !empty($realty->Square) ? (int) $realty->Square : null;
+        $dataParameters['rooms'] = !empty($realty->Rooms) ? (int) $realty->Rooms : null;
+        $dataParameters['renovation'] = (string) $realty->Renovation;
+        $rooms = RealtyParameter::where('value', $dataParameters['rooms'] . ' комнат')->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'kolicestvo-komnat-doma'  . $typeParameters);
+        })->first();
+        $landArea = RealtyParameter::where('sort', $dataParameters['landArea'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'ploshhad-zemelnogo-ucastka'  . $typeParameters);
+        })->first();
+
+        $square = RealtyParameter::where('sort', $dataParameters['square'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'ploshhad-doma'  . $typeParameters);
+        })->first();
+
+        $floorsCount = RealtyParameter::where('value', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'etazei-doma'  . $typeParameters);
+        })->first();
+
+        $distanceToCity = RealtyParameter::where('value', $dataParameters['distanceToCity'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'rasstoianie-do-goroda'  . $typeParameters);
+        })->first();
+
+        $renovation = RealtyParameter::where('value', $dataParameters['renovation'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'remont-doma'  . $typeParameters);
+        })->first();
+
+        $arr = collect();
+        if (!empty($landArea)) {
+            $arr->add($landArea->getKey());
+        }
+        if (!empty($square)) {
+            $arr->add($square->getKey());
+        }
+        if (!empty($renovation)) {
+            $arr->add($renovation->getKey());
+        }
+        if (!empty($floorsCount)) {
+            $arr->add($floorsCount->getKey());
+        }
+        if (!empty($distanceToCity)) {
+            $arr->add($distanceToCity->getKey());
+        }
+        if (!empty($rooms)) {
+            $arr->add($rooms->getKey());
+        }
+
+        $model->realtyParameters()->sync($arr);
     }
 }
