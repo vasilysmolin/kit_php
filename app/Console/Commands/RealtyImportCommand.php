@@ -44,6 +44,7 @@ class RealtyImportCommand extends Command
     public function handle()
     {
         $importFeedService = resolve(ImportFeedService::class);
+
         Feed::query()->has('profile')->chunk(100, function($feeds) use ($importFeedService) {
             $feeds->each(function($feed) use ($importFeedService) {
                 try{
