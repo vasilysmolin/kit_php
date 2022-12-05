@@ -65,7 +65,7 @@ class RealtyImportJob implements ShouldQueue
                 $house = array_pop($arrayStreet);
                 $street = array_pop($arrayStreet);
                 $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
-                $title = $realty->Title ?? $realty->JKSchema->Name ?? 'Квартира';
+                $title = (int) $realty->FlatRoomsCount . '-к квартира';
                 $name = (int) $realty->FlatRoomsCount . '-к квартира';
 //            Log::info($externalID);
 //            Log::info(' ');

@@ -7,6 +7,7 @@ use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Facades\Image;
 
 class Files
 {
@@ -151,18 +152,18 @@ class Files
         $mineType = $file->getClientMimeType();
         $sizeFile = $file->getSize();
         $path = $this->getPathS3($name);
-
+        Storage::putFileAs("{$path}.{$extension}", $file, $name);
 
         foreach (self::$CROP as $resolution) {
-            $image = \Intervention\Image\Facades\Image::make($file);
+            $image = Image::make($file);
             $filteredImage = $image
                 ->fit($resolution['width'], $resolution['height'])
-                ->encode('jpg', 100);
+                ->encode($extension, 100);
             Storage::put(
                 $path . '_'
                 . $resolution['width'] . 'x'
                 . $resolution['height'] . '.' .
-                'jpg',
+                $extension,
                 $filteredImage
             );
         }
