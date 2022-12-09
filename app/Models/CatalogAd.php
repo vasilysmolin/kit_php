@@ -95,11 +95,12 @@ class CatalogAd extends Model
     public function adParameters()
     {
         return $this->belongsToMany(
-            CatalogParameter::class,
-            'catalog_ad_parameters',
-            'ad_id',
+            Parameter::class,
+            'filter_parameters',
+            'itemable_id',
             'parameter_id'
-        )->orderBy('catalog_parameters.sort');
+        )->where('filter_parameters.itemable_type', CatalogAd::class)
+            ->orderBy('parameters.sort');
     }
 
     /**

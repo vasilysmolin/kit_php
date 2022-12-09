@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class RealtyParameter extends Model
+class Parameter extends Model
 {
     use HasFactory;
 
@@ -16,7 +16,7 @@ class RealtyParameter extends Model
 
     public function filter(): \Illuminate\Database\Eloquent\Relations\belongsTo
     {
-        return $this->belongsTo(RealtyFilter::class, 'filter_id', 'id')
+        return $this->belongsTo(Filter::class, 'filter_id', 'id')
             ->orderBy('sort');
     }
 

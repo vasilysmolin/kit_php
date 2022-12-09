@@ -101,11 +101,12 @@ class Realty extends Model
     public function realtyParameters()
     {
         return $this->belongsToMany(
-            RealtyParameter::class,
+            Parameter::class,
             'filter_parameters',
-            'realty_id',
+            'itemable_id',
             'parameter_id'
-        )->orderBy('realty_parameters.sort');
+        )->where('filter_parameters.itemable_type', Realty::class)
+            ->orderBy('parameters.sort');
     }
 
     /**

@@ -50,10 +50,9 @@ class CatalogAdCategory extends Model
             ->with(['categories.color', 'categoriesParent.color']);
     }
 
-    public function filters(): \Illuminate\Database\Eloquent\Relations\HasMany
+    public function filters()
     {
-        return $this->hasMany(CatalogFilter::class, 'category_id', 'id')
-            ->orderBy('sort');
+        return $this->morphMany(Filter::class, 'categoryable')->orderBy('sort');
     }
 
     public function color(): \Illuminate\Database\Eloquent\Relations\BelongsTo

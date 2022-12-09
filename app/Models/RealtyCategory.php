@@ -48,10 +48,15 @@ class RealtyCategory extends Model
             ->with(['categories.color', 'categoriesParent.color']);
     }
 
-    public function filters(): \Illuminate\Database\Eloquent\Relations\HasMany
+//    public function filters(): \Illuminate\Database\Eloquent\Relations\HasMany
+//    {
+//        return $this->hasMany(Filter::class, 'category_id', 'id')
+//            ->orderBy('sort');
+//    }
+
+    public function filters()
     {
-        return $this->hasMany(RealtyFilter::class, 'category_id', 'id')
-            ->orderBy('sort');
+        return $this->morphMany(Filter::class, 'categoryable')->orderBy('sort');
     }
 
     public function color(): \Illuminate\Database\Eloquent\Relations\BelongsTo
