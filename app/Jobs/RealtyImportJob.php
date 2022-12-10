@@ -49,7 +49,6 @@ class RealtyImportJob implements ShouldQueue
         if($this->type === 'cian') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-
                 $checkFlat = false;
                 if ((string) $realty->Category === 'flatSale') {
                     $checkFlat = true;
@@ -113,7 +112,6 @@ class RealtyImportJob implements ShouldQueue
         if($this->type === 'avito') {
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
-
                 $checkFlat = false;
                 if ((string) $realty->Category === 'Квартиры' && (string) $realty->OperationType === 'Продам') {
                     $checkFlat = true;
@@ -202,7 +200,7 @@ class RealtyImportJob implements ShouldQueue
             $model->save();
             $model->moveToStart();
             $i = 0;
-            if (config('app.env') === 'production') {
+//            if (config('app.env') === 'production') {
                 foreach ($realty->Images as $photos) {
                     foreach($photos as $item) {
                         $files = resolve(Files::class);
@@ -210,7 +208,7 @@ class RealtyImportJob implements ShouldQueue
                         $i++;
                     }
                 }
-            }
+//            }
         }
 
 
@@ -231,6 +229,8 @@ class RealtyImportJob implements ShouldQueue
         $rooms = Parameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'kollicestvo-komnat'  . $typeParameters);
         })->first();
+        dd($rooms, $dataParameters['rooms']);
+
         $livingArea = Parameter::where('sort', $dataParameters['livingArea'])->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'zilaya-ploshhad'  . $typeParameters);
         })->first();
@@ -331,7 +331,7 @@ class RealtyImportJob implements ShouldQueue
         if (!empty($balkon)) {
             $arr->add($balkon->getKey());
         }
-        $model->realtyParameters()->sync($arr);
+        $model->parameters()->sync($arr);
     }
 
     private function flatYandex($realty, string $typeParameters)
@@ -506,23 +506,11 @@ class RealtyImportJob implements ShouldQueue
         if (!empty($house)) {
             $arr->add($house->getKey());
         }
-        $model->realtyParameters()->sync($arr);
+        $model->parameters()->sync($arr);
     }
 
     private function flatCian($realty, string $typeParameters)
     {
-        $checkFlat = false;
-        if ((string) $realty->Category === 'квартира' && (string) $realty->OperationType === 'продажа') {
-            $checkFlat = true;
-            $typeParameters = '-bye';
-        }
-        if ((string) $realty->Category === 'квартира' && (string) $realty->OperationType === 'аренда') {
-            $checkFlat = true;
-            $typeParameters = '-rent';
-        }
-        if ($checkFlat) {
-            $this->flatYandex($realty, $typeParameters);
-        }
         $arrayStreet = explode(',', trim((string) $realty->Address));
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
@@ -577,7 +565,7 @@ class RealtyImportJob implements ShouldQueue
             $model->save();
             $model->moveToStart();
             $i = 0;
-            if (config('app.env') === 'production') {
+//            if (config('app.env') === 'production') {
                 foreach ($realty->Images as $photos) {
                     foreach($photos as $item) {
                         $files = resolve(Files::class);
@@ -585,10 +573,11 @@ class RealtyImportJob implements ShouldQueue
                         $i++;
                     }
                 }
-            }
+//            }
         }
 
         $dataParameters = [];
+//        dd((int) $realty->Building->FloorsCount, $realty);
         $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
         $dataParameters['livingArea'] = (int) $realty->LivingArea;
         $dataParameters['floorNumber'] = (int) $realty->FloorNumber;
@@ -662,7 +651,7 @@ class RealtyImportJob implements ShouldQueue
         if (!empty($novizna)) {
             $arr->add($novizna->getKey());
         }
-        $model->realtyParameters()->sync($arr);
+        $model->parameters()->sync($arr);
     }
 
     private function houseAvito($realty, string $typeParameters)
@@ -727,7 +716,7 @@ class RealtyImportJob implements ShouldQueue
             $model->save();
             $model->moveToStart();
             $i = 0;
-            if (config('app.env') === 'production') {
+//            if (config('app.env') === 'production') {
                 foreach ($realty->Images as $photos) {
                     foreach($photos as $item) {
                         $files = resolve(Files::class);
@@ -735,7 +724,7 @@ class RealtyImportJob implements ShouldQueue
                         $i++;
                     }
                 }
-            }
+//            }
         }
 
         $dataParameters = [];
@@ -796,7 +785,7 @@ class RealtyImportJob implements ShouldQueue
             $arr->add($rooms->getKey());
         }
 
-        $model->realtyParameters()->sync($arr);
+        $model->parameters()->sync($arr);
     }
 
     private function houseYandex($realty, string $typeParameters)
@@ -919,7 +908,7 @@ class RealtyImportJob implements ShouldQueue
             $arr->add($rooms->getKey());
         }
 
-        $model->realtyParameters()->sync($arr);
+        $model->parameters()->sync($arr);
     }
 
     private function houseCian($realty, string $typeParameters)
@@ -928,6 +917,7 @@ class RealtyImportJob implements ShouldQueue
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
         $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
+        Log::info($externalID);
         $title = $name = (string) $realty->Title;
         $data = [];
         $data['title'] = $title;
@@ -974,7 +964,7 @@ class RealtyImportJob implements ShouldQueue
             $model->save();
             $model->moveToStart();
             $i = 0;
-            if (config('app.env') === 'production') {
+//            if (config('app.env') === 'production') {
                 foreach ($realty->Images as $photos) {
                     foreach($photos as $item) {
                         $files = resolve(Files::class);
@@ -982,7 +972,7 @@ class RealtyImportJob implements ShouldQueue
                         $i++;
                     }
                 }
-            }
+//            }
         }
 
         $dataParameters = [];
@@ -1054,7 +1044,7 @@ class RealtyImportJob implements ShouldQueue
             $arr->add($rooms->getKey());
         }
 
-        $model->realtyParameters()->sync($arr);
+        $model->parameters()->sync($arr);
 
     }
 }

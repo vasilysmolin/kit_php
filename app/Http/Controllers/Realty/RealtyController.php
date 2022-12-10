@@ -95,7 +95,7 @@ class RealtyController extends Controller
                 });
             })
             ->when(isset($filters), function ($q) use ($filters) {
-                $q->whereHas('realtyParameters', function ($q) use ($filters) {
+                $q->whereHas('parameters', function ($q) use ($filters) {
                     $q->whereIn('id', $filters);
                 }, '=', count($filters));
             })
@@ -137,7 +137,7 @@ class RealtyController extends Controller
         $realty = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories', 'realtyParameters.filter')
+            ->with('image', 'categories', 'parameters.filter')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
@@ -181,7 +181,7 @@ class RealtyController extends Controller
 
         $files->save($realty, $request['files']);
         if (!empty($filters)) {
-            $realty->realtyParameters()->sync($filters);
+            $realty->parameters()->sync($filters);
         }
 
         return response()->json([], 201, ['Location' => "/realties/$realty->id"]);
@@ -217,7 +217,7 @@ class RealtyController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images', 'realtyParameters.filter', 'city')
+            ->with('image', 'images', 'parameters.filter', 'city')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
@@ -267,7 +267,7 @@ class RealtyController extends Controller
 
         $realty->update();
         if (!empty($filters)) {
-            $realty->realtyParameters()->sync($filters);
+            $realty->parameters()->sync($filters);
         }
 
         $files = resolve(Files::class);

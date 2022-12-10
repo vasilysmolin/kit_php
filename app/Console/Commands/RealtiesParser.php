@@ -88,14 +88,14 @@ class RealtiesParser extends Command
 //        if ($realtyParameters->isEmpty()) {
 //            RealtyParameter::insert($adParams->toArray());
 //        }
-//        $ads = CatalogAd::with('adParameters')->whereIn('category_id', $categories->pluck('id')->toArray())->get();
+//        $ads = CatalogAd::with('parameters')->whereIn('category_id', $categories->pluck('id')->toArray())->get();
 //
 //        $ads->each(function ($ad) {
-//            $params = $ad->adParameters->map(function ($ad) {
+//            $params = $ad->parameters->map(function ($ad) {
 //                return $ad->pivot->parameter_id;
 //            });
 //            $realty = Realty::find($ad->getKey());
-//            $realty->realtyParameters()->sync($params);
+//            $realty->parameters()->sync($params);
 //        });
     }
 

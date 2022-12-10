@@ -98,15 +98,13 @@ class Realty extends Model
         return $this->belongsTo(Profile::class, 'profile_id', 'id');
     }
 
-    public function realtyParameters()
+    public function parameters()
     {
-        return $this->belongsToMany(
+        return $this->morphToMany(
             Parameter::class,
-            'filter_parameters',
-            'itemable_id',
-            'parameter_id'
-        )->where('filter_parameters.itemable_type', Realty::class)
-            ->orderBy('parameters.sort');
+            'itemable',
+            'filter_parameters'
+        )->orderBy('parameters.sort');
     }
 
     /**
@@ -117,7 +115,7 @@ class Realty extends Model
     public function toSearchableArray()
     {
         $array = $this->only(['name','description', 'state', 'street', 'sort']);
-        $array['filter'] = $this->realtyParameters->pluck('value')->join(', ');
+        $array['filter'] = $this->parameters->pluck('value')->join(', ');
         return $array;
     }
 

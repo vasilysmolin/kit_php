@@ -16,17 +16,17 @@ class Parameter extends Model
 
     public function filter(): \Illuminate\Database\Eloquent\Relations\belongsTo
     {
-        return $this->belongsTo(Filter::class, 'filter_id', 'id')
+        return $this->belongsTo(Filter::class, 'realty_id', 'id')
             ->orderBy('sort');
     }
 
-    public function realtyParameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany
+    public function parameters(): \Illuminate\Database\Eloquent\Relations\belongsToMany
     {
         return $this->belongsToMany(
             Realty::class,
-            'realty_parameters',
+            'parameters',
             'parameter_id',
-            'ad_id'
+            'id'
         );
     }
 }

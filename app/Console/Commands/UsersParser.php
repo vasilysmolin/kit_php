@@ -389,7 +389,7 @@ class UsersParser extends Command
 //                    if (!empty($novizna)) {
 //                        $arr->add($novizna->getKey());
 //                    }
-//                    $model->adParameters()->attach($arr);
+//                    $model->parameters()->attach($arr);
 //                    var_dump($i);
 //                    $i += 1;
 //
@@ -626,7 +626,7 @@ class UsersParser extends Command
 //                    if (!empty($novizna)) {
 //                        $arr->add($novizna->getKey());
 //                    }
-//                    $model->adParameters()->attach($arr);
+//                    $model->parameters()->attach($arr);
 //                    var_dump($i);
 //                    $i += 1;
 //

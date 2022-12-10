@@ -87,7 +87,7 @@ class AdController extends Controller
                 });
             })
             ->when(isset($filters), function ($q) use ($filters) {
-                $q->whereHas('adParameters', function ($q) use ($filters) {
+                $q->whereHas('parameters', function ($q) use ($filters) {
                     $q->whereIn('id', $filters);
                 }, '=', count($filters));
             })
@@ -129,7 +129,7 @@ class AdController extends Controller
         $catalogAd = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories', 'adParameters.filter')
+            ->with('image', 'categories', 'parameters.filter')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
@@ -173,7 +173,7 @@ class AdController extends Controller
 
         $files->save($catalogAd, $request['files']);
         if (!empty($filters)) {
-            $catalogAd->adParameters()->sync($filters);
+            $catalogAd->parameters()->sync($filters);
         }
 
         return response()->json([], 201, ['Location' => "/declarations/$catalogAd->id"]);
@@ -209,7 +209,7 @@ class AdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images', 'adParameters.filter', 'city')
+            ->with('image', 'images', 'parameters.filter', 'city')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
@@ -266,7 +266,7 @@ class AdController extends Controller
 
         $catalogAd->update();
         if (!empty($filters)) {
-            $catalogAd->adParameters()->sync($filters);
+            $catalogAd->parameters()->sync($filters);
         }
 
 
