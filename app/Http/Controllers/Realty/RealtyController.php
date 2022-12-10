@@ -96,7 +96,7 @@ class RealtyController extends Controller
             })
             ->when(isset($filters), function ($q) use ($filters) {
                 $q->whereHas('parameters', function ($q) use ($filters) {
-                    $q->whereIn('id', $filters);
+                    $q->whereIn('parameters.id', $filters);
                 }, '=', count($filters));
             })
             ->when(!empty($alias), function ($query) use ($alias) {
