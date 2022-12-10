@@ -16,7 +16,8 @@ class Parameter extends Model
 
     public function filter(): \Illuminate\Database\Eloquent\Relations\belongsTo
     {
-        return $this->belongsTo(Filter::class, 'realty_id', 'id')
+
+        return $this->belongsTo(Filter::class, 'filter_id', 'id')
             ->orderBy('sort');
     }
 

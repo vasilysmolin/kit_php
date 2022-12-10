@@ -77,6 +77,8 @@ class Files
             $size = 999;
             $path = $this->getPathS3($name);
 
+            Storage::put("{$path}.{$extension}", $contents);
+
             foreach (self::$CROP as $resolution) {
                 $image = \Intervention\Image\Facades\Image::make($contents);
                 $filteredImage = $image
