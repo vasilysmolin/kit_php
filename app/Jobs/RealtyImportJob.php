@@ -536,6 +536,7 @@ class RealtyImportJob implements ShouldQueue
 
     private function flatCian($realty, string $typeParameters)
     {
+
         $arrayStreet = explode(',', trim((string) $realty->Address));
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
@@ -550,6 +551,7 @@ class RealtyImportJob implements ShouldQueue
         $data['name'] = $name;
         $data['state'] = (new States())->active();
         $data['price'] = (string)  $realty->BargainTerms->Price;
+        $data['video'] = !empty($realty->VideoSchema->Url) ? (string) $realty->VideoSchema->Url : null;
         $data['sale_price'] = (string)  $realty->BargainTerms->Price;
         $data['description'] = trim((string) $realty->Description);
         $data['profile_id'] = (int) $this->profile->getKey();
@@ -598,9 +600,24 @@ class RealtyImportJob implements ShouldQueue
                 }
             }
         }
+        if (empty($model->agent)) {
+            if (!empty($realty->SubAgent)) {
+                $phoneAgent = preg_replace("/[^0-9]/", '', (string) $realty->SubAgent->Phone);
+                $emailAgent = (string) $realty->SubAgent->Email;
+                $nameAgent = (string) $realty->SubAgent->FirstName;
+                $avatarAgent = (string) $realty->SubAgent->AvatarUrl;
+                $model->agent()->create([
+                    'phone' => $phoneAgent,
+                    'name' => $nameAgent,
+                    'email' => $emailAgent,
+                    'photo' => $avatarAgent,
+                ]);
+            }
+        }
 
         $dataParameters = [];
 //        dd((int) $realty->Building->FloorsCount, $realty);
+        $dataParameters['propertyRights'] = !empty($realty->SubAgent) ? 'Посредник' : 'Собственник';
         $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
         $dataParameters['livingArea'] = (int) $realty->LivingArea;
         $dataParameters['floorNumber'] = (int) $realty->FloorNumber;
@@ -627,8 +644,14 @@ class RealtyImportJob implements ShouldQueue
         $floorsInHouse = Parameter::where('sort', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'vsego-etazei'  . $typeParameters);
         })->first();
+        $propertyRights = Parameter::where('value', $dataParameters['propertyRights'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'prodavec'  . $typeParameters);
+        })->first();
 
         $arr = collect();
+        if (!empty($propertyRights)) {
+            $arr->add($propertyRights->getKey());
+        }
         if (!empty($comfortBal)) {
             $arr->add($comfortBal->getKey());
         }
@@ -956,13 +979,13 @@ class RealtyImportJob implements ShouldQueue
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
         $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
-        Log::info($externalID);
         $title = $name = (string) $realty->Title;
         $data = [];
         $data['title'] = $title;
         $data['name'] = $name;
         $data['state'] = (new States())->active();
         $data['price'] = (string)  $realty->BargainTerms->Price;
+        $data['video'] = !empty($realty->VideoSchema->Url) ? (string) $realty->VideoSchema->Url : null;
         $data['sale_price'] = (string)  $realty->BargainTerms->Price;
         $data['description'] = trim((string) $realty->Description);
         $data['profile_id'] = (int) $this->profile->getKey();
@@ -988,6 +1011,7 @@ class RealtyImportJob implements ShouldQueue
         $data['category_id'] = $typeParameters === '-bye' ? 389 : 385;
         $data['updated_at'] = now();
         $realtyDB = $this->externalRealty->where('external_id', $externalID)->first();
+
         if (!empty($realtyDB)) {
             $realtyDB->fill($data);
             $realtyDB->update();
@@ -1009,6 +1033,22 @@ class RealtyImportJob implements ShouldQueue
                         $i++;
                     }
                 }
+            }
+        }
+
+        if (empty($model->agent)) {
+            if (!empty($realty->SubAgent)) {
+
+                $phoneAgent = preg_replace("/[^0-9]/", '', (string) $realty->SubAgent->Phone);
+                $emailAgent = (string) $realty->SubAgent->Email;
+                $nameAgent = (string) $realty->SubAgent->FirstName;
+                $avatarAgent = (string) $realty->SubAgent->AvatarUrl;
+                $model->agent()->create([
+                    'phone' => $phoneAgent,
+                    'name' => $nameAgent,
+                    'email' => $emailAgent,
+                    'photo' => $avatarAgent,
+                ]);
             }
         }
 
@@ -1047,6 +1087,8 @@ class RealtyImportJob implements ShouldQueue
         if ($dataParameters['renovation'] === 'euro') {
             $dataParameters['renovation'] = 'Евро';
         }
+        $dataParameters['propertyRights'] = !empty($realty->SubAgent) ? 'Посредник' : 'Собственник';
+
         $rooms = Parameter::where('value', $dataParameters['rooms'] . ' комнат')->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'kolicestvo-komnat-doma'  . $typeParameters);
         })->first();
@@ -1056,6 +1098,10 @@ class RealtyImportJob implements ShouldQueue
 
         $floorsCount = Parameter::where('value', $dataParameters['floorsCount'])->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'etazei-doma'  . $typeParameters);
+        })->first();
+
+        $propertyRights = Parameter::where('value', $dataParameters['propertyRights'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'prodavec-doma'  . $typeParameters);
         })->first();
 
         $wallsType = Parameter::where('value', $dataParameters['wallsType'])->whereHas('filter', function ($q) use ($typeParameters) {
@@ -1069,6 +1115,12 @@ class RealtyImportJob implements ShouldQueue
         $arr = collect();
         if (!empty($landArea)) {
             $arr->add($landArea->getKey());
+        }
+        if (!empty($wallsType)) {
+            $arr->add($wallsType->getKey());
+        }
+        if (!empty($propertyRights)) {
+            $arr->add($propertyRights->getKey());
         }
         if (!empty($square)) {
             $arr->add($square->getKey());
