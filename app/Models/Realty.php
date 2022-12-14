@@ -28,6 +28,7 @@ class Realty extends Model
         'title',
         'reason',
         'name',
+        'video',
         'state',
         'price',
         'date_build',
@@ -105,6 +106,14 @@ class Realty extends Model
             'itemable',
             'filter_parameters'
         )->orderBy('parameters.sort');
+    }
+
+    public function agent()
+    {
+        return $this->morphOne(
+            SubAgent::class,
+            'itemable'
+        );
     }
 
     /**

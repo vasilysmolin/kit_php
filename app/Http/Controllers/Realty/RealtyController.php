@@ -137,7 +137,7 @@ class RealtyController extends Controller
         $realty = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories', 'parameters.filter')
+            ->with('image', 'categories', 'parameters.filter', 'agent')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
@@ -217,7 +217,7 @@ class RealtyController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images', 'parameters.filter', 'city')
+            ->with('image', 'images', 'parameters.filter', 'city', 'agent')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
