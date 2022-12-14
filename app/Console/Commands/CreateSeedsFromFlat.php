@@ -541,6 +541,25 @@ class CreateSeedsFromFlat extends Command
                 ]);
             }
 
+            if (empty($flatCat->filters()->where('name', 'Продавец')->first())) {
+                $filter = $flatCat->filters()->create([
+                    'name' => 'Продавец',
+                    'type' => 'select',
+                    'alias' => Str::slug('Продавец дома')  . $slug,
+                    'sort' => 6,
+                    'active' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Собственник',
+                    'sort' => 1,
+                ]);
+                $filter->parameters()->create([
+                    'value' => 'Посредник',
+                    'sort' => 2,
+                ]);
+            }
+
+
 
         }
 //        $items = CatalogAdCategory::whereIn('id', [2])->get();

@@ -698,6 +698,7 @@ class RealtyImportJob implements ShouldQueue
         $data['name'] = $name;
         $data['state'] = (new States())->active();
         $data['price'] = (string)  $realty->Price;
+        $data['video'] = (string)  $realty->VideoURL;
         $data['date_build'] = !empty($realty->BuiltYear) ? (string) $realty->BuiltYear : null;
         $data['ceiling_height'] = !empty($realty->CeilingHeight) ? (string) $realty->CeilingHeight : null;
         $data['sale_price'] = (string)  $realty->Price;
@@ -737,19 +738,32 @@ class RealtyImportJob implements ShouldQueue
             $model->save();
             $model->moveToStart();
             $i = 0;
-//            if (config('app.env') === 'production') {
-            foreach ($realty->Images as $photos) {
-                foreach ($photos as $item) {
-                    $files = resolve(Files::class);
-                    $files->saveParser($model, (string) $item['url']);
-                    $i++;
+            if (config('app.env') === 'production') {
+                foreach ($realty->Images as $photos) {
+                    foreach ($photos as $item) {
+                        $files = resolve(Files::class);
+                        $files->saveParser($model, (string) $item['url']);
+                        $i++;
+                    }
                 }
             }
-//            }
+        }
+        if (empty($model->agent)) {
+            $nameAgent = (string) $realty->CompanyName;
+            if (!empty($nameAgent)) {
+                $phoneAgent = preg_replace("/[^0-9]/", '', (string) $realty->ContactPhone);
+                $emailAgent = (string) $realty->EMail;
+                $model->agent()->create([
+                    'phone' => $phoneAgent,
+                    'name' => $nameAgent,
+                    'email' => $emailAgent,
+                ]);
+            }
         }
 
         $dataParameters = [];
         $dataParameters['floorsCount'] = (int) $realty->Floors;
+        $dataParameters['propertyRights'] = (int) $realty->PropertyRights;
         $dataParameters['wallsType'] = !empty($realty->WallsType) ? (string) $realty->WallsType : null;
         $dataParameters['distanceToCity'] = !empty($realty->DistanceToCity) ? (string) $realty->DistanceToCity : null;
         $dataParameters['landArea'] = !empty($realty->LandArea) ? (int) $realty->LandArea : null;
@@ -759,6 +773,11 @@ class RealtyImportJob implements ShouldQueue
         $rooms = Parameter::where('value', $dataParameters['rooms'] . ' комнат')->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'kolicestvo-komnat-doma'  . $typeParameters);
         })->first();
+
+        $propertyRights = Parameter::where('value', $dataParameters['propertyRights'])->whereHas('filter', function ($q) use ($typeParameters) {
+            $q->where('alias', 'prodavec-doma'  . $typeParameters);
+        })->first();
+
         $landArea = Parameter::where('sort', $dataParameters['landArea'])->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'ploshhad-zemelnogo-ucastka'  . $typeParameters);
         })->first();
@@ -784,6 +803,9 @@ class RealtyImportJob implements ShouldQueue
         })->first();
 
         $arr = collect();
+        if (!empty($propertyRights)) {
+            $arr->add($propertyRights->getKey());
+        }
         if (!empty($landArea)) {
             $arr->add($landArea->getKey());
         }
