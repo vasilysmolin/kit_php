@@ -365,15 +365,17 @@ class RealtyImportJob implements ShouldQueue
         $data['title'] = $name;
         $data['name'] = $name;
         $data['state'] = (new States())->active();
+        $data['video'] = !empty($realty->xpath('//youtube-video-review-url')) ? (string) $realty->xpath('//youtube-video-review-url')[0] : null;
         $data['price'] = (string)  $realty->price->value;
         $data['sale_price'] = (string)  $realty->price->value;
         $data['description'] = trim((string) $realty->description);
         $data['profile_id'] = (int) $this->profile->getKey();
-        $data['date_build'] = !empty($realty->xpath('//built-year')) ? (int) $realty->xpath('//built-year')[0]->value : null;
+        $data['date_build'] = !empty($realty->xpath('//built-year')) ? (int) $realty->xpath('//built-year')[0] : null;
         if ($data['date_build'] < 1) {
             $data['date_build'] = null;
         }
-        $data['ceiling_height'] = !empty($realty->xpath('//ceiling-height')) ? (int) $realty->xpath('//ceiling-height')[0]->value : null;
+
+        $data['ceiling_height'] = !empty($realty->xpath('//ceiling-height')) ? (float) $realty->xpath('//ceiling-height')[0] : null;
         $data['city_id'] = (int) $this->profile->user->city->getKey();
         $data['latitude'] = !empty($realty->location->latitude) ? (string) $realty->location->latitude : null;
         $data['longitude'] = !empty($realty->location->longitude) ? (string) $realty->location->longitude : null;
@@ -417,9 +419,25 @@ class RealtyImportJob implements ShouldQueue
             }
         }
         $dataParameters = [];
+        if (empty($model->agent)) {
+            if (!empty($realty->xpath('//sales-agent'))) {
+                $agent = $realty->xpath('//sales-agent');
+                $nameAgent = (string) $agent[0]->organization;
+                $phoneAgent = preg_replace("/[^0-9]/", '', (string) $agent[0]->phone);
+                $emailAgent = (string) $agent[0]->email;
+                $photoAgent = (string) $agent[0]->photo;
+                $dataParameters['propertyRights'] = (string) $agent[0]->category === 'агенство' ? 'Посредник' : 'Собственник';
+                $model->agent()->create([
+                    'phone' => $phoneAgent,
+                    'name' => $nameAgent,
+                    'email' => $emailAgent,
+                    'photo' => $photoAgent,
+                ]);
+            }
+        }
         $dataParameters['floorsCount'] = (int) $realty['floors-total'];
-        $dataParameters['typeRooms'] = !empty($realty->xpath('//rooms-type')) ? (string) $realty->xpath('//living-space')[0]->value : null;
-        $dataParameters['house'] = !empty($realty->xpath('//building-type')) ? (string) $realty->xpath('//living-space')[0]->value : null;
+        $dataParameters['typeRooms'] = !empty($realty->xpath('//rooms-type')) ? (string) $realty->xpath('//living-space')[0] : null;
+        $dataParameters['house'] = !empty($realty->xpath('//building-type')) ? (string) $realty->xpath('//building-type')[0] : null;
         if (!empty($dataParameters['typeRooms'])) {
             if ($dataParameters['typeRooms'] === 'Изолированная') {
                 $dataParameters['typeRooms'] = 'Изолированные';
@@ -428,6 +446,7 @@ class RealtyImportJob implements ShouldQueue
             }
         }
 //                $dataParameters['isNew'] = (string) $realty->MarketType;
+
         $dataParameters['balconyOrLoggia'] = (string) $realty->balcony;
         $dataParameters['livingArea'] = !empty($realty->xpath('//living-space')) ? (int) $realty->xpath('//living-space')[0]->value : 0;
         $dataParameters['floorNumber'] = (int) $realty->floor;
@@ -460,6 +479,12 @@ class RealtyImportJob implements ShouldQueue
         $typeRooms = Parameter::where('value', $dataParameters['typeRooms'])->whereHas('filter', function ($q) use ($typeParameters) {
             $q->where('alias', 'tip-komnat'  . $typeParameters);
         })->first();
+        if(!empty($dataParameters['propertyRights'])) {
+            $propertyRights = Parameter::where('value', $dataParameters['propertyRights'])->whereHas('filter', function ($q) use ($typeParameters) {
+                $q->where('alias', 'prodavec'  . $typeParameters);
+            })->first();
+        }
+
 //                $isNew = RealtyParameter::where('value', $dataParameters['isNew'])->whereHas('filter', function ($q) use ($typeParameters) {
 //                    $q->where('alias', 'novizna'  . $typeParameters);
 //                })->first();
@@ -474,6 +499,9 @@ class RealtyImportJob implements ShouldQueue
         }
 
         $arr = collect();
+        if (!empty($propertyRights)) {
+            $arr->add($propertyRights->getKey());
+        }
         if (!empty($comfortBal)) {
             $arr->add($comfortBal->getKey());
         }
@@ -866,6 +894,7 @@ class RealtyImportJob implements ShouldQueue
         $data['name'] = $name;
         $data['state'] = (new States())->active();
         $data['price'] = (string)  $realty->price->value;
+        $data['video'] = !empty($realty->xpath('//youtube-video-review-url')) ? (string) $realty->xpath('//youtube-video-review-url')[0] : null;
         $data['sale_price'] = (string)  $realty->price->value;
         $data['description'] = trim((string) $realty->description);
         $data['profile_id'] = (int) $this->profile->getKey();
@@ -914,12 +943,34 @@ class RealtyImportJob implements ShouldQueue
             }
         }
         $dataParameters = [];
+        if (empty($model->agent)) {
+            if (!empty($realty->xpath('//sales-agent'))) {
+                $agent = $realty->xpath('//sales-agent');
+                $nameAgent = (string) $agent[0]->organization;
+                $phoneAgent = preg_replace("/[^0-9]/", '', (string) $agent[0]->phone);
+                $emailAgent = (string) $agent[0]->email;
+                $photoAgent = (string) $agent[0]->photo;
+                $dataParameters['propertyRights'] = (string) $agent[0]->category === 'агенство' ? 'Посредник' : 'Собственник';
+                $model->agent()->create([
+                    'phone' => $phoneAgent,
+                    'name' => $nameAgent,
+                    'email' => $emailAgent,
+                    'photo' => $photoAgent,
+                ]);
+            }
+        }
+
 
         $dataParameters['floorsCount'] = (int) $realty['floors-total'];
         $dataParameters['wallsType'] = !empty($realty->xpath('//building-type')) ? (string) $realty->xpath('//building-type')[0]->value : null;
         $dataParameters['landArea'] = !empty($realty->xpath('//area')) ? (int) $realty->xpath('//area')[0]['value'] : 0;
         $dataParameters['square'] = !empty($realty->xpath('//lot-area')) ? (int) $realty->xpath('//lot-area')[0]['value'] : 0;
 
+        if(!empty($dataParameters['propertyRights'])) {
+            $propertyRights = Parameter::where('value', $dataParameters['propertyRights'])->whereHas('filter', function ($q) use ($typeParameters) {
+                $q->where('alias', 'prodavec-doma' . $typeParameters);
+            })->first();
+        }
 //        $rooms = RealtyParameter::where('value', $dataParameters['rooms'] . ' комнат')->whereHas('filter', function ($q) use ($typeParameters) {
 //            $q->where('alias', 'kolicestvo-komnat-doma'  . $typeParameters);
 //        })->first();
@@ -948,6 +999,9 @@ class RealtyImportJob implements ShouldQueue
         })->first();
 
         $arr = collect();
+        if (!empty($propertyRights)) {
+            $arr->add($propertyRights->getKey());
+        }
         if (!empty($landArea)) {
             $arr->add($landArea->getKey());
         }
