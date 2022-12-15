@@ -50,7 +50,7 @@ class CreateSeedsFromFlat extends Command
             }
             if ($filters->isEmpty()) {
                 $filter = $flatCat->filters()->create([
-                    'name' => 'Колличество комнат',
+                    'name' => 'Кол-во комнат',
                     'type' => 'select',
                     'alias' => Str::slug('Колличество комнат') . $slug,
                     'sort' => 1,
@@ -365,9 +365,9 @@ class CreateSeedsFromFlat extends Command
             if ($flatCat->getKey() === 389) {
                 $slug = '-bye';
             }
-            if (empty($flatCat->filters()->where('name', 'Количество комнат')->first())) {
+            if (empty($flatCat->filters()->where('name', 'Кол-во комнат')->first())) {
                 $filter = $flatCat->filters()->create([
-                    'name' => 'Количество комнат',
+                    'name' => 'Кол-во комнат',
                     'type' => 'select',
                     'alias' => Str::slug('Количество комнат дома') . $slug,
                     'sort' => 1,
