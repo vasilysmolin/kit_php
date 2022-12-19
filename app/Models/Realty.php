@@ -31,6 +31,7 @@ class Realty extends Model
         'video',
         'state',
         'price',
+        'price_per_square',
         'date_build',
         'cadastral_number',
         'ceiling_height',
