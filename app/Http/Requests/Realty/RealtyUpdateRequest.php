@@ -4,7 +4,7 @@ namespace App\Http\Requests\Realty;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class RealtyStoreRequest extends FormRequest
+class RealtyUpdateRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -25,7 +25,7 @@ class RealtyStoreRequest extends FormRequest
     {
         return [
             'name' => 'string|min:1|max:255',
-            'price' => 'required|integer|min:1|max:9999999',
+            'price' => 'integer|min:1|max:9999999',
             'description' => 'string|min:1|max:2000',
             'city_id' => [
                 'exists:cities,id',
@@ -33,7 +33,6 @@ class RealtyStoreRequest extends FormRequest
                 'max:9999999999',
             ],
             'category_id' => [
-                'required',
                 'exists:realty_categories,id',
                 'integer',
                 'max:99999999999',

@@ -2,9 +2,11 @@
 
 namespace App\Http\Requests\Realty;
 
+use App\Objects\States\States;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
-class RealtyStoreRequest extends FormRequest
+class RealtyShowRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,20 +25,22 @@ class RealtyStoreRequest extends FormRequest
      */
     public function rules()
     {
+
+        $states = (new States())->keys();
         return [
-            'name' => 'string|min:1|max:255',
-            'price' => 'required|integer|min:1|max:9999999',
-            'description' => 'string|min:1|max:2000',
-            'city_id' => [
-                'exists:cities,id',
-                'integer',
-                'max:9999999999',
+            'expand' => [
+                Rule::in(['profile', 'profile.user','profile.person','profile.user,profile.person']),
+            ],
+            'state' => [
+                Rule::in($states),
+            ],
+             'from' => [
+                Rule::in(['cabinet','catalog']),
             ],
             'category_id' => [
-                'required',
                 'exists:realty_categories,id',
                 'integer',
-                'max:99999999999',
+                'max:255',
             ],
         ];
     }

@@ -7,11 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Middleware\RealtyMiddleware;
 use App\Http\Middleware\StateMiddleware;
 use App\Http\Middleware\StoreMiddleware;
-use App\Http\Requests\Ad\AdIndexRequest;
-use App\Http\Requests\Ad\AdShowRequest;
 use App\Http\Requests\Ad\AdStateRequest;
-use App\Http\Requests\Ad\AdUpdateRequest;
+use App\Http\Requests\Realty\RealtyIndexRequest;
+use App\Http\Requests\Realty\RealtyShowRequest;
 use App\Http\Requests\Realty\RealtyStoreRequest;
+use App\Http\Requests\Realty\RealtyUpdateRequest;
 use App\Models\Feed;
 use App\Models\Profile;
 use App\Models\Realty;
@@ -38,7 +38,7 @@ class RealtyController extends Controller
             ->only('state');
     }
 
-    public function index(AdIndexRequest $request): \Illuminate\Http\JsonResponse
+    public function index(RealtyIndexRequest $request): \Illuminate\Http\JsonResponse
     {
         $take = $request->take ?? config('settings.take_twenty_five');
         $skip = $request->skip ?? 0;
@@ -200,7 +200,7 @@ class RealtyController extends Controller
         return response()->json([]);
     }
 
-    public function show(AdShowRequest $request, string $id): \Illuminate\Http\JsonResponse
+    public function show(RealtyShowRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         $expand = $request->expand ? explode(',', $request->expand) : null;
@@ -251,7 +251,7 @@ class RealtyController extends Controller
         return response()->json($realty);
     }
 
-    public function update(AdUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(RealtyUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
         $filters = $request->filter;
