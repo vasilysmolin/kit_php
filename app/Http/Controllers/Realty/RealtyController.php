@@ -10,9 +10,8 @@ use App\Http\Middleware\StoreMiddleware;
 use App\Http\Requests\Ad\AdIndexRequest;
 use App\Http\Requests\Ad\AdShowRequest;
 use App\Http\Requests\Ad\AdStateRequest;
-use App\Http\Requests\Ad\AdStoreRequest;
 use App\Http\Requests\Ad\AdUpdateRequest;
-use App\Jobs\RealtyImportJob;
+use App\Http\Requests\Realty\RealtyStoreRequest;
 use App\Models\Feed;
 use App\Models\Profile;
 use App\Models\Realty;
@@ -156,7 +155,7 @@ class RealtyController extends Controller
         return response()->json($data);
     }
 
-    public function store(AdStoreRequest $request): \Illuminate\Http\JsonResponse
+    public function store(RealtyStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
         $account = $request->get('accounts');

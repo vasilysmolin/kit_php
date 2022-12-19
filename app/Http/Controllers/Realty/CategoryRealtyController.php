@@ -36,16 +36,16 @@ class CategoryRealtyController extends Controller
             ->get();
 
         $count = $builder->count();
-
-        $category->each(function ($item) use ($files, $cabinet) {
+        $category->each(function ($item) use ($files) {
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
             }
-            if ($cabinet) {
-                $this->changeName($item->categories);
-            }
         });
+
+        if ($cabinet) {
+            $this->changeName($category);
+        }
 
         $data = (new JsonHelper())->getIndexStructure(new RealtyCategory(), $category, $count, (int) $skip);
 
