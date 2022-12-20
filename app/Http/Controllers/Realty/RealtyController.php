@@ -47,6 +47,7 @@ class RealtyController extends Controller
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
+        $categoryIDs = $request->category_ids ? explode(',', $request->category_ids) : null;
         $userID = (int) $request->user_id;
         $state = $request->state;
         $name = $request->name;
@@ -91,6 +92,18 @@ class RealtyController extends Controller
             ->when(isset($categoryID), function ($q) use ($categoryID) {
                 $q->whereHas('categories', function ($q) use ($categoryID) {
                     $q->where('id', $categoryID);
+                });
+            })
+            ->when(isset($categoryIDs), function ($q) use ($categoryIDs) {
+                $result = collect([]);
+                RealtyCategory::whereIn('id', $categoryIDs)
+                    ->with('categories')
+                    ->get()
+                    ->each(function ($category) use (&$result) {
+                        $result->add($this->iter($category, []));
+                    });
+                $q->whereHas('categories', function ($q) use ($result) {
+                    $q->whereIn('id', $result->flatten()->toArray());
                 });
             })
             ->when(isset($filters), function ($q) use ($filters) {
