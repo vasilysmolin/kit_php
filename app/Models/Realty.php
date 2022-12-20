@@ -61,7 +61,8 @@ class Realty extends Model
     {
         return SlugOptions::create()
             ->doNotGenerateSlugsOnUpdate()
-            ->generateSlugsFrom('name')
+            ->slugsShouldBeNoLongerThan(10)
+            ->generateSlugsFrom('description')
             ->saveSlugsTo('alias');
     }
 
