@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('journal_tags', function (Blueprint $table) {
+        Schema::create('journal_tags', function (Blueprint $table) {
             $table->unsignedBigInteger('journal_id')->index();
             $table->unsignedBigInteger('tag_id')->index();
         });
