@@ -88,6 +88,10 @@ class UpdateMeilisearchIndex extends Command
             $client->createIndex('realties');
         } catch (ApiException $exception) {
         }
+        try {
+            $client->createIndex('journal');
+        } catch (ApiException $exception) {
+        }
 
         $this->info('Indexes create...');
     }
@@ -135,6 +139,12 @@ class UpdateMeilisearchIndex extends Command
             'sort',
         ]);
 
+        $client->index('journal')->updateSortableAttributes([
+            'name',
+            'sort',
+            'id',
+        ]);
+
         $this->info('Updated sortable attributes...');
     }
 
@@ -175,6 +185,12 @@ class UpdateMeilisearchIndex extends Command
             'duties',
             'demands',
             'additionally',
+        ]);
+
+        $client->index('journal')->updateSearchableAttributes([
+            'name',
+            'description',
+            'category.name',
         ]);
 
         $client->index('catalog_ad_categories')->updateSearchableAttributes([
@@ -231,6 +247,12 @@ class UpdateMeilisearchIndex extends Command
             'additionally',
         ]);
 
+        $client->index('journal')->updateRankingRules([
+            'name',
+            'description',
+            'category.name',
+        ]);
+
         $client->index('catalog_ad_categories')->updateRankingRules([
             'name',
         ]);
@@ -273,6 +295,11 @@ class UpdateMeilisearchIndex extends Command
             'name',
             'state',
             'description',
+        ]);
+
+        $client->index('journal')->updateFilterableAttributes([
+            'category.id',
+            'profile_id',
         ]);
 
         $client->index('resumes')->updateFilterableAttributes([

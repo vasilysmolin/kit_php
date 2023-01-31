@@ -26,7 +26,7 @@ class JournalFactory extends Factory
             'state' => 'new',
             'sort' => $this->faker->numberBetween(0, 1500),
             'slug' => $this->faker->slug(6),
-            'author_id' => User::factory(),
+            'profile_id' => Profile::factory(),
             'group_id' => JournalGroup::factory(),
             'category_id' => JournalCategory::factory(),
         ];

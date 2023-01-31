@@ -66,6 +66,11 @@ class Profile extends Model
         return $this->hasMany(Realty::class, 'profile_id', 'id');
     }
 
+    public function journals()
+    {
+        return $this->hasMany(Journal::class, 'profile_id', 'id');
+    }
+
     public function feeds()
     {
         return $this->hasMany(Feed::class, 'profile_id', 'id');

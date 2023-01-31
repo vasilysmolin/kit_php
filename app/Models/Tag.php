@@ -11,6 +11,6 @@ class Tag extends Model
 
     public function journal()
     {
-        return $this->belongsToMany(Journal::class, 'journal_tags', 'journal_id', 'id');
+        return $this->belongsToMany(Journal::class, 'journal_tags', 'journal_id', 'journal_id');
     }
 }

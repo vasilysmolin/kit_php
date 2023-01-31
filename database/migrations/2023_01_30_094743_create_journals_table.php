@@ -18,9 +18,9 @@ return new class extends Migration
             $table->string('name');
             $table->string('slug')->unique();
             $table->text('description')->nullable();
-            $table->text('category_id')->nullable()->index();
-            $table->text('group_id')->nullable()->index();
-            $table->text('author_id')->nullable()->index();
+            $table->unsignedBigInteger('category_id')->nullable()->index();
+            $table->unsignedBigInteger('group_id')->nullable()->index();
+            $table->unsignedBigInteger('profile_id')->index();
             $table->string('state', 100)->default('new');
             $table->integer('sort')->nullable();
             $table->timestamps();

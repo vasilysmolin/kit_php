@@ -178,6 +178,12 @@ Route::group([
 });
 
 Route::group([
+    'namespace' => 'Journal',
+], function ($router) {
+    Route::apiResource('journals', 'JournalController');
+});
+
+Route::group([
     'namespace' => 'City',
 ], function ($router) {
     Route::get('cities-full', 'CityController@fullSearch')->name('cities.full-search');
