@@ -260,6 +260,7 @@ class RealtyController extends Controller
             $realty->images->each(function ($image) use ($files, $realty) {
                 $realty->photos->push($files->getFilePath($image));
             });
+            $realty->photos = array_filter($realty->photos->toArray());
         }
         $realty->makeHidden('image');
         $realty->makeHidden('images');

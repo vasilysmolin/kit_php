@@ -236,6 +236,7 @@ class AdController extends Controller
             $catalogAd->images->each(function ($image) use ($files, $catalogAd) {
                 $catalogAd->photos->push($files->getFilePath($image));
             });
+            $catalogAd->photos = array_filter($catalogAd->photos->toArray());
         }
         $catalogAd->makeHidden('image');
         $catalogAd->makeHidden('images');
