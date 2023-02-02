@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Models\Filter;
 use App\Models\RealtyCategory;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
@@ -39,6 +40,28 @@ class CreateSeedsFromFlat extends Command
      */
     public function handle()
     {
+        $filters = Filter::whereIn('alias', [
+            'zilaya-ploshhad-bye',
+            'obshhaya-ploshhad-bye',
+            'ploshhad-kuxni-bye',
+            'obshhaia-ploshhad-new',
+            'zilaia-ploshhad-new',
+            'ploshhad-kuxni-new',
+            'ploshhad-doma-bye',
+            'ploshhad-zemelnogo-ucastka-bye',
+            'ploshhad-doma-rent',
+            'ploshhad-zemelnogo-ucastka-rent',
+        ])->get();
+        $filters->each(function ($filter) {
+            for ($i = 100; $i <= 1000; $i += 1) {
+                $filter->parameters()->create([
+                    'value' => "{$i}м2",
+                    'sort' => $i,
+                ]);
+            }
+        });
+        dd(1);
+
         $flatCats = RealtyCategory::whereIn('id', [12, 383])->get();
         foreach ($flatCats as $flatCat) {
             $filters = $flatCat->filters;
@@ -353,8 +376,6 @@ class CreateSeedsFromFlat extends Command
                     'sort' => 2,
                 ]);
             }
-
-
         }
 
         $flatNew = RealtyCategory::whereIn('id', [410])->get();
@@ -688,8 +709,6 @@ class CreateSeedsFromFlat extends Command
                     'sort' => 4,
                 ]);
             }
-
-
         }
 
         $flatCats = RealtyCategory::whereIn('id', [389, 385])->get();
@@ -893,9 +912,6 @@ class CreateSeedsFromFlat extends Command
                     'sort' => 2,
                 ]);
             }
-
-
-
         }
 //        $items = CatalogAdCategory::whereIn('id', [2])->get();
 //        foreach ($items as $item) {
