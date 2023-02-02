@@ -256,11 +256,10 @@ class RealtyController extends Controller
             $realty->photo = $files->getFilePath($realty->image);
         }
         if (!empty($realty->images)) {
-            $photos = collect([]);
-            $realty->images->each(function ($image) use ($files, &$photos) {
-                $photos->push($files->getFilePath($image));
+            $realty->photos = collect([]);
+            $realty->images->each(function ($image) use ($files, $realty) {
+                $realty->photos->push($files->getFilePath($image));
             });
-            $realty->photos = array_filter($photos);
         }
         $realty->makeHidden('image');
         $realty->makeHidden('images');
