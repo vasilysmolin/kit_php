@@ -34,12 +34,14 @@ class Files
     {
 
         $path = $this->getOptimizeDirectoryS3($modelPhoto->name);
-        $url = Storage::url($path . '_'
-            . 400 . 'x'
-            . 400 . '.' .
-            'jpg');
+        if (Storage::exists($path . '_' . 400 . 'x' . 400 . '.' . 'jpg')) {
+            $url = Storage::url($path . '_'
+                . 400 . 'x'
+                . 400 . '.' .
+                'jpg');
+        }
 
-        return $url;
+        return $url ?? null;
     }
 
     public function save($model, ?array $files): void
@@ -70,7 +72,7 @@ class Files
         );
 
             $contents = @file_get_contents($url, false, stream_context_create($arrContextOptions));
-            if ($contents !== false) {
+        if ($contents !== false) {
             $name = Str::random(40);
             $mineType = 'image/jpeg';
             $extension = 'jpg';
