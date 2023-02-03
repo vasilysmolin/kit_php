@@ -129,7 +129,7 @@ class AdController extends Controller
         $catalogAd = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories', 'parameters.filter')
+            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'categories', 'parameters.filter')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
@@ -137,6 +137,8 @@ class AdController extends Controller
         $count = $builderCount->count();
 
         $catalogAd->each(function ($item) use ($files) {
+            $street = str_replace('.', '', $item->street);
+            $item->full_address = rtrim(collect([$item->city->region->full_name, $item->city->name, $street, $item->house])->join(', '), ", ");
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
@@ -209,7 +211,7 @@ class AdController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images', 'parameters.filter', 'city')
+            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'images', 'parameters.filter')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
@@ -241,6 +243,9 @@ class AdController extends Controller
         $catalogAd->makeHidden('image');
         $catalogAd->makeHidden('images');
         $catalogAd->title = $catalogAd->name;
+        $street = str_replace('.', '', $catalogAd->street);
+        $catalogAd->full_address = rtrim(collect([$catalogAd->city->region->full_name, $catalogAd->city->name, $street, $catalogAd->house])->join(', '), ", ");
+
 
         return response()->json($catalogAd);
     }
