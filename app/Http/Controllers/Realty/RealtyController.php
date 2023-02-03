@@ -22,6 +22,7 @@ use App\Objects\States\States;
 use App\Objects\TypeModules\TypeModules;
 use App\Services\ImportFeedService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 
 class RealtyController extends Controller
 {
@@ -149,7 +150,7 @@ class RealtyController extends Controller
         $realty = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('image', 'categories', 'parameters.filter', 'agent')
+            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'categories', 'parameters.filter', 'agent')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
@@ -157,6 +158,8 @@ class RealtyController extends Controller
         $count = $builderCount->count();
 
         $realty->each(function ($item) use ($files) {
+            $street = str_replace('.', '', $item->street);
+            $item->full_address = rtrim(collect([$item->city->region->full_name, $item->city->name, $street, $item->house])->join(', '), ", ");
             if (isset($item->image)) {
                 $item->photo = $files->getFilePath($item->image);
                 $item->makeHidden('image');
@@ -233,7 +236,7 @@ class RealtyController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('image', 'images', 'parameters.filter', 'city', 'agent')
+            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'images', 'parameters.filter', 'agent')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
@@ -265,6 +268,8 @@ class RealtyController extends Controller
         $realty->makeHidden('image');
         $realty->makeHidden('images');
         $realty->title = $realty->name;
+        $street = str_replace('.', '', $realty->street);
+        $realty->full_address = rtrim(collect([$realty->city->region->full_name, $realty->city->name, $street, $realty->house])->join(', '), ", ");
 
         return response()->json($realty);
     }
