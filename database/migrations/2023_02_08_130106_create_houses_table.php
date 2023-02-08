@@ -16,7 +16,12 @@ return new class extends Migration
         Schema::create('houses', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('agent_id')->index()->nullable();
+            $table->unsignedBigInteger('profile_id')->index()->nullable();
+            $table->unsignedBigInteger('city_id')->nullable();
+            $table->string('state', 100)->default('new');
+            $table->integer('sort')->nullable();
             $table->string('name');
+            $table->string('alias');
             $table->string('street')->nullable();
             $table->date('date')->nullable();
             $table->string('deadline')->nullable();
@@ -27,6 +32,7 @@ return new class extends Migration
             $table->string('elite')->nullable();
             $table->string('finishing')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
         Schema::table('realties', function (Blueprint $table) {
             $table->unsignedBigInteger('house_id')->index()->nullable();
@@ -41,5 +47,9 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('houses');
+
+        Schema::table('realties', function (Blueprint $table) {
+            $table->dropColumn('house_id');
+        });
     }
 };

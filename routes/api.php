@@ -168,6 +168,7 @@ Route::group([
     'namespace' => 'Realty',
 ], function ($router) {
     Route::apiResource('realties', 'RealtyController');
+    Route::apiResource('houses', 'HouseController');
     Route::apiResource('category-realties', 'CategoryRealtyController');
     Route::put('realties/{realty}/sort', 'RealtyController@sort')->name('realties.sort');
     Route::put('realties/{realty}/state', 'RealtyController@state')->name('realties.state');

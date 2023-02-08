@@ -4,10 +4,36 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\EloquentSortable\SortableTrait;
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
 
 class House extends Model
 {
     use HasFactory;
+    use HasSlug;
+    use SortableTrait;
+    use SoftDeletes;
+
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->doNotGenerateSlugsOnUpdate()
+            ->slugsShouldBeNoLongerThan(10)
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('alias');
+    }
+
+    public function profile()
+    {
+        return $this->belongsTo(Profile::class, 'profile_id', 'id');
+    }
+
+    public function city(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(City::class);
+    }
 
     public function agent()
     {
