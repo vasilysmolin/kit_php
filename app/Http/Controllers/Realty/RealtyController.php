@@ -150,7 +150,7 @@ class RealtyController extends Controller
         $realty = $builder
             ->take((int) $take)
             ->skip((int) $skip)
-            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'categories', 'parameters.filter', 'agent')
+            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'categories', 'parameters.filter', 'agent', 'profile.user', 'profile.person')
             ->when(!empty($expand), function ($q) use ($expand) {
                 $q->with($expand);
             })
