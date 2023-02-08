@@ -118,6 +118,11 @@ class Realty extends Model
         );
     }
 
+    public function house()
+    {
+        return $this->belongsTo(House::class, 'house_id', 'id');
+    }
+
     /**
      * Get the indexable data array for the model.
      *

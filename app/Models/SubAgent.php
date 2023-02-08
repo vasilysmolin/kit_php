@@ -17,4 +17,9 @@ class SubAgent extends Model
         'itemable_id',
         'itemable_type',
     ];
+
+    public function houses()
+    {
+        return $this->hasMany(House::class, 'agent_id', 'id');
+    }
 }
