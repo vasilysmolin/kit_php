@@ -22,8 +22,8 @@ class ResizeImages extends Command
     public function handle(): void
     {
 //        $start = $this->getStartTime();
-//        $skip = $this->option('skip');
-        $images = Image::get();
+        $skip = $this->option('skip');
+        $images = Image::skip($skip)->take(10000)->get();
         $bar = $this->output->createProgressBar($images->count());
         $bar->start();
         $files = new Files();
