@@ -161,7 +161,7 @@ class RealtyController extends Controller
             $street = str_replace('.', '', $item->street);
             $item->full_address = rtrim(collect([$item->city->region->full_name, $item->city->name, $street, $item->house])->join(', '), ", ");
             if (isset($item->image)) {
-                $item->photo = $files->getFilePath($item->image);
+                $item->photo = $files->getFilePathPrev($item->image);
                 $item->makeHidden('image');
             }
                 $item->title = $item->name;

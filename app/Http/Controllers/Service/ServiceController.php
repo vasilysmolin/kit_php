@@ -208,7 +208,7 @@ class ServiceController extends Controller
 
         $files = resolve(Files::class);
         if (isset($service->image)) {
-            $service->photo = $files->getFilePath($service->image);
+            $service->photo = $files->getFilePathPrev($service->image);
         }
 
         abort_unless($service, 404);
