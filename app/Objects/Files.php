@@ -2,12 +2,12 @@
 
 namespace App\Objects;
 
+use App\Models\Image;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\UploadedFile;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Facades\Image as Intervention;
 
 class Files
 {
@@ -42,6 +42,46 @@ class Files
         }
 
         return $url ?? null;
+    }
+
+    public function getFileContentBig($modelPhoto): ?string
+    {
+
+        $path = $this->getOptimizeDirectoryS3($modelPhoto->name);
+        if (Storage::exists($path . '_' . 800 . 'x' . 800 . '.' . 'jpg')) {
+            $url = Storage::get($path . '_'
+                . 800 . 'x'
+                . 800 . '.' .
+                'jpg');
+        }
+
+        return $url ?? null;
+    }
+
+    public function getFilePathBig($modelPhoto): ?string
+    {
+
+        $path = $this->getOptimizeDirectoryS3($modelPhoto->name);
+        if (Storage::exists($path . '_' . 800 . 'x' . 800 . '.' . 'jpg')) {
+            $url = Storage::url($path . '_'
+                . 800 . 'x'
+                . 800 . '.' .
+                'jpg');
+        }
+
+        return $url ?? null;
+    }
+
+    public function createFilePath(Image $modelPhoto, int $width, int $height): ?string
+    {
+
+        $path = $this->getOptimizeDirectoryS3($modelPhoto->name);
+        $url = Storage::path($path . '_'
+            . $width . 'x'
+            . $height . '.' .
+            'jpg');
+
+        return $url;
     }
 
     public function save($model, ?array $files): void
@@ -82,7 +122,7 @@ class Files
             Storage::put("{$path}.{$extension}", $contents);
 
             foreach (self::$CROP as $resolution) {
-                $image = \Intervention\Image\Facades\Image::make($contents);
+                $image = Intervention::make($contents);
                 $filteredImage = $image
                     ->fit($resolution['width'], $resolution['height'])
                     ->encode('jpg', 100);
@@ -159,7 +199,7 @@ class Files
         Storage::putFileAs("{$path}.{$extension}", $file, $name);
 
         foreach (self::$CROP as $resolution) {
-            $image = Image::make($file);
+            $image = Intervention::make($file);
             $filteredImage = $image
                 ->fit($resolution['width'], $resolution['height'])
                 ->encode($extension, 100);
