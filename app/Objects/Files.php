@@ -40,7 +40,7 @@ class Files
         $path = $this->getOptimizeDirectoryS3($modelPhoto->name);
         if (Storage::exists($path . '_' . 620 . 'x' . 400 . '.' . 'jpg')) {
             $url = Storage::url($path . '_'
-                . 400 . 'x'
+                . 620 . 'x'
                 . 400 . '.' .
                 'jpg');
         }
