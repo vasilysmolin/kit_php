@@ -25,6 +25,10 @@ class Files
             'height' => 400,
         ],
         [
+            'width' => 620,
+            'height' => 400,
+        ],
+        [
             'width' => 800,
             'height' => 800,
         ],
