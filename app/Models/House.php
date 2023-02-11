@@ -16,6 +16,15 @@ class House extends Model
     use SortableTrait;
     use SoftDeletes;
 
+    protected $fillable = [
+        'name',
+        'alias',
+        'description',
+        'city_id',
+        'agent_id',
+        'profile_id',
+    ];
+
     public function getSlugOptions(): SlugOptions
     {
         return SlugOptions::create()
@@ -47,7 +56,6 @@ class House extends Model
     {
         return $this->hasMany(Realty::class, 'house_id', 'id');
     }
-
 
     public function images()
     {

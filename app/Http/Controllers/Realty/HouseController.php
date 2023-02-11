@@ -6,10 +6,10 @@ use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\RealtyMiddleware;
 use App\Http\Middleware\StoreMiddleware;
+use App\Http\Requests\Realty\HouseStoreRequest;
+use App\Http\Requests\Realty\HouseUpdateRequest;
 use App\Http\Requests\Realty\RealtyIndexRequest;
 use App\Http\Requests\Realty\RealtyShowRequest;
-use App\Http\Requests\Realty\RealtyStoreRequest;
-use App\Http\Requests\Realty\RealtyUpdateRequest;
 use App\Models\House;
 use App\Models\RealtyCategory;
 use App\Objects\Files;
@@ -111,7 +111,7 @@ class HouseController extends Controller
         return response()->json($data);
     }
 
-    public function store(RealtyStoreRequest $request): \Illuminate\Http\JsonResponse
+    public function store(HouseStoreRequest $request): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
         $account = $request->get('accounts');
@@ -122,10 +122,7 @@ class HouseController extends Controller
         $house->save();
         $house->moveToStart();
         $files = resolve(Files::class);
-
-
         $files->save($house, $request['files']);
-
 
         return response()->json([], 201, ['Location' => "/house/$house->id"]);
     }
@@ -184,7 +181,7 @@ class HouseController extends Controller
         return response()->json($house);
     }
 
-    public function update(RealtyUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
+    public function update(HouseUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
 

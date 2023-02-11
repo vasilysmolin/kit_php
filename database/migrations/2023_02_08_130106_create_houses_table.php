@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('state', 100)->default('new');
             $table->integer('sort')->nullable();
             $table->string('name');
+            $table->text('description')->nullable();
             $table->string('alias');
             $table->string('street')->nullable();
             $table->date('date')->nullable();
