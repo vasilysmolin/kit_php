@@ -48,6 +48,7 @@ class RealtyController extends Controller
         $files = resolve(Files::class);
         $user = auth('api')->user();
         $categoryID = $request->category_id;
+        $houseID = $request->house_id;
         $categoryIDs = $request->category_ids ? explode(',', $request->category_ids) : null;
         $userID = (int) $request->user_id;
         $state = $request->state;
@@ -83,6 +84,9 @@ class RealtyController extends Controller
         })
             ->when(!empty($realtyIds), function ($query) use ($realtyIds) {
                 $query->whereIn('id', $realtyIds);
+            })
+            ->when(!empty($houseID), function ($query) use ($houseID) {
+                $query->where('house_id', $houseID);
             })
             ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
                 $query->where('sale_price', '>=', $priceFrom);

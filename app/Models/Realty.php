@@ -40,6 +40,7 @@ class Realty extends Model
         'sort',
         'alias',
         'profile_id',
+        'house_id',
         'city_id',
         'latitude',
         'longitude',

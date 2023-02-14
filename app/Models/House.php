@@ -20,7 +20,13 @@ class House extends Model
         'name',
         'alias',
         'description',
+        'street',
+        'house',
+        'date',
+        'finishing',
         'city_id',
+        'latitude',
+        'longitude',
         'agent_id',
         'profile_id',
     ];
