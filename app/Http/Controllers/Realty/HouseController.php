@@ -120,6 +120,10 @@ class HouseController extends Controller
         $house = new House();
         $house->fill($formData);
         $house->save();
+
+        if (isset($request['name_agent'])) {
+            $house->agent()->create(['name' => $request['name_agent']]);
+        }
         $house->moveToStart();
         $files = resolve(Files::class);
         $files->save($house, $request['files']);
@@ -193,6 +197,10 @@ class HouseController extends Controller
         $house->fill($formData);
 
         $house->update();
+
+        if (isset($request['name_agent'])) {
+            $house->agent()->update(['name' => $request['name_agent']]);
+        }
 
         $files = resolve(Files::class);
 

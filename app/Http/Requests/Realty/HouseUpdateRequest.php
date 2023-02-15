@@ -25,6 +25,7 @@ class HouseUpdateRequest extends FormRequest
     {
         return [
             'name' => 'string|min:1|max:255',
+            'name_agent' => 'string|min:1|max:2000',
             'description' => 'string|min:1|max:2000',
             'city_id' => [
                 'exists:cities,id',

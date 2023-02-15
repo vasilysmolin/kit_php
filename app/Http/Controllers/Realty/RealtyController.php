@@ -190,10 +190,6 @@ class RealtyController extends Controller
         $realty->moveToStart();
         $files = resolve(Files::class);
 
-        if (isset($request['nameAgent'])) {
-            $realty->agent()->create(['name' => $request['nameAgent']]);
-        }
-
         if (isset($request['category_id'])) {
             $category = RealtyCategory::find($request['category_id']);
             if (isset($category)) {
