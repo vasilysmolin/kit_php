@@ -15,6 +15,7 @@ class SubAgent extends Model
         'phone',
         'email',
         'itemable_id',
+        'profile_id',
         'itemable_type',
     ];
 

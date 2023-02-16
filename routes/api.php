@@ -169,6 +169,11 @@ Route::group([
 ], function ($router) {
     Route::apiResource('realties', 'RealtyController');
     Route::apiResource('houses', 'HouseController');
+    Route::apiResource('new-buildings', 'HouseController');
+    Route::put('new-buildings/{buildings}/sort', 'NewBuildController@sort')->name('buildings.sort');
+    Route::put('new-buildings/{buildings}/state', 'NewBuildController@state')->name('buildings.state');
+    Route::put('new-buildings/{buildings}/restore', 'NewBuildController@restore')->name('buildings.restore');
+    Route::post('new-buildings/import', 'NewBuildController@import')->name('buildings.import');
     Route::apiResource('category-realties', 'CategoryRealtyController');
     Route::put('realties/{realty}/sort', 'RealtyController@sort')->name('realties.sort');
     Route::put('realties/{realty}/state', 'RealtyController@state')->name('realties.state');
