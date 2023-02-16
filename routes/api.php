@@ -89,6 +89,10 @@ Route::group([
     Route::get('states', 'Select\SelectController@states')->name('select.states');
     Route::get('reasons', 'Select\SelectController@reasons')->name('select.reasons');
     Route::get('type-services', 'Select\SelectController@typeServices')->name('select.type-services');
+    Route::get('type-services', 'Select\SelectController@typeServices')->name('select.type-services');
+    Route::get('type-house', 'Select\SelectController@typeHouse')->name('select.type-house');
+    Route::get('finishing', 'Select\SelectController@finishing')->name('select.finishing');
+    Route::get('deadline', 'Select\SelectController@deadline')->name('select.deadline');
 });
 
 Route::group([

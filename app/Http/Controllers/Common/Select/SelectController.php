@@ -9,6 +9,9 @@ use App\Objects\SalaryType\Constants\SalaryType;
 use App\Objects\Schedule\Constants\Schedule;
 use App\Objects\States\States;
 use App\Objects\Time\Constants\TimeArray;
+use App\Objects\TypeHouse\DeadLine;
+use App\Objects\TypeHouse\Finishing;
+use App\Objects\TypeHouse\TypeHouse;
 use App\Objects\TypeService\TypeService;
 
 class SelectController extends Controller
@@ -52,6 +55,24 @@ class SelectController extends Controller
     public function typeServices(): \Illuminate\Http\JsonResponse
     {
         $data = (new TypeService())->get();
+        return response()->json($data);
+    }
+
+    public function typeHouse(): \Illuminate\Http\JsonResponse
+    {
+        $data = TypeHouse::all();
+        return response()->json($data);
+    }
+
+    public function finishing(): \Illuminate\Http\JsonResponse
+    {
+        $data = Finishing::all();
+        return response()->json($data);
+    }
+
+    public function deadLine(): \Illuminate\Http\JsonResponse
+    {
+        $data = DeadLine::all();
         return response()->json($data);
     }
 }
