@@ -18,6 +18,7 @@ return new class extends Migration
             $table->unsignedBigInteger('profile_id')->index();
             $table->string('external_id')->nullable()->index();
             $table->unsignedBigInteger('category_id')->nullable()->index();
+            $table->unsignedBigInteger('house_id')->nullable()->index();
             $table->string('state', 100)->default('new');
             $table->string('reason', 100)->nullable();
             $table->string('article')->nullable();

@@ -22,6 +22,8 @@ class NewBuild extends Model
 
     protected $cascadeDeleteMorph = ['images'];
 
+    protected $table= 'new_buildings';
+
     protected $fillable = [
         'id',
         'external_id',
@@ -130,6 +132,6 @@ class NewBuild extends Model
      */
     public function searchableAs()
     {
-        return 'newBuild';
+        return 'new_builds';
     }
 }

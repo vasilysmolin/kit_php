@@ -173,7 +173,7 @@ Route::group([
 ], function ($router) {
     Route::apiResource('realties', 'RealtyController');
     Route::apiResource('houses', 'HouseController');
-    Route::apiResource('new-buildings', 'HouseController');
+    Route::apiResource('new-buildings', 'NewBuildController');
     Route::put('new-buildings/{buildings}/sort', 'NewBuildController@sort')->name('buildings.sort');
     Route::put('new-buildings/{buildings}/state', 'NewBuildController@state')->name('buildings.state');
     Route::put('new-buildings/{buildings}/restore', 'NewBuildController@restore')->name('buildings.restore');

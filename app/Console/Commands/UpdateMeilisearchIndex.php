@@ -89,6 +89,10 @@ class UpdateMeilisearchIndex extends Command
         } catch (ApiException $exception) {
         }
         try {
+            $client->createIndex('new_builds');
+        } catch (ApiException $exception) {
+        }
+        try {
             $client->createIndex('journal');
         } catch (ApiException $exception) {
         }
@@ -104,6 +108,11 @@ class UpdateMeilisearchIndex extends Command
         ]);
 
         $client->index('realties')->updateSortableAttributes([
+            'name',
+            'sort',
+        ]);
+
+        $client->index('new_builds')->updateSortableAttributes([
             'name',
             'sort',
         ]);
@@ -162,6 +171,12 @@ class UpdateMeilisearchIndex extends Command
             'description',
             'filter',
             'street',
+        ]);
+
+        $client->index('new_builds')->updateSearchableAttributes([
+            'name',
+            'description',
+            'filter',
         ]);
 
         $client->index('services')->updateSearchableAttributes([
@@ -224,6 +239,12 @@ class UpdateMeilisearchIndex extends Command
             'street',
         ]);
 
+        $client->index('new_builds')->updateRankingRules([
+            'name',
+            'description',
+            'filter',
+        ]);
+
         $client->index('services')->updateRankingRules([
             'name',
             'description',
@@ -277,6 +298,11 @@ class UpdateMeilisearchIndex extends Command
         ]);
 
         $client->index('realties')->updateFilterableAttributes([
+            'state',
+            'name',
+        ]);
+
+        $client->index('new_builds')->updateFilterableAttributes([
             'state',
             'name',
         ]);

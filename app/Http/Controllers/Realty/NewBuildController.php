@@ -184,7 +184,7 @@ class NewBuildController extends Controller
         $filters = $request->filter;
 
         unset($formData['category_id']);
-        $realty = new Realty();
+        $realty = new NewBuild();
         $realty->fill($formData);
         $realty->save();
         $realty->moveToStart();
