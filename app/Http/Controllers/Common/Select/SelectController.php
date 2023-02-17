@@ -10,6 +10,7 @@ use App\Objects\Schedule\Constants\Schedule;
 use App\Objects\States\States;
 use App\Objects\Time\Constants\TimeArray;
 use App\Objects\TypeHouse\DeadLine;
+use App\Objects\TypeHouse\Elite;
 use App\Objects\TypeHouse\Finishing;
 use App\Objects\TypeHouse\TypeHouse;
 use App\Objects\TypeService\TypeService;
@@ -73,6 +74,12 @@ class SelectController extends Controller
     public function deadLine(): \Illuminate\Http\JsonResponse
     {
         $data = DeadLine::all();
+        return response()->json($data);
+    }
+
+    public function elite(): \Illuminate\Http\JsonResponse
+    {
+        $data = Elite::all();
         return response()->json($data);
     }
 }

@@ -93,6 +93,7 @@ Route::group([
     Route::get('type-house', 'Select\SelectController@typeHouse')->name('select.type-house');
     Route::get('finishing', 'Select\SelectController@finishing')->name('select.finishing');
     Route::get('deadline', 'Select\SelectController@deadline')->name('select.deadline');
+    Route::get('elite', 'Select\SelectController@elite')->name('select.elite');
 });
 
 Route::group([

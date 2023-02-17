@@ -49,5 +49,8 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('new_buildings');
+        Schema::table('sub_agents', function (Blueprint $table) {
+            $table->dropColumn('profile_id');
+        });
     }
 };

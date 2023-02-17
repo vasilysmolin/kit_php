@@ -20,11 +20,12 @@ return new class extends Migration
             $table->unsignedBigInteger('city_id')->nullable();
             $table->string('state', 100)->default('new');
             $table->integer('sort')->nullable();
+            $table->integer('total_floors')->nullable();
             $table->string('name');
             $table->text('description')->nullable();
             $table->string('alias');
             $table->string('street')->nullable();
-            $table->date('date')->nullable();
+            $table->date('date_build')->nullable();
             $table->string('deadline')->nullable();
             $table->float('latitude', 10, 0)->nullable();
             $table->float('longitude', 10, 0)->nullable();
