@@ -236,7 +236,7 @@ class NewBuildController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('house.city:id,region_id,name', 'house.city.region:id,full_name', 'image', 'categories', 'parameters.filter', 'agent', 'profile.user', 'profile.person')
+            ->with('house.city:id,region_id,name', 'house.city.region:id,full_name', 'image', 'categories', 'parameters.filter', 'house.agent', 'profile.user', 'profile.person')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
