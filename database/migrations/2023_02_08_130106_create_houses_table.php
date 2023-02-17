@@ -25,7 +25,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->string('alias');
             $table->string('street')->nullable();
-            $table->date('date_build')->nullable();
+            $table->year('date_build')->nullable();
             $table->string('deadline')->nullable();
             $table->float('latitude', 10, 0)->nullable();
             $table->float('longitude', 10, 0)->nullable();

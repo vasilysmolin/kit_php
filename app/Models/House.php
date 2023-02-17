@@ -24,7 +24,7 @@ class House extends Model
         'street',
         'house',
         'elite',
-        'date',
+        'date_build',
         'total_floors',
         'type',
         'finishing',
