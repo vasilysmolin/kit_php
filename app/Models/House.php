@@ -64,7 +64,7 @@ class House extends Model
 
     public function realties()
     {
-        return $this->hasMany(Realty::class, 'house_id', 'id');
+        return $this->hasMany(NewBuild::class, 'house_id', 'id');
     }
 
     public function images()
