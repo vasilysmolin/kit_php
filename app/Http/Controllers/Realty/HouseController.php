@@ -101,7 +101,7 @@ class HouseController extends Controller
             $street = str_replace('.', '', $item->street);
             $item->full_address = rtrim(collect([$item->city->region->full_name, $item->city->name, $street, $item->house])->join(', '), ", ");
             if (isset($item->image)) {
-                $item->photo = $files->getFilePath($item->image);
+                $item->photo = $files->getFilePath($item->latestImage);
                 $item->makeHidden('image');
             }
                 $item->title = $item->name;
@@ -175,10 +175,8 @@ class HouseController extends Controller
         abort_unless($house, 404);
 
         $files = resolve(Files::class);
-        if (isset($house->image)) {
-            $house->photo = $files->getFilePath($house->image);
-        }
         if (!empty($house->images)) {
+            $house->photo = $files->getFilePath($house->latestImage);
             $house->photos = collect([]);
             $house->images->each(function ($image) use ($files, $house) {
                 $house->photos->push($files->getFilePath($image));
