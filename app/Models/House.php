@@ -23,6 +23,8 @@ class House extends Model
         'deadline',
         'street',
         'house',
+        'parking',
+        'ceiling_height',
         'elite',
         'date_build',
         'total_floors',

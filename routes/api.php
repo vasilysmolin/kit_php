@@ -94,6 +94,7 @@ Route::group([
     Route::get('finishing', 'Select\SelectController@finishing')->name('select.finishing');
     Route::get('deadline', 'Select\SelectController@deadline')->name('select.deadline');
     Route::get('elite', 'Select\SelectController@elite')->name('select.elite');
+    Route::get('parking', 'Select\SelectController@parking')->name('select.parking');
 });
 
 Route::group([

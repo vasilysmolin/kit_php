@@ -12,6 +12,7 @@ use App\Objects\Time\Constants\TimeArray;
 use App\Objects\TypeHouse\DeadLine;
 use App\Objects\TypeHouse\Elite;
 use App\Objects\TypeHouse\Finishing;
+use App\Objects\TypeHouse\Parking;
 use App\Objects\TypeHouse\TypeHouse;
 use App\Objects\TypeService\TypeService;
 
@@ -80,6 +81,12 @@ class SelectController extends Controller
     public function elite(): \Illuminate\Http\JsonResponse
     {
         $data = Elite::all();
+        return response()->json($data);
+    }
+
+    public function parking(): \Illuminate\Http\JsonResponse
+    {
+        $data = Parking::all();
         return response()->json($data);
     }
 }
