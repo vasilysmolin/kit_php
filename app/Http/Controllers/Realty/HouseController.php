@@ -156,7 +156,7 @@ class HouseController extends Controller
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })
-            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'images', 'agent')
+            ->with('city:id,region_id,name', 'city.region:id,full_name', 'image', 'images', 'agent','profile.user','profile.person')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
