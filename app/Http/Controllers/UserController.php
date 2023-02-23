@@ -9,6 +9,7 @@ use App\Http\Requests\UsersShowRequest;
 use App\Http\Requests\UsersStateRequest;
 use App\Http\Requests\UsersUpdateRequest;
 use App\Models\InvitedUser;
+use App\Models\Profile;
 use App\Models\User;
 use App\Objects\Dadata\Dadata;
 use App\Objects\JsonHelper;
@@ -179,12 +180,14 @@ class UserController extends Controller
     public function changeProfile(Request $request)
     {
         $user = auth('api')->user();
-        if ($user->checkProfile($request->profile_id)) {
+        $profileID = $request->profile_id;
+        if ($user->checkProfile($profileID)) {
+            $profile = Profile::find($profileID);
             $token = JWTAuth::customClaims([
-                'profile_id' => $request->profile_id,
+                'profile_id' => $profileID,
                 'id' => $request->id,
             ])->fromUser($user);
-            return response()->json(respondWithToken($token));
+            return response()->json(respondWithTokenAndEntity($token, $profile->isPerson));
         }
 
         return response()->json([]);
