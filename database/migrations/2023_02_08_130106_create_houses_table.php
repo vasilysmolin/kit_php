@@ -32,7 +32,7 @@ return new class extends Migration
             $table->string('house')->nullable();
             $table->string('type')->nullable();
             $table->string('parking')->nullable();
-            $table->float('сeiling_height', 8, 2)->nullable();
+            $table->float('ceiling_height', 8, 2)->nullable();
             $table->string('elite')->nullable();
             $table->string('finishing')->nullable();
             $table->timestamps();
