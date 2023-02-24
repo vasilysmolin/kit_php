@@ -86,7 +86,12 @@ class NewBuildController extends Controller
                 $query->whereIn('id', $realtyIds);
             })
             ->when(!empty($houseID), function ($query) use ($houseID) {
-                $query->where('house_id', $houseID);
+                $query->whereHas('house', function($q) use ($houseID) {
+                    $q->where('alias', $houseID);
+                    $q->when(ctype_digit($houseID), function ($q) use ($houseID) {
+                            $q->orWhere('id', (int) $houseID);
+                    });
+                });
             })
             ->when(!empty($priceFrom), function ($query) use ($priceFrom) {
                 $query->where('sale_price', '>=', $priceFrom);
