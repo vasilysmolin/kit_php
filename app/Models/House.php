@@ -26,6 +26,7 @@ class House extends Model
         'parking',
         'ceiling_height',
         'elite',
+        'reason',
         'date_build',
         'total_floors',
         'type',

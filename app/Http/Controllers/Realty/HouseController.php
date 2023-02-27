@@ -6,6 +6,7 @@ use App\Events\SaveLogsEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\RealtyMiddleware;
 use App\Http\Middleware\StoreMiddleware;
+use App\Http\Requests\Ad\AdStateRequest;
 use App\Http\Requests\Realty\HouseStoreRequest;
 use App\Http\Requests\Realty\HouseUpdateRequest;
 use App\Http\Requests\Realty\RealtyIndexRequest;
@@ -218,6 +219,38 @@ class HouseController extends Controller
         $files->save($house, $request['files']);
 
         return response()->json([], 204);
+    }
+
+    public function state(AdStateRequest $request, string $id): \Illuminate\Http\JsonResponse
+    {
+        $state = $request->state;
+        $ad = House::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $ad->state = $state;
+        $ad->update();
+        if ($state !== (new States())->active()) {
+            $ad->moveToEnd();
+        }
+
+        return response()->json([], 204);
+    }
+
+    public function sort(string $id): \Illuminate\Http\JsonResponse
+    {
+
+        $vacancy = House::
+        where('alias', $id)
+            ->when(ctype_digit($id), function ($q) use ($id) {
+                $q->orWhere('id', (int) $id);
+            })
+            ->first();
+        $vacancy->moveToStart();
+
+        return response()->json([]);
     }
 
     public function destroy(string $id): \Illuminate\Http\JsonResponse

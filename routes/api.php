@@ -175,6 +175,8 @@ Route::group([
 ], function ($router) {
     Route::apiResource('realties', 'RealtyController');
     Route::apiResource('houses', 'HouseController');
+    Route::put('houses/{buildings}/state', 'HouseController@state')->name('houses.state');
+    Route::put('houses/{buildings}/sort', 'HouseController@sort')->name('houses.sort');
     Route::apiResource('new-buildings', 'NewBuildController');
     Route::put('new-buildings/{buildings}/sort', 'NewBuildController@sort')->name('buildings.sort');
     Route::put('new-buildings/{buildings}/state', 'NewBuildController@state')->name('buildings.state');
