@@ -9,6 +9,7 @@
         "ext-curl": "*",
         "ext-exif": "*",
         "ext-fileinfo": "*",
+        "ext-imagick": "*",
         "ext-gd": "*",
         "ext-gmp": "*",
         "ext-intl": "*",

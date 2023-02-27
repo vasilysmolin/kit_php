@@ -34,13 +34,24 @@ RUN set -xe \
     $PHPIZE_DEPS \
     postgresql-client \
     ffmpeg \
+    libavif-dev \
+    libwebp-dev \
+    libzip-dev \
     libwebp-tools \
     freetype-dev \
+    libpng-dev \
     postgresql-dev \
+    libjpeg-turbo-dev \
     gmp-dev \
+    && docker-php-ext-configure gd \
+    --with-freetype \
+    --with-jpeg \
+    --with-webp \
+    && docker-php-ext-configure zip \
     && docker-php-ext-configure zip \
     && docker-php-ext-configure gmp \
     && docker-php-ext-configure pdo_pgsql \
+    && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install -j$(nproc) zip \
     && docker-php-ext-install -j$(nproc) exif \
     && docker-php-ext-install -j$(nproc) pdo_pgsql \
