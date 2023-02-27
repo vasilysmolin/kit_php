@@ -9,29 +9,38 @@ ARG UID
 
 COPY --from=composer /usr/bin/composer /usr/bin/composer
 
+# Установка зависимостей
+RUN apk update && apk add --no-cache \
+        imagemagick \
+        imagemagick-libs \
+        imagemagick-dev \
+        libjpeg-turbo-dev \
+        libpng-dev \
+        libwebp-dev \
+        libzip-dev \
+        libheif-dev \
+        g++ \
+        make \
+        autoconf
+
+# Установка расширения imagick с поддержкой формата heic
+RUN pecl install imagick-3.7.0 \
+    && docker-php-ext-enable imagick \
+    && apk del imagemagick-dev \
+    && rm -rf /tmp/* /var/cache/apk/*
+
 RUN set -xe \
     && apk add --no-cache \
     $PHPIZE_DEPS \
     postgresql-client \
     ffmpeg \
-    libavif-dev \
-    libwebp-dev \
-    libzip-dev \
     libwebp-tools \
     freetype-dev \
-    libpng-dev \
     postgresql-dev \
-    libjpeg-turbo-dev \
     gmp-dev \
-    && docker-php-ext-configure gd \
-    --with-freetype \
-    --with-jpeg \
-    --with-webp \
-    && docker-php-ext-configure zip \
     && docker-php-ext-configure zip \
     && docker-php-ext-configure gmp \
     && docker-php-ext-configure pdo_pgsql \
-    && docker-php-ext-install -j$(nproc) gd \
     && docker-php-ext-install -j$(nproc) zip \
     && docker-php-ext-install -j$(nproc) exif \
     && docker-php-ext-install -j$(nproc) pdo_pgsql \
@@ -44,10 +53,10 @@ RUN set -xe \
 RUN apk add --no-cache supervisor tzdata
 ENV TZ Europe/Moscow
 
-RUN if [ "$ENV" = "development" ]; \
-	then pecl install xdebug && docker-php-ext-enable xdebug;  \
-	else echo "$ENV"; \
-	fi
+#RUN if [ "$ENV" = "development" ]; \
+#	then pecl install xdebug && docker-php-ext-enable xdebug;  \
+#	else echo "$ENV"; \
+#	fi
 
 COPY /php.ini /usr/local/etc/php/php.ini
 COPY /fpm-pool.conf /usr/local/etc/php-fpm.d/www.conf

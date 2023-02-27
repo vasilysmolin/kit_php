@@ -209,30 +209,30 @@ class Files
     public function preparationFileS3(
         UploadedFile $file
     ): array {
-        $extension = $this->getFileType($file->getClientOriginalName());
+//        $extension = $this->getFileType($file->getClientOriginalName());
         $name = $this->generateFileName();
         $mineType = $file->getClientMimeType();
         $sizeFile = $file->getSize();
         $path = $this->getPathS3($name);
-        Storage::putFileAs("{$path}.{$extension}", $file, $name);
+        Storage::putFileAs("{$path}.jpg", $file, $name);
 
         foreach (self::$CROP as $resolution) {
             $image = Intervention::make($file);
             $filteredImage = $image
                 ->fit($resolution['width'], $resolution['height'])
-                ->encode($extension, 100);
+                ->encode('jpg', 100);
             Storage::put(
                 $path . '_'
                 . $resolution['width'] . 'x'
                 . $resolution['height'] . '.' .
-                $extension,
+                'jpg',
                 $filteredImage
             );
         }
 
         return [
             'mineType' => $mineType,
-            'extension' => $extension,
+            'extension' => 'jpg',
             'size' => $sizeFile,
             'name' => $name,
             'path' => $path,

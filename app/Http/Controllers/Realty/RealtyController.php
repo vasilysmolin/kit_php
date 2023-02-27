@@ -311,7 +311,6 @@ class RealtyController extends Controller
                 $realty->update();
             }
         }
-
         $files->save($realty, $request['files']);
 
         return response()->json([], 204);
