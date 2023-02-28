@@ -45,6 +45,7 @@ Route::group([
     'middleware' => ['auth:api'],
 ], function ($router) {
     Route::get('users/accounts', 'UserController@accounts')->name('users.accounts');
+    Route::get('sellers', 'UserController@sellers')->name('users.sellers')->withoutMiddleware('auth:api');
     Route::get('users/accounts/current', 'UserController@currentAccount')->name('users.current.account');
     Route::put('users/change-profile', 'UserController@changeProfile')->name('users.change-profile');
     Route::get('users/download', 'UserController@download')->name('users.download')->middleware('role:admin');

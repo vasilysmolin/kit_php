@@ -81,6 +81,11 @@ class Profile extends Model
         return $this->hasMany(Service::class, 'profile_id', 'id');
     }
 
+    public function houses()
+    {
+        return $this->hasMany(House::class, 'profile_id', 'id');
+    }
+
     public function resume()
     {
         return $this->hasMany(JobsResume::class, 'profile_id', 'id');

@@ -28,6 +28,7 @@ class UserController extends Controller
         $this->middleware('role:admin')->except(
             'update',
             'show',
+            'sellers',
             'checkUser',
             'addUser',
             'deleteUser',
@@ -46,6 +47,7 @@ class UserController extends Controller
         $state = $request->state;
         $name = $request->name;
         $phone = $request->phone;
+        $seller = $request->seller;
         $type = $request->type;
         $states = new States();
         $catalog = $request->from === 'catalog';
@@ -74,6 +76,9 @@ class UserController extends Controller
             ->when(!empty($phone), function ($q) use ($phone) {
                 $q->where('phone', 'ilike', "%{$phone}%");
             })
+            ->when($seller === 'houses', function ($q) {
+                $q->has('profile.houses');
+            })
             ->when($type === 'physical', function ($q) {
                 $q->whereHas('profile', function ($q) {
                     $q->where('isPerson', false);
@@ -88,7 +93,77 @@ class UserController extends Controller
 
         $users = $builder
             ->take((int) $take)
-            ->with(['profile.restaurant', 'profile.person'])
+            ->with(['profile.person'])
+            ->skip((int) $skip)
+            ->get();
+        $count = $builder->count();
+
+        $data = (new JsonHelper())->getIndexStructure(new User(), $users, $count, (int) $skip);
+
+        return response()->json($data);
+    }
+
+    public function sellers(UsersIndexRequest $request)
+    {
+        $take = $request->take ?? config('settings.take_twenty_five');
+        $skip = $request->skip ?? 0;
+        $id = isset($request->id) ? explode(',', $request->id) : null;
+        $user = auth('api')->user();
+        $state = $request->state;
+        $name = $request->name;
+        $phone = $request->phone;
+        $seller = $request->seller;
+        $type = $request->type;
+        $states = new States();
+        $catalog = $request->from === 'catalog';
+        $cabinet = isset($user) && $request->from === 'cabinet';
+
+        $builder = User::
+        when(!empty($id) && is_array($id), function ($query) use ($id) {
+            $query->whereIn('id', $id);
+        })
+            ->when($cabinet === true, function ($q) use ($user) {
+                $q->whereHas('profile.user', function ($q) use ($user) {
+                    $q->where('id', $user->id);
+                });
+            })
+            ->when($catalog === true, function ($q) use ($states) {
+                $q ->whereHas('profile.user', function ($q) use ($states) {
+                    $q->where('state', $states->active());
+                });
+            })
+            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+                $q->where('state', $state);
+            })
+            ->when(!empty($name), function ($q) use ($name) {
+                $q->where('name', 'ilike', "%{$name}%");
+            })
+            ->when(!empty($phone), function ($q) use ($phone) {
+                $q->where('phone', 'ilike', "%{$phone}%");
+            })
+            ->when($seller === 'houses', function ($q) {
+                $q->has('profile.houses')
+                    ->has('profile.person');
+            })
+            ->when($type === 'physical', function ($q) {
+                $q->whereHas('profile', function ($q) {
+                    $q->where('isPerson', false);
+                });
+            })
+            ->when($type === 'entity', function ($q) {
+                $q->whereHas('profile', function ($q) {
+                    $q->where('isPerson', true);
+                });
+            })
+
+            ->orderBy('id', 'DESC');
+
+        $users = $builder
+            ->take((int) $take)
+            ->with('profile', function($q) {
+                $q->with(['person']);
+                $q->withCount(['houses']);
+            })
             ->skip((int) $skip)
             ->get();
         $count = $builder->count();
