@@ -360,7 +360,8 @@ class RealtyImportJob implements ShouldQueue
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
         $externalID = $realty->ExternalId ?? (string)$realty->attributes()['internal-id'];
-        $name = $realty->rooms . '-к квартира';
+        $rooms = !empty($realty->rooms) ? $realty->rooms : 1;
+        $name = $rooms. '-к квартира';
         $data = [];
         $data['title'] = $name;
         $data['name'] = $name;
@@ -450,7 +451,7 @@ class RealtyImportJob implements ShouldQueue
         $dataParameters['balconyOrLoggia'] = (string) $realty->balcony;
         $dataParameters['livingArea'] = !empty($realty->xpath('//living-space')) ? (int) $realty->xpath('//living-space')[0]->value : 0;
         $dataParameters['floorNumber'] = (int) $realty->floor;
-        $dataParameters['flatRoomsCount'] = (int) $realty->rooms;
+        $dataParameters['flatRoomsCount'] = (int) $rooms;
         $dataParameters['totalArea'] = !empty($realty->xpath('//area')) ? (int) $realty->xpath('//area')[0]->value : 0;
         $dataParameters['kitchenArea'] = !empty($realty->xpath('//kitchen-space')) ? (int) $realty->xpath('//kitchen-space')[0]->value : 0;
         $dataParameters['materialType'] = !empty($realty->xpath('//building-type')) ?  (string) $realty->xpath('//building-type')[0] : 0;
@@ -569,8 +570,9 @@ class RealtyImportJob implements ShouldQueue
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
         $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
-        $title = (int) $realty->FlatRoomsCount . '-к квартира';
-        $name = (int) $realty->FlatRoomsCount . '-к квартира';
+        $rooms = !empty($realty->FlatRoomsCount) ? $realty->FlatRoomsCount : 1;
+        $title = (int) $rooms . '-к квартира';
+        $name = (int) $rooms . '-к квартира';
 //            Log::info($externalID);
 //            Log::info(' ');
 
@@ -649,7 +651,7 @@ class RealtyImportJob implements ShouldQueue
         $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
         $dataParameters['livingArea'] = (int) $realty->LivingArea;
         $dataParameters['floorNumber'] = (int) $realty->FloorNumber;
-        $dataParameters['flatRoomsCount'] = (int) $realty->FlatRoomsCount;
+        $dataParameters['flatRoomsCount'] = (int) $rooms;
         $dataParameters['totalArea'] = (int) $realty->TotalArea;
         $dataParameters['kitchenArea'] = (int) $realty->KitchenArea;
         $dataParameters['materialType'] = (int) $realty->MaterialType;
