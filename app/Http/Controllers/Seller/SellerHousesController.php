@@ -35,7 +35,8 @@ class SellerHousesController extends Controller
         $house->fill($formData);
         $house->save();
         $files = resolve(Files::class);
-        $files->save($house, $request['files']);
+        $files->save($house, $request['logo'], 'logo');
+        $files->save($house, $request['background'], 'background');
 
         return response()->json([], 201, ['Location' => "/house/$house->id"]);
     }
@@ -59,16 +60,11 @@ class SellerHousesController extends Controller
         abort_unless($house, 404);
 
         $files = resolve(Files::class);
-        if ($house->images->count() > 0) {
-            $house->photo = $files->getFilePath($house->latestImage);
-            $house->photos = collect([]);
-            $house->images->each(function ($image) use ($files, $house) {
-                $house->photos->push($files->getFilePath($image));
-            });
-            $house->photos = array_filter($house->photos->toArray());
-        }
+        $house->logo = !empty($house->label) ? $files->getFilePath($house->label) : null;
+        $house->background_image = !empty($house->background) ? $files->getFilePath($house->background) : null;
         $house->makeHidden('image');
-        $house->makeHidden('latestImage');
+        $house->makeHidden('label');
+        $house->makeHidden('background');
         $house->makeHidden('images');
 
         return response()->json($house);
@@ -85,7 +81,8 @@ class SellerHousesController extends Controller
         $house->fill($formData);
         $house->update();
         $files = resolve(Files::class);
-        $files->save($house, $request['files']);
+        $files->save($house, $request['label'], 'label');
+        $files->save($house, $request['background'], 'background');
 
         return response()->json([], 204);
     }

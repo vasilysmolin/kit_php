@@ -21,6 +21,7 @@ class Image extends Model
         'extension',
         'size',
         'imageable_type',
+        'collect_name',
         'imageable_id',
         'crop',
         'sort',

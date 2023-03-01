@@ -51,6 +51,18 @@ class SellerHouse extends Model
         return $this->morphOne(Image::class, 'imageable')->latestOfMany();
     }
 
+    public function label()
+    {
+        return $this->morphOne(Image::class, 'imageable')
+            ->where('collect_name','=', 'label');
+    }
+
+    public function background()
+    {
+        return $this->morphOne(Image::class, 'imageable')
+            ->where('collect_name', '=', 'background');
+    }
+
     public function oldestImage()
     {
         return $this->morphOne(Image::class, 'imageable')->oldestOfMany();

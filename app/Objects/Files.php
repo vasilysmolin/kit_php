@@ -102,7 +102,7 @@ class Files
         return $url;
     }
 
-    public function save($model, ?array $files): void
+    public function save($model, ?array $files, ?string $collectName = 'image'): void
     {
 
         if (isset($files) && count($files) > 0) {
@@ -111,6 +111,7 @@ class Files
                 $model->image()->create([
                     'mimeType' => $dataFile['mineType'],
                     'extension' => $dataFile['extension'],
+                    'collect_name' => $collectName,
                     'name' => $dataFile['name'],
                     'uniqueValue' => $dataFile['name'],
                     'size' => $dataFile['size'],
