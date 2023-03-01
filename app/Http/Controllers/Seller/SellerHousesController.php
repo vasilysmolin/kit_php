@@ -40,7 +40,7 @@ class SellerHousesController extends Controller
         return response()->json([], 201, ['Location' => "/house/$house->id"]);
     }
 
-    public function show(RealtyShowRequest $request, string $id): \Illuminate\Http\JsonResponse
+    public function show(Request $request, string $id): \Illuminate\Http\JsonResponse
     {
         $user = auth('api')->user();
         $cabinet = isset($user) && $request->from === 'cabinet';
@@ -59,7 +59,7 @@ class SellerHousesController extends Controller
         abort_unless($house, 404);
 
         $files = resolve(Files::class);
-        if (!empty($house->images)) {
+        if ($house->images->count() > 0) {
             $house->photo = $files->getFilePath($house->latestImage);
             $house->photos = collect([]);
             $house->images->each(function ($image) use ($files, $house) {
@@ -68,6 +68,7 @@ class SellerHousesController extends Controller
             $house->photos = array_filter($house->photos->toArray());
         }
         $house->makeHidden('image');
+        $house->makeHidden('latestImage');
         $house->makeHidden('images');
 
         return response()->json($house);
@@ -76,7 +77,7 @@ class SellerHousesController extends Controller
     public function update(SellerHouseUpdateRequest $request, string $id): \Illuminate\Http\JsonResponse
     {
         $formData = $request->all();
-        $house = House::where('alias', $id)
+        $house = SellerHouse::where('alias', $id)
             ->when(ctype_digit($id), function ($q) use ($id) {
                 $q->orWhere('id', (int) $id);
             })

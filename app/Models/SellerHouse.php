@@ -27,7 +27,7 @@ class SellerHouse extends Model
         return SlugOptions::create()
             ->doNotGenerateSlugsOnUpdate()
             ->slugsShouldBeNoLongerThan(10)
-            ->generateSlugsFrom('name')
+            ->generateSlugsFrom('description')
             ->saveSlugsTo('alias');
     }
 
