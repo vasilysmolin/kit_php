@@ -41,6 +41,11 @@ class Profile extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
+    public function sellerHouse()
+    {
+        return $this->hasOne(SellerHouse::class, 'profile_id', 'id');
+    }
+
     public function restaurant()
     {
         return $this->hasMany(FoodRestaurant::class, 'profile_id', 'id');
