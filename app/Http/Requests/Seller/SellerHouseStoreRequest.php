@@ -26,6 +26,8 @@ class SellerHouseStoreRequest extends FormRequest
         return [
             'name' => 'string|min:1|max:255',
             'description' => 'required|string|min:1|max:2000',
+            'background' => 'required|file:1,20000',
+            'label' => 'required|file:1,20000',
         ];
     }
 }

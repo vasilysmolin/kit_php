@@ -197,7 +197,7 @@ class UserController extends Controller
     {
         $user = User::find($id);
         $user->setAttribute('role', $user->getRoleNames()->first());
-        return response()->json($user->load(['profile.person']));
+        return response()->json($user->load(['profile.person', 'profile.sellerHouse']));
     }
 
     public function update(UsersUpdateRequest $request, $id)
