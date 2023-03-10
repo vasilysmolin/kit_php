@@ -53,6 +53,7 @@ class RealtyImportJob implements ShouldQueue
             foreach ($this->realty as $realtyString) {
                 $realty = simplexml_load_string($realtyString);
                 $checkFlat = false;
+
                 if ((string) $realty->Category === 'flatSale') {
                     $checkFlat = true;
                     $typeParameters = '-bye';
@@ -570,9 +571,12 @@ class RealtyImportJob implements ShouldQueue
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
         $externalID = $realty->ExternalId ?? (string) $realty->JKSchema->Id;
-        $rooms = !empty($realty->FlatRoomsCount) ? $realty->FlatRoomsCount : 1;
-        $title = (int) $rooms . '-к квартира';
-        $name = (int) $rooms . '-к квартира';
+        $rooms = !empty($realty->FlatRoomsCount) ? (int) $realty->FlatRoomsCount : null;
+        if($rooms === null) {
+            return;
+        }
+        $title = $rooms . '-к квартира';
+        $name = $rooms . '-к квартира';
 //            Log::info($externalID);
 //            Log::info(' ');
 
@@ -651,7 +655,7 @@ class RealtyImportJob implements ShouldQueue
         $dataParameters['floorsCount'] = (int) $realty->Building->FloorsCount;
         $dataParameters['livingArea'] = (int) $realty->LivingArea;
         $dataParameters['floorNumber'] = (int) $realty->FloorNumber;
-        $dataParameters['flatRoomsCount'] = (int) $rooms;
+        $dataParameters['flatRoomsCount'] = $rooms;
         $dataParameters['totalArea'] = (int) $realty->TotalArea;
         $dataParameters['kitchenArea'] = (int) $realty->KitchenArea;
         $dataParameters['materialType'] = (int) $realty->MaterialType;
