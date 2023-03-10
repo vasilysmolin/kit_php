@@ -10,6 +10,7 @@ use App\Http\Requests\UsersStateRequest;
 use App\Http\Requests\UsersUpdateRequest;
 use App\Models\InvitedUser;
 use App\Models\Profile;
+use App\Models\SellerHouse;
 use App\Models\User;
 use App\Objects\Dadata\Dadata;
 use App\Objects\Files;
@@ -110,52 +111,52 @@ class UserController extends Controller
         $skip = $request->skip ?? 0;
         $id = isset($request->id) ? explode(',', $request->id) : null;
         $user = auth('api')->user();
-        $state = $request->state;
-        $name = $request->name;
-        $phone = $request->phone;
-        $seller = $request->seller;
-        $type = $request->type;
-        $states = new States();
-        $catalog = $request->from === 'catalog';
-        $cabinet = isset($user) && $request->from === 'cabinet';
+//        $state = $request->state;
+//        $name = $request->name;
+//        $phone = $request->phone;
+//        $seller = $request->seller;
+//        $type = $request->type;
+//        $states = new States();
+//        $catalog = $request->from === 'catalog';
+//        $cabinet = isset($user) && $request->from === 'cabinet';
 
-        $builder = User::
+        $builder = SellerHouse::
         when(!empty($id) && is_array($id), function ($query) use ($id) {
             $query->whereIn('id', $id);
         })
-            ->when($cabinet === true, function ($q) use ($user) {
-                $q->whereHas('profile.user', function ($q) use ($user) {
-                    $q->where('id', $user->id);
-                });
-            })
-            ->when($catalog === true, function ($q) use ($states) {
-                $q ->whereHas('profile.user', function ($q) use ($states) {
-                    $q->where('state', $states->active());
-                });
-            })
-            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
-                $q->where('state', $state);
-            })
-            ->when(!empty($name), function ($q) use ($name) {
-                $q->where('name', 'ilike', "%{$name}%");
-            })
-            ->when(!empty($phone), function ($q) use ($phone) {
-                $q->where('phone', 'ilike', "%{$phone}%");
-            })
-            ->when($seller === 'houses', function ($q) {
-                $q->has('profile.houses')
-                    ->has('profile.person');
-            })
-            ->when($type === 'physical', function ($q) {
-                $q->whereHas('profile', function ($q) {
-                    $q->where('isPerson', false);
-                });
-            })
-            ->when($type === 'entity', function ($q) {
-                $q->whereHas('profile', function ($q) {
-                    $q->where('isPerson', true);
-                });
-            })
+//            ->when($cabinet === true, function ($q) use ($user) {
+//                $q->whereHas('profile.user', function ($q) use ($user) {
+//                    $q->where('id', $user->id);
+//                });
+//            })
+//            ->when($catalog === true, function ($q) use ($states) {
+//                $q ->whereHas('profile.user', function ($q) use ($states) {
+//                    $q->where('state', $states->active());
+//                });
+//            })
+//            ->when(!empty($state) && $states->isExists($state), function ($q) use ($state) {
+//                $q->where('state', $state);
+//            })
+//            ->when(!empty($name), function ($q) use ($name) {
+//                $q->where('name', 'ilike', "%{$name}%");
+//            })
+//            ->when(!empty($phone), function ($q) use ($phone) {
+//                $q->where('phone', 'ilike', "%{$phone}%");
+//            })
+//            ->when($seller === 'houses', function ($q) {
+//                $q->has('profile.houses')
+//                    ->has('profile.person');
+//            })
+//            ->when($type === 'physical', function ($q) {
+//                $q->whereHas('profile', function ($q) {
+//                    $q->where('isPerson', false);
+//                });
+//            })
+//            ->when($type === 'entity', function ($q) {
+//                $q->whereHas('profile', function ($q) {
+//                    $q->where('isPerson', true);
+//                });
+//            })
 
             ->orderBy('id', 'DESC');
 
