@@ -12,6 +12,7 @@ use App\Models\InvitedUser;
 use App\Models\Profile;
 use App\Models\User;
 use App\Objects\Dadata\Dadata;
+use App\Objects\Files;
 use App\Objects\JsonHelper;
 use App\Objects\States\States;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -164,8 +165,18 @@ class UserController extends Controller
                 $q->with(['person']);
                 $q->withCount(['houses']);
             })
+            ->with('label', 'background')
             ->skip((int) $skip)
             ->get();
+
+        $files = resolve(Files::class);
+        $users->each(function($user) use ($files){
+            $user->logo = !empty($user->label) ? $files->getFilePath($user->label) : null;
+            $user->background_image = !empty($user->background) ? $files->getFilePath($user->background) : null;
+            $user->makeHidden('label');
+            $user->makeHidden('background');
+        });
+
         $count = $builder->count();
 
         $data = (new JsonHelper())->getIndexStructure(new User(), $users, $count, (int) $skip);
