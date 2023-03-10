@@ -152,6 +152,7 @@ class RealtyImportJob implements ShouldQueue
         $house = array_pop($arrayStreet);
         $street = array_pop($arrayStreet);
         $externalID = $realty->Id;
+        $rooms = $realty->Rooms ?? 1;
         $name = $realty->Rooms > 0 ? $realty->Rooms . '-к квартира' : '1-к квартира';
 //            Log::info($externalID);
 //            Log::info(' ');
@@ -238,7 +239,7 @@ class RealtyImportJob implements ShouldQueue
         $dataParameters['livingArea'] = (int) $realty->LivingSpace;
         $dataParameters['renovation'] = (string) $realty->Renovation;
         $dataParameters['floorNumber'] = (int) $realty->Floor;
-        $dataParameters['flatRoomsCount'] = (int) $realty->Rooms;
+        $dataParameters['flatRoomsCount'] = (int) $rooms;
         $dataParameters['totalArea'] = (int) $realty->Square;
         $dataParameters['kitchenArea'] = (int) $realty->KitchenSpace;
         $rooms = Parameter::where('value', $dataParameters['flatRoomsCount'] . ' комнатная')
