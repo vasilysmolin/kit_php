@@ -44,7 +44,7 @@ class SellerHousesController extends Controller
         $user = auth('api')->user();
         $cabinet = isset($user) && $request->from === 'cabinet';
         $account = $request->get('accounts');
-        $house = SellerHouse::with('profile.user')->has('profile.user')
+        $house = SellerHouse::with('profile.user','profile.person')->has('profile.user')
             ->when($cabinet !== false, function ($q) use ($account) {
                 $q->whereHas('profile', function ($q) use ($account) {
                     $q->where('id', $account['profile_id']);
