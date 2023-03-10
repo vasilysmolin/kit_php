@@ -57,7 +57,7 @@ Route::group([
     Route::delete('users/delete-user/{email}', 'UserController@deleteUser')->name('users.delete-user');
     Route::apiResource('invited-users', 'InvitedUserController');
     Route::apiResource('users', 'UserController');
-    Route::apiResource('seller-houses', 'Seller\SellerHousesController');
+    Route::apiResource('seller-houses', 'Seller\SellerHousesController')->withoutMiddleware('auth:api');
 
     Route::apiResource('search-logs', 'Logs\SearchLogsController')
         ->only('index')
