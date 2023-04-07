@@ -79,8 +79,12 @@ class SellerHousesController extends Controller
         $house->fill($formData);
         $house->update();
         $files = resolve(Files::class);
-        $files->save($house, [$request['label']], 'label');
-        $files->save($house, [$request['background']], 'background');
+        if(!empty($request['label'])) {
+            $files->save($house, [$request['label']], 'label');
+        }
+        if(!empty($request['background'])) {
+            $files->save($house, [$request['background']], 'background');
+        }
 
         return response()->json([], 204);
     }
