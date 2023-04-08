@@ -93,7 +93,7 @@ services:
           - MEILI_NO_SENTRY=true
 #          - MEILI_MASTER_KEY=${MEILISEARCH_KEY}
       ports:
-          - "7701:7700"
+          - "7702:7700"
       logging:
           driver: json-file
           options:

@@ -33,8 +33,12 @@ class SellerHousesController extends Controller
         $house->fill($formData);
         $house->save();
         $files = resolve(Files::class);
-        $files->save($house, [$request['label']], 'label');
-        $files->save($house, [$request['background']], 'background');
+        if (!empty($request['label'])) {
+            $files->save($house, [$request['label']], 'label');
+        }
+        if (!empty($request['background'])) {
+            $files->save($house, [$request['background']], 'background');
+        }
 
         return response()->json([], 201, ['Location' => "/house/$house->id"]);
     }
@@ -79,10 +83,12 @@ class SellerHousesController extends Controller
         $house->fill($formData);
         $house->update();
         $files = resolve(Files::class);
-        if(!empty($request['label'])) {
+        if (!empty($request['label'])) {
+            $house->label()->delete();
             $files->save($house, [$request['label']], 'label');
         }
-        if(!empty($request['background'])) {
+        if (!empty($request['background'])) {
+            $house->background()->delete();
             $files->save($house, [$request['background']], 'background');
         }
 
